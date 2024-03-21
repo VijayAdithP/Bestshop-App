@@ -3,6 +3,7 @@ import 'package:newbestshop/models/data_table.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Expandtile extends StatefulWidget {
   const Expandtile({super.key});
@@ -19,11 +20,18 @@ Future<List<Map<String, dynamic>>> fetchStockItems(
       '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stockview}$formattedDate';
 
   try {
-    final response = await http.get(Uri.parse(api));
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    final response = await http.get(
+      Uri.parse(api),
+      headers: {'Authorization': 'Bearer $token'},
+    );
     if (response.statusCode == 200) {
+      print(token);
       final List<dynamic> jsonData = json.decode(response.body);
       return jsonData.cast<Map<String, dynamic>>();
     } else {
+      print(token);
       throw Exception('Failed to load stock items: ${response.statusCode}');
     }
   } catch (e) {
@@ -112,7 +120,7 @@ class _ExpandtileState extends State<Expandtile> {
                     return ListView(
                       children: categorizedItems.map((item) {
                         return ExpansionTile(
-                          title: Text(item['time'] ?? ''),
+                          title: Text(item['shop'] ?? ''),
                           children: [
                             SingleChildScrollView(
                               child: SingleChildScrollView(
@@ -137,6 +145,7 @@ class _ExpandtileState extends State<Expandtile> {
 }
 
 class StockItem {
+  final String? user;
   final String? id;
   final String? shop;
   final String? date;
@@ -149,6 +158,7 @@ class StockItem {
   final String? mrp;
   final String? total_price;
   StockItem({
+    this.user,
     this.id,
     this.shop,
     this.date,
@@ -164,6 +174,7 @@ class StockItem {
 
   factory StockItem.fromJson(Map<String, dynamic> json) {
     return StockItem(
+      user: json['user'],
       id: json['id'],
       shop: json['shop'],
       date: json['date'],
@@ -180,6 +191,7 @@ class StockItem {
 
   Map<String, dynamic> toJson() {
     return {
+      "user": user,
       "id": id,
       "shop": shop,
       "date": date,

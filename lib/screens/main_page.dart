@@ -18,23 +18,19 @@ class Home_Page extends StatefulWidget {
 }
 
 class _Home_PageState extends State<Home_Page> {
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   fetchData();
-  // }
-
   int _currentTabIndex = 0;
   final screens = [
     const FlBarChartExample(),
     const Expandtile(),
-    CategoryPage(),
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: stockadder(),
+    ),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF4860b5),
@@ -64,21 +60,6 @@ class _Home_PageState extends State<Home_Page> {
       ),
       drawer: const Drawer_(),
       body: screens[_currentTabIndex],
-
-      // Center(
-      //   child: SubscriberChart(
-      //     data: data,
-      //   ),
-      // ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: const Color(0xFF4860b5),
-      //   onPressed: () {
-      //     setState(() {
-      //       fetchDataFromAPI();
-      //     });
-      //   },
-      //   child: const Icon(Icons.update, color: Colors.white, size: 28),
-      // ),
     );
   }
 }
@@ -463,8 +444,13 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
 
   Future<void> fetchDataFromAPI() async {
     try {
-      final response = await http.get(Uri.parse(
-          ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.dashboardData));
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+      final response = await http.get(
+        Uri.parse(
+            ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.dashboardData),
+        headers: {'Authorization': 'Bearer $token'},
+      );
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body) as List<dynamic>;
         setState(() {
@@ -476,6 +462,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           _isLoading = false;
         });
       } else {
+        // print(token);
         throw Exception('Failed to load data from API');
       }
     } catch (e) {
@@ -506,13 +493,13 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       );
     }
 
-    if (_apiData == null || _axisNames == null || _bottomTitles == null) {
-      return const Scaffold(
-        body: Center(
-          child: Text('Failed to fetch data from API'),
-        ),
-      );
-    }
+    // if (_apiData == null || _axisNames == null || _bottomTitles == null) {
+    //   return const Scaffold(
+    //     body: Center(
+    //       child: Text('Failed to fetch data from API'),
+    //     ),
+    //   );
+    // }
 
     final barGroups = <BarChartGroupData>[
       BarChartGroupData(

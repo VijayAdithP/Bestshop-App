@@ -10,6 +10,7 @@ class MyDataTable extends StatelessWidget {
     return DataTable(
       columns: const <DataColumn>[
         DataColumn(label: Text('id')),
+        DataColumn(label: Text('user')),
         DataColumn(label: Text('shop')),
         DataColumn(label: Text('date')),
         DataColumn(label: Text('time')),
@@ -25,6 +26,7 @@ class MyDataTable extends StatelessWidget {
         return DataRow(
           cells: <DataCell>[
             DataCell(Text(data['id']?.toString() ?? '')),
+            DataCell(Text(data['user']?.toString() ?? '')),
             DataCell(Text(data['shop']?.toString() ?? '')),
             DataCell(Text(data['date']?.toString() ?? '')),
             DataCell(Text(data['time']?.toString() ?? '')),

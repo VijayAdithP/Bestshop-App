@@ -1,393 +1,65 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
-import 'package:newbestshop/screens/widgets/buttons.dart';
 import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:newbestshop/screens/widgets/input_fields.dart';
-import 'package:provider/provider.dart';
 import 'package:newbestshop/models/api_data.dart';
 import 'package:get/get.dart';
 import 'main_page.dart';
 
-// class Category {
-//   int id;
-//   String imgPath;
-//   String label;
+class stockadder extends StatefulWidget {
+  const stockadder({super.key});
 
-//   Category(this.id, this.imgPath, this.label);
-// }
+  @override
+  State<stockadder> createState() => _stockadderState();
+}
 
-// class CategoryFields {
-//   int id;
-//   String label;
-
-//   CategoryFields(this.id, this.label);
-// }
-
-// class AddStock extends StatefulWidget {
-//   const AddStock({super.key});
-
-//   @override
-//   State<AddStock> createState() => _AddStockState();
-// }
-
-// class _AddStockState extends State<AddStock> {
-//   dynamic categories = 0;
-//   List<Category> pinnedCategories = [];
-//   List<CategoryFields> categoryFields = [];
-//   bool isLoading = true, isCategorySelected = false, fileSelected = false;
-//   int selectedCategory = 0;
-//   int selectedFieldIndex = 0;
-//   late CategoryFields selectedField;
-
-//   fetchCategories() async {
-//     try {
-//       Uri apiUri = Uri.parse(
-//           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.categories);
-//       var res = await get(apiUri);
-//       if (res.statusCode == 200) {
-//         var body = json.decode(res.body);
-//         setState(() {
-//           categories = body;
-//           isLoading = false;
-//         });
-//       } else {
-//         print("Request failed with status: ${res.statusCode}");
-//       }
-//     } catch (e) {
-//       print("Error occurred: $e");
-//     }
-
-//     // Uri apiUri = Uri.parse(
-//     //     ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.categoriesAdd);
-//     // var res = await get(apiUri);
-//     // var body = json.decode(res.body);
-//     // setState(() {
-//     //   categories = body;
-//     //   isLoading = false;
-//     // });
-//   }
-
-//   handlePinItem(index) async {
-//     if (!isCategorySelected) {
-//       pinnedCategories.add(Category(
-//           categories[index]['category_id'],
-//           categories[index]['category_image'],
-//           categories[index]['category_name']));
-//     } else {
-//       pinnedCategories.add(Category(
-//           categories[index]['detail_id'],
-//           categories[index]['details_image'],
-//           categories[index]['details_name']));
-//     }
-
-//     isLoading = true;
-
-//     setState(() {});
-
-//     if (selectedCategory == 0) {
-//       selectedCategory = categories[index]['category_id'];
-//       categories = 0;
-
-//       var res = await get(
-//         Uri.parse(
-//             "${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.categories}/$selectedCategory"),
-//       );
-
-//       var result = json.decode(res.body);
-//       for (var element in result) {
-//         categoryFields
-//             .add(CategoryFields(element['field_id'], element['field_name']));
-//       }
-
-//       if (categoryFields.isNotEmpty) {
-//         selectedField = categoryFields[0];
-//         fetchCategorySubFields();
-//         isCategorySelected = true;
-//       }
-//     } else {
-//       selectedFieldIndex++;
-//       selectedField = categoryFields[selectedFieldIndex];
-//       fetchCategorySubFields();
-//     }
-
-//     isLoading = false;
-//     setState(() {});
-//   }
-
-//   fetchCategorySubFields() async {
-//     var res = await get(
-//       Uri.parse(
-//           "${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.categoriesAdd}/$selectedCategory/${selectedField.id}"),
-//     );
-//     categories = json.decode(res.body);
-//     setState(() {});
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchCategories();
-//   }
-
-//   void showAddCategory() async {
-//     await showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return Dialog(
-//             backgroundColor: backgroundColor,
-//             shape:
-//                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-//             child: SingleChildScrollView(
-//               physics: const ClampingScrollPhysics(),
-//               child: Padding(
-//                 padding: const EdgeInsets.all(15),
-//                 child: Column(
-//                   children: [
-//                     const Text(
-//                       "Add Category",
-//                       style:
-//                           TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-//                     ),
-//                     const SizedBox(
-//                       height: 20,
-//                     ),
-//                     fileSelected
-//                         ? const CircleAvatar(
-//                             radius: 80,
-//                           )
-//                         : InkWell(
-//                             onTap: () {
-//                               print("object");
-//                               final ImagePicker picker = ImagePicker();
-//                             },
-//                             child: Container(
-//                               decoration: BoxDecoration(
-//                                   color: Colors.white,
-//                                   borderRadius: BorderRadius.circular(500)),
-//                               padding: const EdgeInsets.all(50),
-//                               child: const Icon(
-//                                 Icons.camera_alt_rounded,
-//                                 size: 40,
-//                                 color: Colors.grey,
-//                               ),
-//                             ),
-//                           ),
-//                     const SizedBox(
-//                       height: 10,
-//                     ),
-//                     const Align(
-//                       alignment: Alignment.centerLeft,
-//                       child: Text(
-//                         "Product Name",
-//                         style: TextStyle(fontSize: 17),
-//                       ),
-//                     ),
-//                     const SizedBox(
-//                       height: 10,
-//                     ),
-//                     Container(
-//                       padding: const EdgeInsets.symmetric(horizontal: 10),
-//                       decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           borderRadius: BorderRadius.circular(8)),
-//                       child: TextFormField(
-//                         decoration:
-//                             const InputDecoration(border: InputBorder.none),
-//                       ),
-//                     ),
-//                     const SizedBox(
-//                       height: 20,
-//                     ),
-//                     customButton("label")
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           );
-//         });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       resizeToAvoidBottomInset: false,
-//       backgroundColor: backgroundColor,
-//       // appBar: AppBar(
-//       //   foregroundColor: Colors.white,
-//       //   backgroundColor: primaryColor,
-//       //   title: const Text(
-//       //     "Best Shop",
-//       //     style: TextStyle(color: Colors.white, fontSize: 20),
-//       //   ),
-//       // ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(15),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Container(
-//               width: double.infinity,
-//               height: 130,
-//               decoration: BoxDecoration(
-//                   color: Colors.white,
-//                   borderRadius: BorderRadius.circular(10),
-//                   boxShadow: const [
-//                     BoxShadow(
-//                         color: Colors.grey, blurRadius: 0.50, spreadRadius: 0.1)
-//                   ]),
-//               child: pinnedCategories.isEmpty
-//                   ? const Center(
-//                       child: Text(
-//                       "Select your Category",
-//                       style: TextStyle(fontSize: 19),
-//                     ))
-//                   : ListView.builder(
-//                       scrollDirection: Axis.horizontal,
-//                       itemCount: pinnedCategories.length,
-//                       itemBuilder: (builder, index) {
-//                         return Padding(
-//                           padding: const EdgeInsets.all(10),
-//                           child: CircleAvatar(
-//                             radius: 45,
-//                             backgroundImage: NetworkImage(
-//                                 "${ApiEndPoints.baseUrl}/${pinnedCategories[index].imgPath}"),
-//                           ),
-//                         );
-//                       }),
-//             ),
-//             const SizedBox(
-//               height: 20,
-//             ),
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 Text(
-//                   isCategorySelected ? selectedField.label : "Category",
-//                   style: const TextStyle(
-//                       fontSize: 20, fontWeight: FontWeight.w500),
-//                 ),
-//                 GestureDetector(
-//                   onTap: () => showAddCategory(),
-//                   child: Container(
-//                     padding:
-//                         const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-//                     decoration: BoxDecoration(
-//                         color: primaryColor,
-//                         borderRadius: BorderRadius.circular(8)),
-//                     child: const Row(
-//                       children: [
-//                         Icon(
-//                           Icons.add,
-//                           color: Colors.white,
-//                         ),
-//                         SizedBox(
-//                           width: 5,
-//                         ),
-//                         Text(
-//                           "Add",
-//                           style: TextStyle(
-//                               color: Colors.white,
-//                               fontSize: 16,
-//                               fontWeight: FontWeight.w500),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 )
-//               ],
-//             ),
-//             const SizedBox(
-//               height: 10,
-//             ),
-//             if (isLoading)
-//               Column(
-//                 children: [
-//                   const SizedBox(
-//                     height: 50,
-//                   ),
-//                   Center(
-//                       child: SizedBox(
-//                           height: 60,
-//                           width: 60,
-//                           child: CircularProgressIndicator(
-//                             color: primaryColor,
-//                             strokeWidth: 5,
-//                           ))),
-//                 ],
-//               ),
-//             if (!isLoading)
-//               Expanded(
-//                 child: Container(
-//                   decoration: BoxDecoration(
-//                       color: Colors.white,
-//                       borderRadius: BorderRadius.circular(15),
-//                       boxShadow: const [
-//                         BoxShadow(
-//                             color: Colors.grey,
-//                             blurRadius: 0.50,
-//                             spreadRadius: 0.1)
-//                       ]),
-//                   child: RefreshIndicator(
-//                     onRefresh: () => fetchCategories(),
-//                     child: categories != 0
-//                         ? ListView.builder(
-//                             padding: const EdgeInsets.all(10),
-//                             itemCount: categories.length,
-//                             itemBuilder: (builder, index) {
-//                               return categoryCard(index);
-//                             },
-//                           )
-//                         : const Center(
-//                             child: Text("No Categories Found"),
-//                           ),
-//                   ),
-//                 ),
-//               )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-
-//   Widget categoryCard(int index) {
-//     String imageKey = isCategorySelected ? 'details_image' : 'category_image';
-//     print(categories[0]);
-//     return GestureDetector(
-//       onTap: () => handlePinItem(index),
-//       child: Container(
-//         margin: const EdgeInsets.only(bottom: 15),
-//         padding: const EdgeInsets.all(10),
-//         decoration: BoxDecoration(color: backgroundColor),
-//         child: Row(
-//           children: [
-//             CircleAvatar(
-//               radius: 45,
-//               backgroundImage: NetworkImage(
-//                   '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.categoriesAdd}/${categories[index][imageKey]}'),
-//             ),
-//             const SizedBox(
-//               width: 40,
-//             ),
-//             Text(
-//               categories[index]
-//                   [isCategorySelected ? 'details_name' : 'category_name'],
-//               style: const TextStyle(fontSize: 18),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//     // return Text("data");
-//   }
-// }
+class _stockadderState extends State<stockadder> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              width: double.infinity,
+              height: 130,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.grey, blurRadius: 0.50, spreadRadius: 0.1)
+                ],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Text(
+                  "Select a Category",
+                  style: TextStyle(fontSize: 19),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(),
+          const Expanded(
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: CategoryPage(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class CategoryPage extends StatefulWidget {
+  const CategoryPage({super.key});
   @override
   _CategoryPageState createState() => _CategoryPageState();
 }
@@ -437,9 +109,9 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select a Category'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Select a Category'),
+      // ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Container(
@@ -470,7 +142,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       //   leading: Image.network(
                       //       ApiEndPoints.baseUrl + '/' + category.imagePath),
                       // ),
-                      elevation: 10,
+                      elevation: 3,
                       shadowColor: Colors.black,
                       color: Colors.white,
                       margin: const EdgeInsets.all(10),
@@ -555,18 +227,19 @@ class _ItemNamePageState extends State<ItemNamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select an Item'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Select an Item'),
+      //   automaticallyImplyLeading: false,
+      // ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : GridView.builder(
               // scrollDirection: Axis.horizontal,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisExtent: 120,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
+                mainAxisExtent: 180,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
               ),
               itemCount: _itemNames.length,
               itemBuilder: (context, index) {
@@ -593,7 +266,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
                     //   leading: Image.network(
                     //       ApiEndPoints.baseUrl + '/' + category.imagePath),
                     // ),
-                    elevation: 10,
+                    elevation: 3,
                     shadowColor: Colors.black,
                     color: Colors.white,
                     margin: const EdgeInsets.all(10),
@@ -602,10 +275,14 @@ class _ItemNamePageState extends State<ItemNamePage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // CircleAvatar(
-                          //     radius: 20,
-                          //     backgroundImage: NetworkImage(
-                          //         '${ApiEndPoints.baseUrl}/${itemName.imagePath}')),
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(
+                                '${ApiEndPoints.baseUrl}/${itemName.imagePath}'),
+                          ),
+                          // const SizedBox(
+                          //   // height: 9,
+                          // ),
                           Text(itemName.name),
                         ],
                       ),
@@ -672,17 +349,18 @@ class _subcategoryPageState extends State<subcategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select an subcategory'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Select an subcategory'),
+      //   automaticallyImplyLeading: false,
+      // ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisExtent: 120,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
+                mainAxisExtent: 180,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
               ),
               itemCount: _subcategory.length,
               itemBuilder: (context, index) {
@@ -719,10 +397,10 @@ class _subcategoryPageState extends State<subcategoryPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // CircleAvatar(
-                          //     radius: 20,
-                          //     backgroundImage: NetworkImage(
-                          //         '${ApiEndPoints.baseUrl}/${itemName.imagePath}')),
+                          CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/${subcategory.imagePath}')),
                           Text(subcategory.name),
                         ],
                       ),
@@ -789,17 +467,18 @@ class _brandPageState extends State<brandPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Select an brand'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Select an brand'),
+      //   automaticallyImplyLeading: false,
+      // ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisExtent: 120,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
+                mainAxisExtent: 180,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
               ),
               itemCount: _brand.length,
               itemBuilder: (context, index) {
@@ -834,10 +513,10 @@ class _brandPageState extends State<brandPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // CircleAvatar(
-                          //     radius: 20,
-                          //     backgroundImage: NetworkImage(
-                          //         '${ApiEndPoints.baseUrl}/${itemName.imagePath}')),
+                          CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/${brand.imagePath}')),
                           Text(brand.name),
                         ],
                       ),
@@ -939,6 +618,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> postStocks() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
     final selectedCategoryId = prefs.getInt('selectedCategoryId');
     final selecteditem_nameId = prefs.getInt('selecteditemnameId');
     final selectedsub_categoryId = prefs.getInt('selectedsubcategoryId');
@@ -949,23 +629,24 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final selectedCategoryname = prefs.getString('selectedCategoryname');
     final selecteditem_namename = prefs.getString('selecteditemnamename');
-    final selectedsub_categoryname =
-        prefs.getString('selectedsubcategoryname') ?? 0;
+    final selectedsub_categoryname = prefs.getString('selectedsubcategoryname');
     final selectedbrandname = prefs.getString('selectedbrandname');
     final selectedmodelname = prefs.getString('selectedmodelname');
     final selectedcolorname = prefs.getString('selectedcolorname');
     final selectedsizename = prefs.getString('selectedsizename');
 
     final name =
-        "$selectedCategoryname-$selecteditem_namename -$selectedsub_categoryname-$selectedbrandname-$selectedmodelname-$selectedcolorname-$selectedsizename";
+        "$selectedCategoryname-$selecteditem_namename-$selectedsub_categoryname-$selectedbrandname-$selectedmodelname-$selectedcolorname-$selectedsizename";
 
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json'
+    };
     try {
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stocksadd);
 
       var body = json.encode({
-        "location": 1,
         "bill_number": int.parse(billnumbercontroller.text),
         "category": selectedCategoryId,
         "item_name": selecteditem_nameId,
@@ -984,17 +665,44 @@ class _MyHomePageState extends State<MyHomePage> {
       var response = await http.post(url, body: body, headers: headers);
 
       if (response.statusCode == 200) {
-        print(response.body);
+        // print(int.parse(billnumbercontroller.text));
+        // print(selectedCategoryId);
+        // print(selecteditem_nameId);
+        // print(selectedsub_categoryId);
+        // print(selectedbrandId);
+        // print(selectedmodelId);
+        // print(selectedcolorId);
+        // print(sizeId);
+        // print(quantityList);
+        // print(name);
+        // print(int.parse(purchasingpricecontroller.text));
+        // print(int.parse(sellingpricecontroller.text));
+        // print(int.parse(mrpcontroller.text));
+        // print(response.body);
         quantity.clear();
         billnumbercontroller.clear();
         sellingpricecontroller.clear();
         purchasingpricecontroller.clear();
         mrpcontroller.clear();
+        // quantityList = [];
         Get.offAll(() => const Home_Page());
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
       }
     } catch (e) {
+      // print(int.parse(billnumbercontroller.text));
+      // print(selectedCategoryId);
+      // print(selecteditem_nameId);
+      // print(selectedsub_categoryId);
+      // print(selectedbrandId);
+      // print(selectedmodelId);
+      // print(selectedcolorId);
+      // print(sizeId);
+      // print(quantityList);
+      // print(name);
+      // print(int.parse(purchasingpricecontroller.text));
+      // print(int.parse(sellingpricecontroller.text));
+      // print(int.parse(mrpcontroller.text));
       // throw Exception('Failed to add stocks');
       print(e);
     }
@@ -1020,15 +728,16 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('Dropdowns'),
-      ),
+      // appBar: AppBar(
+      //   // title: const Text('Dropdowns'),
+      //   automaticallyImplyLeading: false,
+      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             DropdownButton(
-              hint: Text('Select a model'),
+              hint: const Text('Select a model'),
               value: selectedModel,
               onChanged: (newValue) async {
                 final SharedPreferences prefs =
@@ -1049,9 +758,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 20),
+            // const SizedBox(height: 10),
             DropdownButton(
-              hint: Text('Select a color'),
+              hint: const Text('Select a color'),
               value: selectedColor,
               onChanged: (newValue) async {
                 final SharedPreferences prefs =
@@ -1072,9 +781,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
             DropdownButton(
-              hint: Text('Select a size'),
+              hint: const Text('Select a size'),
               value: selectedsize,
               onChanged: (newValue) async {
                 final SharedPreferences prefs =
@@ -1093,91 +802,94 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               }).toList(),
             ),
-            const SizedBox(height: 20),
-            Container(
+            // const SizedBox(height: 20),
+            SizedBox(
               width: 200,
-              child: Column(children: [
-                if (selectedsize != null)
-                  // InputTextFieldWidget(quantity, "quantity"),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 13),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(15),
-                        ),
-                      ),
-                      height: 60,
-                      child: Material(
-                        borderRadius: BorderRadius.circular(20),
-                        elevation: 20,
-                        shadowColor: const Color.fromARGB(141, 33, 149, 243),
-                        child: TextField(
-                          onSubmitted: (value) => {
-                            setState(() {
-                              convertAndPassToList();
-                            })
-                          },
-                          textAlignVertical: TextAlignVertical.center,
-                          textAlign: TextAlign.justify,
-                          controller: quantity,
-                          decoration: const InputDecoration(
-                            isDense: true,
-                            contentPadding: EdgeInsets.only(
-                              left: 15,
-                              bottom: 39,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (selectedsize != null)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 13),
+                        child: Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(15),
                             ),
-                            alignLabelWithHint: true,
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(143, 0, 140, 255),
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(15),
+                          ),
+                          height: 60,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(20),
+                            elevation: 20,
+                            shadowColor:
+                                const Color.fromARGB(141, 33, 149, 243),
+                            child: TextFormField(
+                              onChanged: (value) => {
+                                setState(() {
+                                  convertAndPassToList();
+                                })
+                              },
+                              textAlignVertical: TextAlignVertical.center,
+                              textAlign: TextAlign.justify,
+                              controller: quantity,
+                              decoration: const InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.only(
+                                  left: 15,
+                                  bottom: 39,
+                                ),
+                                alignLabelWithHint: true,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color.fromARGB(143, 0, 140, 255),
+                                    width: 2.0,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15),
+                                  ),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color.fromARGB(143, 0, 140, 255),
+                                    width: 2.0,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15),
+                                  ),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color.fromARGB(143, 0, 140, 255),
+                                    width: 2.0,
+                                  ),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(15),
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: Colors.transparent,
+                                hintStyle: TextStyle(
+                                  color: Color.fromARGB(146, 87, 111, 168),
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 16,
+                                ),
+                                hintText: "quantity",
                               ),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(143, 0, 140, 255),
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                            ),
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color.fromARGB(143, 0, 140, 255),
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(15),
-                              ),
-                            ),
-                            filled: true,
-                            fillColor: Colors.transparent,
-                            hintStyle: TextStyle(
-                              color: Color.fromARGB(146, 87, 111, 168),
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                            hintText: "quantity",
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                if (selectedsize != null)
-                  InputTextFieldWidget(billnumbercontroller, "bill_number"),
-                if (selectedsize != null)
-                  InputTextFieldWidget(sellingpricecontroller, "sellingprice"),
-                if (selectedsize != null)
-                  InputTextFieldWidget(
-                      purchasingpricecontroller, "purchasing price"),
-                if (selectedsize != null)
-                  InputTextFieldWidget(mrpcontroller, "Mrp"),
-              ]),
+                    if (selectedsize != null)
+                      InputTextFieldWidget(billnumbercontroller, "bill_number"),
+                    if (selectedsize != null)
+                      InputTextFieldWidget(
+                          sellingpricecontroller, "sellingprice"),
+                    if (selectedsize != null)
+                      InputTextFieldWidget(
+                          purchasingpricecontroller, "purchasing price"),
+                    if (selectedsize != null)
+                      InputTextFieldWidget(mrpcontroller, "Mrp"),
+                  ]),
             ),
             GestureDetector(
               onTap: () => postStocks(),
@@ -1194,9 +906,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.add,
                       color: Colors.white,
                     ),
-                    SizedBox(
-                      width: 5,
-                    ),
+                    // SizedBox(
+                    //   width: 5,
+                    // ),
                     Text(
                       "Add",
                       style: TextStyle(

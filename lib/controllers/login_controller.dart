@@ -32,7 +32,7 @@ class LoginController extends GetxController {
 
         emailController.clear();
         passwordController.clear();
-        Get.off(const Home_Page());
+        Get.off(() => const Home_Page());
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
       }
