@@ -4,6 +4,7 @@ import 'package:newbestshop/screens/widgets/input_fields.dart';
 import 'package:newbestshop/screens/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -15,7 +16,6 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   LoginController loginController = Get.put(LoginController());
 
-  var isLogin = false.obs;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,15 +47,17 @@ class _AuthScreenState extends State<AuthScreen> {
           height: 20,
         ),
         SubmitButton(
-          onPressed: () => loginController.loginWithEmail(),
+          onPressed: () async {
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            String username = loginController.emailController.text;
+            prefs.setString('username', username);
+            loginController.loginWithEmail();
+          },
           title: 'Login',
         ),
         TextButton(
           onPressed: () {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const Register()),
-            // );
             Get.off(() => const Register());
           },
           child: const Text(

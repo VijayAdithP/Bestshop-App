@@ -12,12 +12,7 @@ class LoginController extends GetxController {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Future<void> loginWithEmail() async {
-    // SharedPreferences prefs = await _prefs;
-
-    // String? token = prefs.getString('token');
-
     var headers = {'Content-Type': 'application/json'};
-    // var headers = {'Authorization': 'Bearer $token'};
     try {
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.loginEmail);

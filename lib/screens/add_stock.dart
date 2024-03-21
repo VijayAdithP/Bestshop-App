@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:newbestshop/screens/widgets/buttons.dart';
 import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
@@ -441,38 +442,60 @@ class _CategoryPageState extends State<CategoryPage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _categories.length,
-              itemBuilder: (context, index) {
-                final category = _categories[index];
-                return GestureDetector(
-                  onTap: () async {
-                    final SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setInt('selectedCategoryId', category.id);
-                    prefs.setString('selectedCategoryname', category.name);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ItemNamePage(
-                          category_Id: category.id,
+          : Container(
+              height: MediaQuery.of(context).size.height / 4,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: _categories.length,
+                itemBuilder: (context, index) {
+                  final category = _categories[index];
+                  return GestureDetector(
+                    onTap: () async {
+                      final SharedPreferences prefs =
+                          await SharedPreferences.getInstance();
+                      prefs.setInt('selectedCategoryId', category.id);
+                      prefs.setString('selectedCategoryname', category.name);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ItemNamePage(
+                            category_Id: category.id,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      // child: ListTile(
+                      //   title: Text(category.name),
+                      //   leading: Image.network(
+                      //       ApiEndPoints.baseUrl + '/' + category.imagePath),
+                      // ),
+                      elevation: 10,
+                      shadowColor: Colors.black,
+                      color: Colors.white,
+                      margin: const EdgeInsets.all(10),
+                      child: Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          children: [
+                            CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  ApiEndPoints.baseUrl +
+                                      '/' +
+                                      category.imagePath),
+                            ),
+                            SizedBox(
+                              height: 9,
+                            ),
+                            Text(category.name),
+                          ],
                         ),
                       ),
-                    );
-                  },
-                  child: Card(
-                    child: ListTile(
-                      title: Text(category.name),
-                      leading: Image.network(
-                          ApiEndPoints.baseUrl + '/' + category.imagePath),
                     ),
-                    // CircleAvatar(
-                    //   radius: 45,
-                    //   backgroundImage: NetworkImage(
-                    //       ApiEndPoints.baseUrl + '/' + category.imagePath),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
     );
   }
@@ -537,7 +560,14 @@ class _ItemNamePageState extends State<ItemNamePage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          : GridView.builder(
+              // scrollDirection: Axis.horizontal,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: 120,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+              ),
               itemCount: _itemNames.length,
               itemBuilder: (context, index) {
                 final itemName = _itemNames[index];
@@ -558,12 +588,27 @@ class _ItemNamePageState extends State<ItemNamePage> {
                     );
                   },
                   child: Card(
-                    child: ListTile(
-                      title: Text(itemName.name),
-                      leading: itemName.imagePath.isNotEmpty
-                          ? Image.network(
-                              '${ApiEndPoints.baseUrl}/${itemName.imagePath}')
-                          : SizedBox.shrink(),
+                    // child: ListTile(
+                    //   title: Text(category.name),
+                    //   leading: Image.network(
+                    //       ApiEndPoints.baseUrl + '/' + category.imagePath),
+                    // ),
+                    elevation: 10,
+                    shadowColor: Colors.black,
+                    color: Colors.white,
+                    margin: const EdgeInsets.all(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // CircleAvatar(
+                          //     radius: 20,
+                          //     backgroundImage: NetworkImage(
+                          //         '${ApiEndPoints.baseUrl}/${itemName.imagePath}')),
+                          Text(itemName.name),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -632,7 +677,13 @@ class _subcategoryPageState extends State<subcategoryPage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          : GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: 120,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+              ),
               itemCount: _subcategory.length,
               itemBuilder: (context, index) {
                 final subcategory = _subcategory[index];
@@ -654,12 +705,27 @@ class _subcategoryPageState extends State<subcategoryPage> {
                     );
                   },
                   child: Card(
-                    child: ListTile(
-                      title: Text(subcategory.name),
-                      leading: subcategory.imagePath.isNotEmpty
-                          ? Image.network(
-                              '${ApiEndPoints.baseUrl}/${subcategory.imagePath}')
-                          : SizedBox.shrink(),
+                    // child: ListTile(
+                    //   title: Text(category.name),
+                    //   leading: Image.network(
+                    //       ApiEndPoints.baseUrl + '/' + category.imagePath),
+                    // ),
+                    elevation: 10,
+                    shadowColor: Colors.black,
+                    color: Colors.white,
+                    margin: const EdgeInsets.all(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // CircleAvatar(
+                          //     radius: 20,
+                          //     backgroundImage: NetworkImage(
+                          //         '${ApiEndPoints.baseUrl}/${itemName.imagePath}')),
+                          Text(subcategory.name),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -728,7 +794,13 @@ class _brandPageState extends State<brandPage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
+          : GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: 120,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+              ),
               itemCount: _brand.length,
               itemBuilder: (context, index) {
                 final brand = _brand[index];
@@ -748,12 +820,27 @@ class _brandPageState extends State<brandPage> {
                     );
                   },
                   child: Card(
-                    child: ListTile(
-                      title: Text(brand.name),
-                      leading: brand.imagePath.isNotEmpty
-                          ? Image.network(
-                              '${ApiEndPoints.baseUrl}/${brand.imagePath}')
-                          : SizedBox.shrink(),
+                    // child: ListTile(
+                    //   title: Text(category.name),
+                    //   leading: Image.network(
+                    //       ApiEndPoints.baseUrl + '/' + category.imagePath),
+                    // ),
+                    elevation: 10,
+                    shadowColor: Colors.black,
+                    color: Colors.white,
+                    margin: const EdgeInsets.all(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // CircleAvatar(
+                          //     radius: 20,
+                          //     backgroundImage: NetworkImage(
+                          //         '${ApiEndPoints.baseUrl}/${itemName.imagePath}')),
+                          Text(brand.name),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -878,7 +965,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stocksadd);
 
       var body = json.encode({
-        // "location": 1,
+        "location": 1,
         "bill_number": int.parse(billnumbercontroller.text),
         "category": selectedCategoryId,
         "item_name": selecteditem_nameId,
@@ -897,23 +984,19 @@ class _MyHomePageState extends State<MyHomePage> {
       var response = await http.post(url, body: body, headers: headers);
 
       if (response.statusCode == 200) {
+        print(response.body);
         quantity.clear();
         billnumbercontroller.clear();
         sellingpricecontroller.clear();
         purchasingpricecontroller.clear();
         mrpcontroller.clear();
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => CategoryPage(),
-        //   ),
-        // );
         Get.offAll(() => const Home_Page());
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
       }
     } catch (e) {
-      throw Exception('Failed to add stocks');
+      // throw Exception('Failed to add stocks');
+      print(e);
     }
   }
 
@@ -1011,89 +1094,95 @@ class _MyHomePageState extends State<MyHomePage> {
               }).toList(),
             ),
             const SizedBox(height: 20),
-            if (selectedsize != null)
-              // InputTextFieldWidget(quantity, "quantity"),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 13),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                  ),
-                  height: 60,
-                  child: Material(
-                    borderRadius: BorderRadius.circular(20),
-                    elevation: 20,
-                    shadowColor: const Color.fromARGB(141, 33, 149, 243),
-                    child: TextField(
-                      onSubmitted: (value) => {
-                        setState(() {
-                          convertAndPassToList();
-                        })
-                      },
-                      textAlignVertical: TextAlignVertical.center,
-                      textAlign: TextAlign.justify,
-                      controller: quantity,
-                      decoration: const InputDecoration(
-                        isDense: true,
-                        contentPadding: EdgeInsets.only(
-                          left: 15,
-                          bottom: 39,
+            Container(
+              width: 200,
+              child: Column(children: [
+                if (selectedsize != null)
+                  // InputTextFieldWidget(quantity, "quantity"),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 13),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
                         ),
-                        alignLabelWithHint: true,
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(143, 0, 140, 255),
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
+                      ),
+                      height: 60,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20),
+                        elevation: 20,
+                        shadowColor: const Color.fromARGB(141, 33, 149, 243),
+                        child: TextField(
+                          onSubmitted: (value) => {
+                            setState(() {
+                              convertAndPassToList();
+                            })
+                          },
+                          textAlignVertical: TextAlignVertical.center,
+                          textAlign: TextAlign.justify,
+                          controller: quantity,
+                          decoration: const InputDecoration(
+                            isDense: true,
+                            contentPadding: EdgeInsets.only(
+                              left: 15,
+                              bottom: 39,
+                            ),
+                            alignLabelWithHint: true,
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(143, 0, 140, 255),
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(143, 0, 140, 255),
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(143, 0, 140, 255),
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
+                            filled: true,
+                            fillColor: Colors.transparent,
+                            hintStyle: TextStyle(
+                              color: Color.fromARGB(146, 87, 111, 168),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                            hintText: "quantity",
                           ),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(143, 0, 140, 255),
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
-                          ),
-                        ),
-                        errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color.fromARGB(143, 0, 140, 255),
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
-                          ),
-                        ),
-                        filled: true,
-                        fillColor: Colors.transparent,
-                        hintStyle: TextStyle(
-                          color: Color.fromARGB(146, 87, 111, 168),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
-                        ),
-                        hintText: "quantity",
                       ),
                     ),
                   ),
-                ),
-              ),
-            if (selectedsize != null)
-              InputTextFieldWidget(billnumbercontroller, "bill_number"),
-            if (selectedsize != null)
-              InputTextFieldWidget(sellingpricecontroller, "sellingprice"),
-            if (selectedsize != null)
-              InputTextFieldWidget(
-                  purchasingpricecontroller, "purchasing price"),
-            if (selectedsize != null)
-              InputTextFieldWidget(mrpcontroller, "Mrp"),
+                if (selectedsize != null)
+                  InputTextFieldWidget(billnumbercontroller, "bill_number"),
+                if (selectedsize != null)
+                  InputTextFieldWidget(sellingpricecontroller, "sellingprice"),
+                if (selectedsize != null)
+                  InputTextFieldWidget(
+                      purchasingpricecontroller, "purchasing price"),
+                if (selectedsize != null)
+                  InputTextFieldWidget(mrpcontroller, "Mrp"),
+              ]),
+            ),
             GestureDetector(
               onTap: () => postStocks(),
               child: Container(
+                width: 200,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                 decoration: BoxDecoration(

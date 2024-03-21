@@ -3,7 +3,6 @@ import 'package:newbestshop/models/data_table.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
-import 'package:flutter/cupertino.dart';
 
 class Expandtile extends StatefulWidget {
   const Expandtile({super.key});
@@ -40,17 +39,29 @@ class _ExpandtileState extends State<Expandtile> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: double.infinity,
+            width: 200,
             height: 50,
             decoration: BoxDecoration(
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: ElevatedButton(
+            child: ElevatedButton.icon(
+              label: const Text(
+                "Pick a date",
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              icon: const Icon(
+                Icons.edit_calendar,
+                color: Colors.white,
+              ),
               style: ButtonStyle(
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
@@ -76,14 +87,14 @@ class _ExpandtileState extends State<Expandtile> {
                   });
                 }
               },
-              child: const Text(
-                "Pick a date",
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+              // child: const Text(
+              //   "Pick a date",
+              //   style: TextStyle(
+              //     fontSize: 20,
+              //     color: Colors.white,
+              //     fontWeight: FontWeight.w600,
+              //   ),
+              // ),
             ),
           ),
           if (_selectedDate != null && _futureStockItems != null)
@@ -92,7 +103,7 @@ class _ExpandtileState extends State<Expandtile> {
                 future: _futureStockItems,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else {
@@ -101,7 +112,7 @@ class _ExpandtileState extends State<Expandtile> {
                     return ListView(
                       children: categorizedItems.map((item) {
                         return ExpansionTile(
-                          title: Text(item['name'] ?? ''),
+                          title: Text(item['time'] ?? ''),
                           children: [
                             SingleChildScrollView(
                               child: SingleChildScrollView(
@@ -164,18 +175,6 @@ class StockItem {
       quantity: json['quantity'],
       mrp: json['mrp'],
       total_price: json['total_price'],
-
-      // DataCell(Text(data['id']?.toString() ?? '')),
-      // DataCell(Text(data['shop']?.toString() ?? '')),
-      // DataCell(Text(data['date']?.toString() ?? '')),
-      // DataCell(Text(data['time']?.toString() ?? '')),
-      // DataCell(Text(data['size']?.toString() ?? '')),
-      // DataCell(Text(data['model_name']?.toString() ?? '')),
-      // DataCell(Text(data['color_name']?.toString() ?? '')),
-      // DataCell(Text(data['size_name']?.toString() ?? '')),
-      // DataCell(Text(data['quantity']?.toString() ?? '')),
-      // DataCell(Text(data['mrp']?.toString() ?? '')),
-      // DataCell(Text(data['total_price']?.toString() ?? '')),
     );
   }
 

@@ -9,6 +9,7 @@ import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'add_stock.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
@@ -90,52 +91,44 @@ class Drawer_ extends StatefulWidget {
 
 class _Drawer_State extends State<Drawer_> {
   final LogoutController _logoutController = Get.put(LogoutController());
+  String username = "";
+  @override
+  void initState() {
+    super.initState();
+    getEmailFromPrefs();
+  }
+
+  Future<void> getEmailFromPrefs() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username') ?? '';
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Color(0xFF4860b5),
             ),
-            child: Text(''),
-          ),
-          ListTile(
-            title: const Text('DashBoard'),
-            textColor: const Color.fromARGB(255, 0, 0, 0),
-            onTap: () {
-              Get.off(() => Home_Page());
-            },
-          ),
-          ListTile(
-            title: const Text('Stocks'),
-            textColor: const Color.fromARGB(255, 0, 0, 0),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const Expandtile(),
+            child: Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 50),
+                child: Text(
+                  username,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.white,
+                  ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
-          ListTile(
-            title: const Text('Add Stocks'),
-            textColor: const Color.fromARGB(255, 0, 0, 0),
-            onTap: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => CategoryPage(),
-                ),
-              );
-            },
-          ),
-          const SizedBox(
-            height: 270,
-          ),
-          const Divider(),
           ListTile(
             title: const Text('Logout'),
             textColor: const Color.fromARGB(255, 0, 0, 0),
@@ -143,6 +136,7 @@ class _Drawer_State extends State<Drawer_> {
               _logoutController.logout();
             },
           ),
+          const Divider(),
         ],
       ),
     );
@@ -567,7 +561,6 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
         )),
         rightTitles: const AxisTitles(
             sideTitles: SideTitles(
-          // interval: calculateInterval(_maxY),
           showTitles: false,
         )),
         bottomTitles: AxisTitles(
