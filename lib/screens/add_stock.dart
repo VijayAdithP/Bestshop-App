@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +8,7 @@ import 'package:newbestshop/screens/widgets/input_fields.dart';
 import 'package:newbestshop/models/api_data.dart';
 import 'package:get/get.dart';
 import 'main_page.dart';
+import 'package:easy_stepper/easy_stepper.dart';
 
 class stockadder extends StatefulWidget {
   const stockadder({super.key});
@@ -19,6 +18,8 @@ class stockadder extends StatefulWidget {
 }
 
 class _stockadderState extends State<stockadder> {
+  int activeStep = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,23 +28,136 @@ class _stockadderState extends State<stockadder> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              width: double.infinity,
-              height: 130,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: const [
-                  BoxShadow(
-                      color: Colors.grey, blurRadius: 0.50, spreadRadius: 0.1)
-                ],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: const Center(
-                child: Text(
-                  "Select a Category",
-                  style: TextStyle(fontSize: 19),
+                width: double.infinity,
+                height: 130,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Colors.grey, blurRadius: 0.50, spreadRadius: 0.1)
+                  ],
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-            ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    EasyStepper(
+                      activeStep: activeStep,
+                      lineStyle: const LineStyle(
+                        lineLength: 50,
+                        lineType: LineType.normal,
+                        defaultLineColor: Colors.white,
+                        finishedLineColor: Colors.orange,
+                      ),
+                      activeStepTextColor: Colors.black87,
+                      finishedStepTextColor: Colors.black87,
+                      internalPadding: 0,
+                      showLoadingAnimation: false,
+                      stepRadius: 8,
+                      showStepBorder: false,
+                      steps: [
+                        EasyStep(
+                          customStep: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 7,
+                              backgroundColor: activeStep >= 0
+                                  ? Colors.orange
+                                  : Colors.white,
+                              // backgroundImage: NetworkImage(
+                              //     '${ApiEndPoints.baseUrl}/$selectedCategoryImg'),
+                            ),
+                          ),
+                          title: 'Category',
+                        ),
+                        EasyStep(
+                          customStep: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 7,
+                              backgroundColor: activeStep >= 1
+                                  ? Colors.orange
+                                  : Colors.white,
+                            ),
+                          ),
+                          title: 'Itemname',
+                          topTitle: true,
+                        ),
+                        EasyStep(
+                          customStep: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 7,
+                              backgroundColor: activeStep >= 2
+                                  ? Colors.orange
+                                  : Colors.white,
+                            ),
+                          ),
+                          title: 'Sub Catrgory',
+                        ),
+                        EasyStep(
+                          customStep: CircleAvatar(
+                            radius: 8,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 7,
+                              backgroundColor: activeStep >= 3
+                                  ? Colors.orange
+                                  : Colors.white,
+                            ),
+                          ),
+                          title: 'Brand',
+                          topTitle: true,
+                        ),
+                        EasyStep(
+                          customStep: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Opacity(
+                              opacity: activeStep >= 0 ? 1 : 0.3,
+                              child: Image.asset('C:\college\flutter projects\SSG projects\newbestshop\lib\assets\images\1709749526708-Footwear.jpg'),
+                            ),
+                          ),
+                          customTitle: const Text(
+                            'Dash 1',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                      onStepReached: (index) =>
+                          setState(() => activeStep = index),
+                    ),
+                  ],
+                )
+
+                // const Center(
+                //   child: Text(
+                //     "Select a Category",
+                //     style: TextStyle(fontSize: 19),
+                //   ),
+                // ),
+                // child: pinnedCategories.isEmpty
+                //     ? const Center(
+                //         child: Text(
+                //         "Select your Category",
+                //         style: TextStyle(fontSize: 19),
+                //       ))
+                //     : ListView.builder(
+                //         scrollDirection: Axis.horizontal,
+                //         itemCount: pinnedCategories.length,
+                //         itemBuilder: (builder, index) {
+                //           return Padding(
+                //             padding: const EdgeInsets.all(10),
+                //             child: CircleAvatar(
+                //               radius: 45,
+                //               backgroundImage: NetworkImage(
+                //                   "${ApiEndPoints.baseUrl}/${pinnedCategories[index].imgPath}"),
+                //             ),
+                //           );
+                //         }),
+                ),
           ),
           const SizedBox(),
           const Expanded(
@@ -127,6 +241,8 @@ class _CategoryPageState extends State<CategoryPage> {
                           await SharedPreferences.getInstance();
                       prefs.setInt('selectedCategoryId', category.id);
                       prefs.setString('selectedCategoryname', category.name);
+                      prefs.setString(
+                          'selectedCategoryImg', category.imagePath);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -153,14 +269,15 @@ class _CategoryPageState extends State<CategoryPage> {
                             CircleAvatar(
                               radius: 50,
                               backgroundImage: NetworkImage(
-                                  ApiEndPoints.baseUrl +
-                                      '/' +
-                                      category.imagePath),
+                                  '${ApiEndPoints.baseUrl}/${category.imagePath}'),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 9,
                             ),
-                            Text(category.name),
+                            Text(
+                              category.name,
+                              style: const TextStyle(fontSize: 13),
+                            ),
                           ],
                         ),
                       ),
@@ -283,7 +400,10 @@ class _ItemNamePageState extends State<ItemNamePage> {
                           // const SizedBox(
                           //   // height: 9,
                           // ),
-                          Text(itemName.name),
+                          Text(
+                            itemName.name,
+                            style: const TextStyle(fontSize: 13),
+                          ),
                         ],
                       ),
                     ),
@@ -388,7 +508,7 @@ class _subcategoryPageState extends State<subcategoryPage> {
                     //   leading: Image.network(
                     //       ApiEndPoints.baseUrl + '/' + category.imagePath),
                     // ),
-                    elevation: 10,
+                    elevation: 3,
                     shadowColor: Colors.black,
                     color: Colors.white,
                     margin: const EdgeInsets.all(10),
@@ -401,7 +521,10 @@ class _subcategoryPageState extends State<subcategoryPage> {
                               radius: 50,
                               backgroundImage: NetworkImage(
                                   '${ApiEndPoints.baseUrl}/${subcategory.imagePath}')),
-                          Text(subcategory.name),
+                          Text(
+                            subcategory.name,
+                            style: const TextStyle(fontSize: 13),
+                          ),
                         ],
                       ),
                     ),
@@ -504,7 +627,7 @@ class _brandPageState extends State<brandPage> {
                     //   leading: Image.network(
                     //       ApiEndPoints.baseUrl + '/' + category.imagePath),
                     // ),
-                    elevation: 10,
+                    elevation: 3,
                     shadowColor: Colors.black,
                     color: Colors.white,
                     margin: const EdgeInsets.all(10),
@@ -517,7 +640,10 @@ class _brandPageState extends State<brandPage> {
                               radius: 50,
                               backgroundImage: NetworkImage(
                                   '${ApiEndPoints.baseUrl}/${brand.imagePath}')),
-                          Text(brand.name),
+                          Text(
+                            brand.name,
+                            style: const TextStyle(fontSize: 13),
+                          ),
                         ],
                       ),
                     ),
@@ -665,20 +791,6 @@ class _MyHomePageState extends State<MyHomePage> {
       var response = await http.post(url, body: body, headers: headers);
 
       if (response.statusCode == 200) {
-        // print(int.parse(billnumbercontroller.text));
-        // print(selectedCategoryId);
-        // print(selecteditem_nameId);
-        // print(selectedsub_categoryId);
-        // print(selectedbrandId);
-        // print(selectedmodelId);
-        // print(selectedcolorId);
-        // print(sizeId);
-        // print(quantityList);
-        // print(name);
-        // print(int.parse(purchasingpricecontroller.text));
-        // print(int.parse(sellingpricecontroller.text));
-        // print(int.parse(mrpcontroller.text));
-        // print(response.body);
         quantity.clear();
         billnumbercontroller.clear();
         sellingpricecontroller.clear();
@@ -690,20 +802,6 @@ class _MyHomePageState extends State<MyHomePage> {
         throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
       }
     } catch (e) {
-      // print(int.parse(billnumbercontroller.text));
-      // print(selectedCategoryId);
-      // print(selecteditem_nameId);
-      // print(selectedsub_categoryId);
-      // print(selectedbrandId);
-      // print(selectedmodelId);
-      // print(selectedcolorId);
-      // print(sizeId);
-      // print(quantityList);
-      // print(name);
-      // print(int.parse(purchasingpricecontroller.text));
-      // print(int.parse(sellingpricecontroller.text));
-      // print(int.parse(mrpcontroller.text));
-      // throw Exception('Failed to add stocks');
       print(e);
     }
   }
@@ -713,11 +811,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void convertAndPassToList() {
     setState(() {
       String input = quantity.text;
-      // Use regular expression to match digits
       RegExp digitRegExp = RegExp(r'\d+');
-      // Find all matches in the input string
       Iterable<Match> matches = digitRegExp.allMatches(input);
-      // Convert matches to list of integers
       quantityList =
           matches.map((match) => int.parse(match.group(0)!)).toList();
       print('Quantity List: $quantityList');
@@ -732,195 +827,334 @@ class _MyHomePageState extends State<MyHomePage> {
       //   // title: const Text('Dropdowns'),
       //   automaticallyImplyLeading: false,
       // ),
+      floatingActionButton: GestureDetector(
+        onTap: () => postStocks(),
+        child: Container(
+          width: 100,
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          decoration: BoxDecoration(
+              color: primaryColor, borderRadius: BorderRadius.circular(8)),
+          child: const Row(
+            children: [
+              Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              Text(
+                "Add",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            DropdownButton(
-              hint: const Text('Select a model'),
-              value: selectedModel,
-              onChanged: (newValue) async {
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                prefs.setInt('selectedmodelId', newValue['id']);
-                prefs.setString('selectedmodelname', newValue['name']);
-                setState(() {
-                  selectedModel = newValue;
-                  selectedModelId = newValue['id'];
-                  fetchColorData(selectedModelId!);
-                  selectedColor = null;
-                });
-              },
-              items: _models.map<DropdownMenuItem<dynamic>>((item) {
-                return DropdownMenuItem<dynamic>(
-                  value: item,
-                  child: Text(item['name']),
-                );
-              }).toList(),
-            ),
-            // const SizedBox(height: 10),
-            DropdownButton(
-              hint: const Text('Select a color'),
-              value: selectedColor,
-              onChanged: (newValue) async {
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                prefs.setInt('selectedcolorId', newValue['id']);
-                prefs.setString('selectedcolorname', newValue['name']);
-                setState(() {
-                  selectedColor = newValue;
-                  selectedsizeId = newValue['id'];
-                  fetchColorSize(selectedsizeId!);
-                  selectedsize = null;
-                });
-              },
-              items: _colors.map<DropdownMenuItem<dynamic>>((item) {
-                return DropdownMenuItem<dynamic>(
-                  value: item,
-                  child: Text(item['name']),
-                );
-              }).toList(),
-            ),
-            // const SizedBox(height: 20),
-            DropdownButton(
-              hint: const Text('Select a size'),
-              value: selectedsize,
-              onChanged: (newValue) async {
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                // prefs.setIntList('selectedsizeId', newValue['id']);
-                prefs.setString('selectedsizename', newValue['name']);
-                sizeId = [newValue['id']];
-                setState(() {
-                  selectedsize = newValue;
-                });
-              },
-              items: selectedsizelist.map<DropdownMenuItem<dynamic>>((item) {
-                return DropdownMenuItem<dynamic>(
-                  value: item,
-                  child: Text(item['name']),
-                );
-              }).toList(),
-            ),
-            // const SizedBox(height: 20),
-            SizedBox(
-              width: 200,
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (selectedsize != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 13),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              DropdownButton(
+                hint: const Text('Select a model'),
+                value: selectedModel,
+                onChanged: (newValue) async {
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.setInt('selectedmodelId', newValue['id']);
+                  prefs.setString('selectedmodelname', newValue['name']);
+                  setState(() {
+                    selectedModel = newValue;
+                    selectedModelId = newValue['id'];
+                    fetchColorData(selectedModelId!);
+                    selectedColor = null;
+                  });
+                },
+                items: _models.map<DropdownMenuItem<dynamic>>((item) {
+                  return DropdownMenuItem<dynamic>(
+                    value: item,
+                    child: Text(item['name']),
+                  );
+                }).toList(),
+              ),
+              // const SizedBox(height: 10),
+              DropdownButton(
+                hint: const Text('Select a color'),
+                value: selectedColor,
+                onChanged: (newValue) async {
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  prefs.setInt('selectedcolorId', newValue['id']);
+                  prefs.setString('selectedcolorname', newValue['name']);
+                  setState(() {
+                    selectedColor = newValue;
+                    selectedsizeId = newValue['id'];
+                    fetchColorSize(selectedsizeId!);
+                    selectedsize = null;
+                  });
+                },
+                items: _colors.map<DropdownMenuItem<dynamic>>((item) {
+                  return DropdownMenuItem<dynamic>(
+                    value: item,
+                    child: Text(item['name']),
+                  );
+                }).toList(),
+              ),
+              // const SizedBox(height: 20),
+              DropdownButton(
+                hint: const Text('Select a size'),
+                value: selectedsize,
+                onChanged: (newValue) async {
+                  final SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                  // prefs.setIntList('selectedsizeId', newValue['id']);
+                  prefs.setString('selectedsizename', newValue['name']);
+                  sizeId = [newValue['id']];
+                  setState(() {
+                    selectedsize = newValue;
+                  });
+                },
+                items: selectedsizelist.map<DropdownMenuItem<dynamic>>((item) {
+                  return DropdownMenuItem<dynamic>(
+                    value: item,
+                    child: Text(item['name']),
+                  );
+                }).toList(),
+              ),
+              // const SizedBox(height: 20),
+              SizedBox(
+                width: 200,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (selectedsize != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 13),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
                             ),
-                          ),
-                          height: 60,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(20),
-                            elevation: 20,
-                            shadowColor:
-                                const Color.fromARGB(141, 33, 149, 243),
-                            child: TextFormField(
-                              onChanged: (value) => {
-                                setState(() {
-                                  convertAndPassToList();
-                                })
-                              },
-                              textAlignVertical: TextAlignVertical.center,
-                              textAlign: TextAlign.justify,
-                              controller: quantity,
-                              decoration: const InputDecoration(
-                                isDense: true,
-                                contentPadding: EdgeInsets.only(
-                                  left: 15,
-                                  bottom: 39,
+                            height: 60,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(20),
+                              elevation: 3,
+                              shadowColor:
+                                  const Color.fromARGB(141, 33, 149, 243),
+                              child: TextFormField(
+                                onChanged: (value) => {
+                                  setState(() {
+                                    convertAndPassToList();
+                                  })
+                                },
+                                textAlignVertical: TextAlignVertical.center,
+                                textAlign: TextAlign.justify,
+                                controller: quantity,
+                                decoration: const InputDecoration(
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.only(
+                                    left: 15,
+                                    bottom: 39,
+                                  ),
+                                  alignLabelWithHint: true,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.transparent,
+                                  hintStyle: TextStyle(
+                                    color: Color.fromARGB(146, 87, 111, 168),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16,
+                                  ),
+                                  hintText: "quantity",
                                 ),
-                                alignLabelWithHint: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
-                                  ),
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                hintStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                hintText: "quantity",
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    if (selectedsize != null)
-                      InputTextFieldWidget(billnumbercontroller, "bill_number"),
-                    if (selectedsize != null)
-                      InputTextFieldWidget(
-                          sellingpricecontroller, "sellingprice"),
-                    if (selectedsize != null)
-                      InputTextFieldWidget(
-                          purchasingpricecontroller, "purchasing price"),
-                    if (selectedsize != null)
-                      InputTextFieldWidget(mrpcontroller, "Mrp"),
-                  ]),
-            ),
-            GestureDetector(
-              onTap: () => postStocks(),
-              child: Container(
-                width: 200,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                decoration: BoxDecoration(
-                    color: primaryColor,
-                    borderRadius: BorderRadius.circular(8)),
-                child: const Row(
-                  children: [
-                    Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    // SizedBox(
-                    //   width: 5,
-                    // ),
-                    Text(
-                      "Add",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
+                      if (selectedsize != null)
+                        // InputTextFieldWidget(billnumbercontroller, "bill_number"),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 13),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
+                            height: 60,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(20),
+                              elevation: 3,
+                              shadowColor:
+                                  const Color.fromARGB(141, 33, 149, 243),
+                              child: TextFormField(
+                                onChanged: (value) => {
+                                  setState(() {
+                                    convertAndPassToList();
+                                  })
+                                },
+                                textAlignVertical: TextAlignVertical.center,
+                                textAlign: TextAlign.justify,
+                                controller: billnumbercontroller,
+                                decoration: const InputDecoration(
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.only(
+                                    left: 15,
+                                    bottom: 39,
+                                  ),
+                                  alignLabelWithHint: true,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.transparent,
+                                  hintStyle: TextStyle(
+                                    color: Color.fromARGB(146, 87, 111, 168),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16,
+                                  ),
+                                  hintText: "bill_number",
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (selectedsize != null)
+                        InputTextFieldWidget(
+                            sellingpricecontroller, "sellingprice"),
+                      if (selectedsize != null)
+                        // InputTextFieldWidget(
+                        // purchasingpricecontroller, "purchasing price"),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 13),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
+                            height: 60,
+                            child: Material(
+                              borderRadius: BorderRadius.circular(20),
+                              elevation: 3,
+                              shadowColor:
+                                  const Color.fromARGB(141, 33, 149, 243),
+                              child: TextFormField(
+                                onChanged: (value) => {
+                                  setState(() {
+                                    convertAndPassToList();
+                                  })
+                                },
+                                textAlignVertical: TextAlignVertical.center,
+                                textAlign: TextAlign.justify,
+                                controller: purchasingpricecontroller
+                                  ..text = '1',
+                                decoration: const InputDecoration(
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.only(
+                                    left: 15,
+                                    bottom: 39,
+                                  ),
+                                  alignLabelWithHint: true,
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.transparent,
+                                  hintStyle: TextStyle(
+                                    color: Color.fromARGB(146, 87, 111, 168),
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16,
+                                  ),
+                                  hintText: "purchasing_price",
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (selectedsize != null)
+                        InputTextFieldWidget(mrpcontroller, "Mrp"),
+                    ]),
               ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

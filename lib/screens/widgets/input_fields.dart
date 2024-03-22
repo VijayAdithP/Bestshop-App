@@ -18,7 +18,7 @@ class InputTextFieldWidget extends StatelessWidget {
         height: 60,
         child: Material(
           borderRadius: BorderRadius.circular(20),
-          elevation: 20,
+          elevation: 3,
           shadowColor: const Color.fromARGB(141, 33, 149, 243),
           child: TextFormField(
             textAlignVertical: TextAlignVertical.center,

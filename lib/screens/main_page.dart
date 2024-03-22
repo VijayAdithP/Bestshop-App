@@ -22,9 +22,9 @@ class _Home_PageState extends State<Home_Page> {
   final screens = [
     const FlBarChartExample(),
     const Expandtile(),
-    const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: stockadder(),
+    const Scaffold(
+      // debugShowCheckedModeBanner: false,
+      body: stockadder(),
     ),
   ];
   @override
