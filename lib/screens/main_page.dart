@@ -22,10 +22,7 @@ class _Home_PageState extends State<Home_Page> {
   final screens = [
     const FlBarChartExample(),
     const Expandtile(),
-    const Scaffold(
-      // debugShowCheckedModeBanner: false,
-      body: stockadder(),
-    ),
+    const stockadder(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -124,298 +121,6 @@ class _Drawer_State extends State<Drawer_> {
   }
 }
 
-// class FlBarChartExample extends StatefulWidget {
-//   const FlBarChartExample({super.key});
-
-//   @override
-//   FlBarChartExampleState createState() => FlBarChartExampleState();
-// }
-
-// class FlBarChartExampleState extends State<FlBarChartExample> {
-//   List<String>? _apiData;
-//   String? _axisName;
-//   bool _isLoading = true;
-//   double _maxY = 25;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchDataFromAPI();
-//   }
-
-//   Future<void> fetchDataFromAPI() async {
-//     try {
-//       final response = await http.get(Uri.parse(
-//           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.dashboardData));
-//       if (response.statusCode == 200) {
-//         final jsonData = json.decode(response.body)['series'][0];
-//         setState(
-//           () {
-//             _apiData = List<String>.from(jsonData['data']);
-//             _axisName = jsonData['name'];
-//             _maxY = _calculateMaxY(_apiData!);
-//             _isLoading = false;
-//           },
-//         );
-//       } else {
-//         throw Exception('Failed to load data from API');
-//       }
-//     } catch (e) {
-//       print('Error fetching data: $e');
-//     }
-//   }
-
-//   double _calculateMaxY(List<String> data) {
-//     double max = 0;
-//     for (String value in data) {
-//       double num = double.tryParse(value) ?? 0;
-//       if (num > max) {
-//         max = num;
-//       }
-//     }
-//     return max * 1.2;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (_isLoading) {
-//       return Scaffold(
-//         body: const Center(
-//           child: CircularProgressIndicator(),
-//         ),
-//         floatingActionButton: FloatingActionButton(
-//           backgroundColor: const Color(0xFF4860b5),
-//           onPressed: () async {
-//             setState(() {
-//               fetchDataFromAPI();
-//             });
-//           },
-//           child: const Icon(Icons.update, color: Colors.white, size: 28),
-//         ),
-//       );
-//     }
-
-//     if (_apiData == null || _axisName == null) {
-//       return const Scaffold(
-//         body: Center(
-//           child: Text('Failed to fetch data from API'),
-//         ),
-//       );
-//     }
-
-//     final barGroups = <BarChartGroupData>[
-//       for (int i = 0; i < _apiData!.length; i++)
-//         BarChartGroupData(
-//           x: i + 1,
-//           barRods: [
-//             BarChartRodData(
-//               toY: double.tryParse(_apiData![i]) ?? 0,
-//               color: Colors.blue,
-//               width: 50,
-//               borderRadius: BorderRadius.circular(0),
-//             ),
-//           ],
-//         ),
-//     ];
-
-//     final barChartData = BarChartData(
-//       maxY: _maxY,
-//       minY: 0,
-//       barGroups: barGroups,
-//       barTouchData: BarTouchData(
-//         enabled: true,
-//         touchTooltipData: BarTouchTooltipData(
-//           tooltipBgColor: Colors.blueGrey,
-//         ),
-//       ),
-//       borderData: FlBorderData(show: true),
-//       gridData: const FlGridData(show: false),
-//       titlesData: FlTitlesData(
-//         show: true,
-//         bottomTitles: AxisTitles(
-//           sideTitles: SideTitles(
-//             showTitles: true,
-//             getTitlesWidget: (value, titleMeta) {
-//               return Padding(
-//                 padding: const EdgeInsets.all(8.0),
-//                 child: Text(
-//                   _axisName!,
-//                   style: const TextStyle(
-//                       fontSize: 16, fontWeight: FontWeight.bold),
-//                 ),
-//               );
-//             },
-//             reservedSize: 22,
-//           ),
-//         ),
-//       ),
-//     );
-
-//     return Scaffold(
-//       body: Padding(
-//         padding: const EdgeInsets.all(8),
-//         child: BarChart(barChartData),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         backgroundColor: const Color(0xFF4860b5),
-//         onPressed: () {
-//           setState(() {
-//             fetchDataFromAPI();
-//           });
-//         },
-//         child: const Icon(Icons.update, color: Colors.white, size: 28),
-//       ),
-//     );
-//   }
-// }
-
-// class FlBarChartExample extends StatefulWidget {
-//   const FlBarChartExample({Key? key}) : super(key: key);
-
-//   @override
-//   FlBarChartExampleState createState() => FlBarChartExampleState();
-// }
-
-// class FlBarChartExampleState extends State<FlBarChartExample> {
-//   List<Map<String, dynamic>>? _apiData;
-//   List<String>? _axisNames;
-//   List<String>? _bottomTitles;
-//   bool _isLoading = true;
-//   double _maxY = 25;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     fetchDataFromAPI();
-//   }
-
-//   Future<void> fetchDataFromAPI() async {
-//     try {
-//       final response = await http.get(Uri.parse(
-//           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.dashboardData));
-//       if (response.statusCode == 200) {
-//         final jsonData = json.decode(response.body) as List<dynamic>;
-//         setState(() {
-//           _apiData = List<Map<String, dynamic>>.from(jsonData);
-//           _axisNames =
-//               _apiData!.map((data) => data['time_interval'] as String).toList();
-//           _bottomTitles = [
-//             'total_quantity',
-//             'total_price',
-//             'rate_of_product',
-//           ];
-//           _maxY = _calculateMaxY(_apiData!);
-//           _isLoading = false;
-//         });
-//       } else {
-//         throw Exception('Failed to load data from API');
-//       }
-//     } catch (e) {
-//       print('Error fetching data: $e');
-//     }
-//   }
-
-//   double _calculateMaxY(List<Map<String, dynamic>> data) {
-//     double max = 0;
-//     for (final item in data) {
-//       for (final key in _bottomTitles!) {
-//         final num = double.tryParse(item[key].toString()) ?? 0;
-//         if (num > max) {
-//           max = num;
-//         }
-//       }
-//     }
-//     return max * 1.2;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     if (_isLoading) {
-//       return Scaffold(
-//         body: Center(
-//           child: CircularProgressIndicator(),
-//         ),
-//       );
-//     }
-
-//     if (_apiData == null || _axisNames == null || _bottomTitles == null) {
-//       return Scaffold(
-//         body: Center(
-//           child: Text('Failed to fetch data from API'),
-//         ),
-//       );
-//     }
-
-//     final barGroups = <BarChartGroupData>[
-//       for (int i = 0; i < _apiData!.length; i++)
-//         BarChartGroupData(
-//           x: i,
-//           barRods: [
-//             for (final key in _bottomTitles!)
-//               BarChartRodData(
-//                 toY: double.tryParse(_apiData![i][key].toString()) ?? 0,
-//                 color: Colors.blue,
-//                 width: 50,
-//                 borderRadius: BorderRadius.circular(0),
-//               ),
-//           ],
-//         ),
-//     ];
-
-//     final barChartData = BarChartData(
-//       maxY: _maxY,
-//       minY: 0,
-//       barGroups: barGroups,
-//       barTouchData: BarTouchData(
-//         enabled: true,
-//         touchTooltipData: BarTouchTooltipData(
-//           tooltipBgColor: Colors.blueGrey,
-//         ),
-//       ),
-//       borderData: FlBorderData(show: true),
-//       gridData: const FlGridData(show: false),
-//       titlesData: FlTitlesData(
-//         show: true,
-//         bottomTitles: AxisTitles(
-//           sideTitles: SideTitles(
-//             showTitles: true,
-//             getTitlesWidget: (value, titleMeta) {
-//               if (value.toInt() >= 0 && value.toInt() < _axisNames!.length) {
-//                 return Padding(
-//                   padding: const EdgeInsets.all(0),
-//                   child: Text(
-//                     _axisNames![value.toInt()],
-//                     style: const TextStyle(
-//                         fontSize: 10, fontWeight: FontWeight.bold),
-//                   ),
-//                 );
-//               }
-//               return const Text("safety");
-//             },
-//             reservedSize: 22,
-//           ),
-//         ),
-//       ),
-//     );
-
-//     return Scaffold(
-//       body: Padding(
-//         padding: const EdgeInsets.all(8),
-//         child: BarChart(barChartData),
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         backgroundColor: const Color(0xFF4860b5),
-//         onPressed: () {
-//           setState(() {
-//             fetchDataFromAPI();
-//           });
-//         },
-//         child: const Icon(Icons.update, color: Colors.white, size: 28),
-//       ),
-//     );
-//   }
-// }
-
 class FlBarChartExample extends StatefulWidget {
   const FlBarChartExample({Key? key}) : super(key: key);
 
@@ -433,7 +138,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
   final List<Color> _barColors = [
     Colors.red,
     Colors.green,
-    Colors.blue, // Add more colors as needed
+    Colors.blue, 
   ];
 
   @override
@@ -473,7 +178,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
   double _calculateMaxY(List<Map<String, dynamic>> data) {
     double max = 0;
     for (final item in data) {
-      for (final key in _bottomTitles!) {
+      for (final key in _bottomTitles) {
         final num = double.tryParse(item[key].toString()) ?? 0;
         if (num > max) {
           max = num;
@@ -613,13 +318,13 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
 
   double? calculateInterval(double maxY) {
     if (maxY <= 10) {
-      return 1; // Change to 0.1 if you want decimal intervals
+      return 1;
     } else if (maxY <= 100) {
-      return 10; // Change to 1 if you want decimal intervals
+      return 10;
     } else if (maxY <= 1000) {
-      return 100; // Change to 10 if you want decimal intervals
+      return 100; 
     } else {
-      return 1000; // Change to 100 if you want decimal intervals
+      return 1000; 
     }
   }
 }

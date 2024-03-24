@@ -15,7 +15,6 @@ main() async {
 
     GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      
       home: token != null ? const Home_Page() : const AuthScreen(),
     ),
   );
