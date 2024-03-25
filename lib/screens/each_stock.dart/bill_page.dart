@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/widgets.dart';
 import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:newbestshop/screens/widgets/input_fields.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/main_page.dart';
-
 
 class BillingPage extends StatefulWidget {
   final int modelId;
@@ -109,7 +109,7 @@ class _BillingPageState extends State<BillingPage> {
     // final selectedsizeId = prefs.getInt('selectedsizeId') ?? 0;
 
     final selectedCategoryname = prefs.getString('selectedCategoryname');
-    final selecteditem_namename = prefs.getString('selecteditemnamename');
+    final selecteditem_namename = prefs.getString('selecteditemname');
     final selectedsub_categoryname = prefs.getString('selectedsubcategoryname');
     final selectedbrandname = prefs.getString('selectedbrandname');
     final selectedmodelname = prefs.getString('selectedmodelname');
@@ -153,7 +153,7 @@ class _BillingPageState extends State<BillingPage> {
         mrpcontroller.clear();
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.remove('selectedCategoryname');
-        prefs.remove('selecteditemnamename');
+        prefs.remove('selecteditemname');
         prefs.remove('selectedsubcategoryname');
         prefs.remove('selectedbrandname');
         prefs.remove('selectedmodelname');
@@ -217,9 +217,14 @@ class _BillingPageState extends State<BillingPage> {
       body: Center(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               DropdownButton(
+                // borderRadius: BorderRadius.circular(20),
+                // dropdownColor: Colors.black,
+                focusColor: Colors.black,
+                // elevation: 10,
+                style: const TextStyle(color: Colors.black),
                 hint: const Text('Select a model'),
                 value: selectedModel,
                 onChanged: (newValue) async {
@@ -243,6 +248,8 @@ class _BillingPageState extends State<BillingPage> {
               ),
               // const SizedBox(height: 10),
               DropdownButton(
+                style: const TextStyle(color: Colors.black),
+              
                 hint: const Text('Select a color'),
                 value: selectedColor,
                 onChanged: (newValue) async {
@@ -266,6 +273,7 @@ class _BillingPageState extends State<BillingPage> {
               ),
               // const SizedBox(height: 20),
               DropdownButton(
+                style: const TextStyle(color: Colors.black),
                 hint: const Text('Select a size'),
                 value: selectedsize,
                 onChanged: (newValue) async {
@@ -278,7 +286,8 @@ class _BillingPageState extends State<BillingPage> {
                     selectedsize = newValue;
                   });
                 },
-                items: selectedsizelist.map<DropdownMenuItem<dynamic>>((item) {
+                items:
+                    selectedsizelist.map<DropdownMenuItem<dynamic>>((item) {
                   return DropdownMenuItem<dynamic>(
                     value: item,
                     child: Text(item['name']),

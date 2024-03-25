@@ -5,7 +5,6 @@ import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:newbestshop/models/api_data.dart';
 
-
 class CategoryPage extends StatefulWidget {
   final PageController controller;
   const CategoryPage({super.key, required this.controller});
@@ -109,6 +108,11 @@ class _CategoryPageState extends State<CategoryPage> {
                     onTap: () async {
                       final SharedPreferences prefs =
                           await SharedPreferences.getInstance();
+                      prefs.remove('selecteditemname');
+                      prefs.remove('selectedsubcategoryname');
+                      prefs.remove('selectedbrandname');
+
+
                       prefs.setInt('selectedCategoryId', category.id);
                       prefs.setString('selectedCategoryname', category.name);
                       prefs.setString(

@@ -5,7 +5,6 @@ import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:newbestshop/models/api_data.dart';
 
-
 class ItemNamePage extends StatefulWidget {
   final int category_Id;
   final PageController controller;
@@ -85,6 +84,9 @@ class _ItemNamePageState extends State<ItemNamePage> {
                         curve: Curves.easeIn);
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
+                    prefs.remove('selectedsubcategoryname');
+                    prefs.remove('selectedbrandname');
+
                     prefs.setInt('selecteditemnameId', itemName.id);
                     prefs.setString('selecteditemname', itemName.name);
                     prefs.setString('selecteditemnameImg', itemName.imagePath);

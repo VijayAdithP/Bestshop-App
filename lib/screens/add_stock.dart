@@ -2,7 +2,7 @@
 // import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
 // import 'package:http/http.dart' as http;
-// import 'package:newbestshop/utils/api_endpoints.dart';
+import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:newbestshop/screens/widgets/input_fields.dart';
 // import 'package:newbestshop/models/api_data.dart';
@@ -13,6 +13,7 @@ import 'package:newbestshop/screens/each_stock.dart/brand_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/categoty_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/itemname_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/subcategory_page.dart';
+import 'package:easy_stepper/easy_stepper.dart';
 
 class stockadder extends StatefulWidget {
   const stockadder({super.key});
@@ -24,6 +25,18 @@ class stockadder extends StatefulWidget {
 class _stockadderState extends State<stockadder> {
   List<String> imgList = [];
   List<String> nameList = [];
+
+  String Categoryname = '';
+  String itemnamename = '';
+  String Subcategoryname = '';
+  String brandname = '';
+
+  String CategoryImg = '';
+  String itemnameImg = '';
+  String SubcategoryImg = '';
+  String brandnImg = '';
+
+  int activeStep = 1;
 
   Future<void> loadData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -40,6 +53,16 @@ class _stockadderState extends State<stockadder> {
       final selectedSubcategoryname =
           prefs.getString('selectedsubcategoryname') ?? '';
       final selectedbrandname = prefs.getString('selectedbrandname') ?? '';
+
+      Categoryname = selectedCategoryname;
+      itemnamename = selecteditemnamename;
+      Subcategoryname = selectedSubcategoryname;
+      brandname = selectedbrandname;
+
+      CategoryImg = selectedCategoryImg;
+      itemnameImg = selecteditem_nameImg;
+      SubcategoryImg = selectedSubcategoryImg;
+      brandnImg = selectedbrandImg;
 
       imgList = [
         selectedCategoryImg,
@@ -65,7 +88,7 @@ class _stockadderState extends State<stockadder> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               width: double.infinity,
-              height: 130,
+              height: 145,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: const [
@@ -81,10 +104,67 @@ class _stockadderState extends State<stockadder> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (nameList.isNotEmpty)
-                    Row(
-                      children: nameList.map((data) {
-                        return Text(data);
-                      }).toList(),
+                    EasyStepper(
+                      activeStep: activeStep,
+                      lineStyle: const LineStyle(
+                        lineLength: 10,
+                      ),
+                      // stepShape: StepShape.rRectangle,
+                      // stepBorderRadius: 30,
+                      borderThickness: 2,
+                      // padding: const EdgeInsets.all(8),
+                      stepRadius: 36,
+                      // finishedStepBorderColor: Colors.deepOrange,
+                      // finishedStepTextColor: Colors.deepOrange,
+                      // finishedStepBackgroundColor: Colors.deepOrange,
+                      // activeStepIconColor: Colors.deepOrange, 
+                      showLoadingAnimation: false,
+                      disableScroll: true,
+                      showStepBorder: false,
+                      steps: [
+                        EasyStep(
+                          customStep: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/$CategoryImg')),
+                          customTitle: Text(
+                            Categoryname,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        EasyStep(
+                          customStep: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/$itemnameImg')),
+                          customTitle:  Text(
+                            itemnamename,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        EasyStep(
+                          customStep: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
+                          customTitle:  Text(
+                            Subcategoryname,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        EasyStep(
+                          customStep: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/$brandnImg')),
+                          customTitle:  Text(
+                            brandname,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                      onStepReached: (index) =>
+                          setState(() => activeStep = index),
                     )
                   else
                     const Center(
@@ -161,6 +241,7 @@ class _PageViewCustomState extends State<PageViewCustom> {
     return Scaffold(
       body: PageView(
         controller: _pageController,
+        scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
         children: [
           CategoryPage(controller: _pageController),

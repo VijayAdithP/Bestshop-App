@@ -85,6 +85,8 @@ class _subcategoryPageState extends State<subcategoryPage> {
                         curve: Curves.easeIn);
                     final SharedPreferences prefs =
                         await SharedPreferences.getInstance();
+                    prefs.remove('selectedbrandname');
+
                     prefs.setInt('selectedsubcategoryId', subcategory.id);
                     prefs.setString(
                         'selectedsubcategoryname', subcategory.name);
