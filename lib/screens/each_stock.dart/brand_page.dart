@@ -19,11 +19,14 @@ class _brandPageState extends State<brandPage> {
   late String _token;
   late List<apidata> _brand;
   bool _isLoading = true;
+  late List<apidata> filteredItemNames;
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
     _fetchTokenAndbrand();
+    filteredItemNames = [];
   }
 
   Future<void> _fetchTokenAndbrand() async {
@@ -47,6 +50,7 @@ class _brandPageState extends State<brandPage> {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
           _brand = data.map((item) => apidata.fromJson(item)).toList();
+          filteredItemNames = _brand;
           _isLoading = false;
         });
       } else {
@@ -57,76 +61,131 @@ class _brandPageState extends State<brandPage> {
     }
   }
 
+  void _searchItem(String query) {
+    setState(() {
+      searchQuery = query;
+      filteredItemNames = _brand
+          .where(
+              (item) => item.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Select an brand'),
-      //   automaticallyImplyLeading: false,
-      // ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisExtent: 180,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-              ),
-              itemCount: _brand.length,
-              itemBuilder: (context, index) {
-                final brand = _brand[index];
-                return GestureDetector(
-                  onTap: () async {
-                    widget.controller.animateToPage(4,
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeIn);
-
-                    final SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.setInt('selectedbrandId', brand.id);
-                    prefs.setString('selectedbrandname', brand.name);
-                    prefs.setString('selectedbrandImg', brand.imagePath);
-
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => MyHomePage(
-                    //       modelId: brand.id,
-                    //     ),
-                    //   ),
-                    // );
-                  },
-                  child: Card(
-                    // child: ListTile(
-                    //   title: Text(category.name),
-                    //   leading: Image.network(
-                    //       ApiEndPoints.baseUrl + '/' + category.imagePath),
-                    // ),
-                    elevation: 3,
-                    shadowColor: Colors.black,
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    margin: const EdgeInsets.all(10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  '${ApiEndPoints.baseUrl}/${brand.imagePath}')),
-                          Text(
-                            brand.name,
-                            style: const TextStyle(fontSize: 13),
-                          ),
-                        ],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  height: 40,
+                  child: TextFormField(
+                    onChanged: _searchItem,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(5),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFF4860b5),
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFF4860b5),
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                      prefixIcon: Icon(Icons.search),
+                      hintText: 'Search...',
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
+          ),
+          Positioned.fill(
+            top: 55,
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: 180,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                    ),
+                    itemCount: filteredItemNames.length,
+                    itemBuilder: (context, index) {
+                      final brand = filteredItemNames[index];
+                      return GestureDetector(
+                        onTap: () async {
+                          widget.controller.animateToPage(4,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeIn);
+      
+                          final SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.setInt('selectedbrandId', brand.id);
+                          prefs.setString('selectedbrandname', brand.name);
+                          prefs.setString(
+                              'selectedbrandImg', brand.imagePath);
+      
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => MyHomePage(
+                          //       modelId: brand.id,
+                          //     ),
+                          //   ),
+                          // );
+                        },
+                        child: Card(
+                          // child: ListTile(
+                          //   title: Text(category.name),
+                          //   leading: Image.network(
+                          //       ApiEndPoints.baseUrl + '/' + category.imagePath),
+                          // ),
+                          elevation: 3,
+                          shadowColor: Colors.black,
+                          color: Colors.white,
+                          margin: const EdgeInsets.all(10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                        '${ApiEndPoints.baseUrl}/${brand.imagePath}')),
+                                Text(
+                                  brand.name,
+                                  style: const TextStyle(fontSize: 12),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          )
+        ],
+      ),
     );
   }
 }

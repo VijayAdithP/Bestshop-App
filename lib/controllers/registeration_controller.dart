@@ -26,7 +26,7 @@ class RegisterationController extends GetxController {
       if (response.statusCode == 200) {
         nameController.clear();
         passwordController.clear();
-        Get.off(Home_Page());
+        Get.off(const Home_Page());
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
       }

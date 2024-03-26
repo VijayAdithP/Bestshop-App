@@ -1,6 +1,7 @@
 // import 'dart:convert';
 // import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 // import 'package:http/http.dart' as http;
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -64,12 +65,6 @@ class _stockadderState extends State<stockadder> {
       SubcategoryImg = selectedSubcategoryImg;
       brandnImg = selectedbrandImg;
 
-      imgList = [
-        selectedCategoryImg,
-        selecteditem_nameImg,
-        selectedSubcategoryImg,
-        selectedbrandImg,
-      ];
       nameList = [
         selectedCategoryname,
         selecteditemnamename,
@@ -104,67 +99,64 @@ class _stockadderState extends State<stockadder> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (nameList.isNotEmpty)
-                    EasyStepper(
-                      activeStep: activeStep,
-                      lineStyle: const LineStyle(
-                        lineLength: 10,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: EasyStepper(
+                        activeStep: activeStep,
+                        lineStyle: const LineStyle(
+                          lineLength: 10,
+                        ),
+                        borderThickness: 2,
+                        stepRadius: 36,
+                        showLoadingAnimation: false,
+                        disableScroll: true,
+                        showStepBorder: false,
+                        steps: [
+                          EasyStep(
+                            customStep: CircleAvatar(
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/$CategoryImg'),
+                            ),
+                            customTitle: Text(
+                              Categoryname,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          EasyStep(
+                            customStep: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    '${ApiEndPoints.baseUrl}/$itemnameImg')),
+                            customTitle: Text(
+                              itemnamename,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          EasyStep(
+                            customStep: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
+                            customTitle: Text(
+                              Subcategoryname,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          EasyStep(
+                            customStep: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    '${ApiEndPoints.baseUrl}/$brandnImg')),
+                            customTitle: Text(
+                              brandname,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                        onStepReached: (index) =>
+                            setState(() => activeStep = index),
                       ),
-                      // stepShape: StepShape.rRectangle,
-                      // stepBorderRadius: 30,
-                      borderThickness: 2,
-                      // padding: const EdgeInsets.all(8),
-                      stepRadius: 36,
-                      // finishedStepBorderColor: Colors.deepOrange,
-                      // finishedStepTextColor: Colors.deepOrange,
-                      // finishedStepBackgroundColor: Colors.deepOrange,
-                      // activeStepIconColor: Colors.deepOrange, 
-                      showLoadingAnimation: false,
-                      disableScroll: true,
-                      showStepBorder: false,
-                      steps: [
-                        EasyStep(
-                          customStep: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  '${ApiEndPoints.baseUrl}/$CategoryImg')),
-                          customTitle: Text(
-                            Categoryname,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        EasyStep(
-                          customStep: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  '${ApiEndPoints.baseUrl}/$itemnameImg')),
-                          customTitle:  Text(
-                            itemnamename,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        EasyStep(
-                          customStep: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
-                          customTitle:  Text(
-                            Subcategoryname,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        EasyStep(
-                          customStep: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  '${ApiEndPoints.baseUrl}/$brandnImg')),
-                          customTitle:  Text(
-                            brandname,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                      onStepReached: (index) =>
-                          setState(() => activeStep = index),
                     )
                   else
                     const Center(
@@ -177,8 +169,7 @@ class _stockadderState extends State<stockadder> {
               ),
             ),
           ),
-          Flexible(
-            fit: FlexFit.tight,
+          Expanded(
             child: PageViewCustom(reloadData: loadData),
           ),
         ],
@@ -239,7 +230,26 @@ class _PageViewCustomState extends State<PageViewCustom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF4860b5),
+        onPressed: () {
+          _pageController.previousPage(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeIn);
+        },
+        child: const Icon(
+          Icons.arrow_back_ios_rounded,
+          color: Colors.white,
+        ),
+      ),
+
+      // IconButton(
+      //   color: Colors.blue,
+      //   onPressed: () {},
+      //   icon: Icon(Icons.arrow_back_ios_rounded),
+      // ),
       body: PageView(
+        scrollBehavior: const ScrollBehavior(),
         controller: _pageController,
         scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),

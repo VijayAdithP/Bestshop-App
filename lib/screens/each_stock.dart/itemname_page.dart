@@ -18,11 +18,14 @@ class ItemNamePage extends StatefulWidget {
 class _ItemNamePageState extends State<ItemNamePage> {
   late String _token;
   late List<apidata> _itemNames;
+  late List<apidata> _filteredItemNames;
   bool _isLoading = true;
+  String searchQuery = '';
 
   @override
   void initState() {
     super.initState();
+    _filteredItemNames = [];
     _fetchTokenAndItemNames();
   }
 
@@ -47,6 +50,8 @@ class _ItemNamePageState extends State<ItemNamePage> {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
           _itemNames = data.map((item) => apidata.fromJson(item)).toList();
+          _filteredItemNames =
+              _itemNames;
           _isLoading = false;
         });
       } else {
@@ -57,82 +62,119 @@ class _ItemNamePageState extends State<ItemNamePage> {
     }
   }
 
+  void _searchItem(String query) {
+    setState(() {
+      searchQuery = query;
+      _filteredItemNames = _itemNames
+          .where(
+              (item) => item.name.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Select an Item'),
-      //   automaticallyImplyLeading: false,
-      // ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : GridView.builder(
-              // scrollDirection: Axis.horizontal,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisExtent: 180,
-                mainAxisSpacing: 5,
-                crossAxisSpacing: 5,
-              ),
-              itemCount: _itemNames.length,
-              itemBuilder: (context, index) {
-                final itemName = _itemNames[index];
-                return GestureDetector(
-                  onTap: () async {
-                    widget.controller.animateToPage(2,
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeIn);
-                    final SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    prefs.remove('selectedsubcategoryname');
-                    prefs.remove('selectedbrandname');
-
-                    prefs.setInt('selecteditemnameId', itemName.id);
-                    prefs.setString('selecteditemname', itemName.name);
-                    prefs.setString('selecteditemnameImg', itemName.imagePath);
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => subcategoryPage(
-                    //       itemnameId: itemName.id,
-                    //     ),
-                    //   ),
-                    // );
-                  },
-                  child: Card(
-                    // child: ListTile(
-                    //   title: Text(category.name),
-                    //   leading: Image.network(
-                    //       ApiEndPoints.baseUrl + '/' + category.imagePath),
-                    // ),
-                    elevation: 3,
-                    shadowColor: Colors.black,
+      body: Stack(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
                     color: Colors.white,
-                    margin: const EdgeInsets.all(10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(
-                            radius: 50,
-                            backgroundImage: NetworkImage(
-                                '${ApiEndPoints.baseUrl}/${itemName.imagePath}'),
-                          ),
-                          // const SizedBox(
-                          //   // height: 9,
-                          // ),
-                          Text(
-                            itemName.name,
-                            style: const TextStyle(fontSize: 13),
-                          ),
-                        ],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  height: 40,
+                  child: TextFormField(
+                    onChanged: _searchItem,
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(5),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFF4860b5),
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Color(0xFF4860b5),
+                        ),
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(20),
+                        ),
+                      ),
+                      prefixIcon: Icon(Icons.search),
+                      hintText: 'Search...',
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              ),
+            ],
+          ),
+          Positioned.fill(
+            top: 55, 
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : GridView.builder(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisExtent: 180,
+                      mainAxisSpacing: 5,
+                      crossAxisSpacing: 5,
+                    ),
+                    itemCount: _filteredItemNames.length,
+                    itemBuilder: (context, index) {
+                      final itemName = _filteredItemNames[index];
+                      return GestureDetector(
+                        onTap: () async {
+                          widget.controller.animateToPage(2,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeIn);
+                          final SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          prefs.remove('selectedsubcategoryname');
+                          prefs.remove('selectedbrandname');
+
+                          prefs.setInt('selecteditemnameId', itemName.id);
+                          prefs.setString('selecteditemname', itemName.name);
+                          prefs.setString(
+                              'selecteditemnameImg', itemName.imagePath);
+                        },
+                        child: Card(
+                          elevation: 3,
+                          shadowColor: Colors.black,
+                          color: Colors.white,
+                          margin: const EdgeInsets.all(10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(
+                                      '${ApiEndPoints.baseUrl}/${itemName.imagePath}'),
+                                ),
+                                Text(
+                                  itemName.name,
+                                  style: const TextStyle(fontSize: 13),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -25,7 +25,7 @@ class LogoutController extends GetxController {
         if (response.statusCode == 200) {
           // await prefs.remove('token');
           await prefs.clear();
-          Get.offAll(AuthScreen());
+          Get.offAll(const AuthScreen());
         } else {
           throw Exception('Logout failed: ${response.body}');
         }
