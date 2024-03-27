@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:newbestshop/models/data_table.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
@@ -29,7 +27,6 @@ Future<Map<String, List<Map<String, dynamic>>>> fetchStockItemsGroupedByShop(
     );
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
-      // Grouping items by shop
       Map<String, List<Map<String, dynamic>>> groupedItems = {};
       for (var item in jsonData) {
         String shop = item['shop'];
@@ -106,6 +103,9 @@ class _ExpandtileState extends State<Expandtile> {
                 },
               ),
             ),
+            const SizedBox(
+              height: 5,
+            ),
             if (_selectedDate != null && _futureStockItems != null)
               Expanded(
                 child: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
@@ -116,8 +116,8 @@ class _ExpandtileState extends State<Expandtile> {
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else {
-                      final Map<String, List<Map<String, dynamic>>>
-                          groupedItems = snapshot.data!;
+                      final Map<String, List<Map<String, dynamic>>> groupedItems =
+                          snapshot.data!;
                       final tableHeaders = [
                         'User',
                         'ID',
@@ -134,81 +134,215 @@ class _ExpandtileState extends State<Expandtile> {
                       ];
                       return ListView(
                         children: groupedItems.keys.map((shop) {
-                          return ExpansionTile(
-                            title: Align(
-                                alignment: Alignment.center, child: Text(shop)),
-                            children: [
-                              SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Table(
-                                  border: TableBorder.all(
-                                    color: Colors.grey,
-                                    style: BorderStyle.solid,
+                          return Card(
+                            child: ExpansionTile(
+                              shape: const Border(),
+                              title: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(shop)),
+                              children: [
+                                SingleChildScrollView(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(10),
+                                      child: Table(
+                                        defaultVerticalAlignment:
+                                            TableCellVerticalAlignment.top,
+                                        border:
+                                            // const TableBorder(
+                                            //   horizontalInside:
+                                            //       BorderSide(color: Colors.grey),
+                                            //   verticalInside: BorderSide.none,
+                                            // ),
+                                            TableBorder.all(
+                                          color: Colors.grey,
+                                          // style: BorderStyle.solid,
+                                        ),
+                                        columnWidths: const {
+                                          0: FixedColumnWidth(100.0),
+                                          1: FixedColumnWidth(100.0),
+                                          2: FixedColumnWidth(100.0),
+                                          3: FixedColumnWidth(100.0),
+                                          4: FixedColumnWidth(100.0),
+                                          5: FixedColumnWidth(350.0),
+                                          6: FixedColumnWidth(100.0),
+                                          7: FixedColumnWidth(100.0),
+                                          8: FixedColumnWidth(100.0),
+                                          9: FixedColumnWidth(100.0),
+                                          10: FixedColumnWidth(100.0),
+                                          11: FixedColumnWidth(100.0),
+                                        },
+                                        children: [
+                                          TableRow(
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey[300],
+                                            ),
+                                            children: tableHeaders
+                                                .map(
+                                                  (header) => TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        header,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                                .toList(),
+                                          ),
+                                          ...groupedItems[shop]!.map(
+                                            (item) {
+                                              return TableRow(
+                                                decoration: const BoxDecoration(
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                        color: Colors.grey),
+                                                  ),
+                                                ),
+                                                children: [
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item['user']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item['id']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item['shop']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item['date']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item['time']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item['name']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item[
+                                                                  'model_name']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item[
+                                                                  'color_name']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item[
+                                                                  'size_name']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item[
+                                                                  'quantity']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item['mrp']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                  TableCell(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(item[
+                                                                  'total_price']
+                                                              ?.toString() ??
+                                                          ''),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                  
-                                  columnWidths: const {
-                                    0: FixedColumnWidth(100.0),
-                                    1: FixedColumnWidth(100.0),
-                                    2: FixedColumnWidth(100.0),
-                                    3: FixedColumnWidth(100.0),
-                                    4: FixedColumnWidth(100.0),
-                                    5: FixedColumnWidth(350.0),
-                                    6: FixedColumnWidth(100.0),
-                                    7: FixedColumnWidth(100.0),
-                                    8: FixedColumnWidth(100.0),
-                                    9: FixedColumnWidth(100.0),
-                                    10: FixedColumnWidth(100.0),
-                                    11: FixedColumnWidth(100.0),
-                                  },
-                                  children: [
-                                    TableRow(
-                                      children: tableHeaders
-                                          .map((header) => Text(
-                                                header,
-                                                style: const TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ))
-                                          .toList(),
-                                    ),
-                                    ...groupedItems[shop]!.map(
-                                      (item) {
-                                        return TableRow(
-                                          children: [
-                                            Text(
-                                                item['user']?.toString() ?? ''),
-                                            Text(item['id']?.toString() ?? ''),
-                                            Text(
-                                                item['shop']?.toString() ?? ''),
-                                            Text(
-                                                item['date']?.toString() ?? ''),
-                                            Text(
-                                                item['time']?.toString() ?? ''),
-                                            Text(
-                                                item['name']?.toString() ?? ''),
-                                            Text(item['model_name']
-                                                    ?.toString() ??
-                                                ''),
-                                            Text(item['color_name']
-                                                    ?.toString() ??
-                                                ''),
-                                            Text(
-                                                item['size_name']?.toString() ??
-                                                    ''),
-                                            Text(item['quantity']?.toString() ??
-                                                ''),
-                                            Text(item['mrp']?.toString() ?? ''),
-                                            Text(item['total_price']
-                                                    ?.toString() ??
-                                                ''),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                  ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           );
                         }).toList(),
                       );

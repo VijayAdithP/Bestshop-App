@@ -87,7 +87,7 @@ class _CategoryPageState extends State<CategoryPage> {
                   //   leading: Image.network(
                   //       ApiEndPoints.baseUrl + '/' + category.imagePath),
                   // ),
-                  elevation: 3,
+                  elevation: 2,
                   shadowColor: Colors.black,
                   color: Colors.white,
                   margin: const EdgeInsets.all(10),

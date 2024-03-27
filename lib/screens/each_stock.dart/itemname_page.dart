@@ -147,7 +147,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
                               'selecteditemnameImg', itemName.imagePath);
                         },
                         child: Card(
-                          elevation: 3,
+                          elevation: 2,
                           shadowColor: Colors.black,
                           color: Colors.white,
                           margin: const EdgeInsets.all(10),
