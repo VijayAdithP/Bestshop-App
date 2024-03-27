@@ -83,7 +83,7 @@ class _stockadderState extends State<stockadder> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               width: double.infinity,
-              height: 145,
+              height: 141,
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: const [

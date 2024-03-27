@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
@@ -138,7 +139,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
   final List<Color> _barColors = [
     Colors.red,
     Colors.green,
-    Colors.blue, 
+    Colors.blue,
   ];
 
   @override
@@ -290,6 +291,47 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
               child: BarChart(barChartData),
             ),
           ),
+          const SizedBox(
+            height: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  // radius: 6,
+                  backgroundColor: Colors.red,
+                ),
+                Text(
+                  "Product Count",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                CircleAvatar(
+                  // radius: 6,
+                  backgroundColor: Colors.green,
+                ),
+                Text(
+                  "Product Price",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                CircleAvatar(
+                  // radius: 6,
+                  backgroundColor: Colors.blue,
+                ),
+                Text(
+                  "Rate of Product",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
           SliderTheme(
             data: SliderTheme.of(context).copyWith(
               overlayShape: const RoundSliderOverlayShape(overlayRadius: 30),
@@ -322,9 +364,9 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
     } else if (maxY <= 100) {
       return 10;
     } else if (maxY <= 1000) {
-      return 100; 
+      return 100;
     } else {
-      return 1000; 
+      return 1000;
     }
   }
 }
