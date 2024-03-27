@@ -52,7 +52,6 @@ class _subcategoryPageState extends State<subcategoryPage> {
           _subcategory = data.map((item) => apidata.fromJson(item)).toList();
           filteredItemNames = _subcategory;
           _isLoading = false;
-          
         });
       } else {
         print("Request failed with status: ${response.statusCode}");
@@ -102,6 +101,7 @@ class _subcategoryPageState extends State<subcategoryPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
+                          width: 2,
                           color: Color(0xFF4860b5),
                         ),
                         borderRadius: BorderRadius.all(

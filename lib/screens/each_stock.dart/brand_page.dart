@@ -89,11 +89,15 @@ class _brandPageState extends State<brandPage> {
                   ),
                   height: 40,
                   child: TextFormField(
+                  
                     onChanged: _searchItem,
                     decoration: const InputDecoration(
+                      
                       contentPadding: EdgeInsets.all(5),
                       border: OutlineInputBorder(
+
                         borderSide: BorderSide(
+
                           color: Color(0xFF4860b5),
                         ),
                         borderRadius: BorderRadius.all(
@@ -101,7 +105,9 @@ class _brandPageState extends State<brandPage> {
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
+                        
                         borderSide: BorderSide(
+                          width: 2,
                           color: Color(0xFF4860b5),
                         ),
                         borderRadius: BorderRadius.all(

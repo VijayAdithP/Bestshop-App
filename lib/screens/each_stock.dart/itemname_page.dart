@@ -50,8 +50,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
         final List<dynamic> data = json.decode(response.body);
         setState(() {
           _itemNames = data.map((item) => apidata.fromJson(item)).toList();
-          _filteredItemNames =
-              _itemNames;
+          _filteredItemNames = _itemNames;
           _isLoading = false;
         });
       } else {
@@ -102,6 +101,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
+                          width: 2,
                           color: Color(0xFF4860b5),
                         ),
                         borderRadius: BorderRadius.all(
@@ -117,7 +117,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
             ],
           ),
           Positioned.fill(
-            top: 55, 
+            top: 55,
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : GridView.builder(

@@ -305,12 +305,12 @@ class _BillingPageState extends State<BillingPage> {
                         child: Container(
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(15),
+                              Radius.circular(10),
                             ),
                           ),
                           height: 60,
                           child: Material(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                             elevation: 3,
                             shadowColor:
                                 const Color.fromARGB(141, 33, 149, 243),
@@ -336,7 +336,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
@@ -345,7 +345,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 errorBorder: OutlineInputBorder(
@@ -354,7 +354,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 filled: true,
@@ -377,12 +377,12 @@ class _BillingPageState extends State<BillingPage> {
                         child: Container(
                           decoration: const BoxDecoration(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(15),
+                              Radius.circular(10),
                             ),
                           ),
                           height: 60,
                           child: Material(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                             elevation: 3,
                             shadowColor:
                                 const Color.fromARGB(141, 33, 149, 243),
@@ -408,7 +408,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
@@ -417,7 +417,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 errorBorder: OutlineInputBorder(
@@ -426,7 +426,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 filled: true,
@@ -458,7 +458,7 @@ class _BillingPageState extends State<BillingPage> {
                           ),
                           height: 60,
                           child: Material(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(10),
                             elevation: 3,
                             shadowColor:
                                 const Color.fromARGB(141, 33, 149, 243),
@@ -485,7 +485,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 enabledBorder: OutlineInputBorder(
@@ -494,7 +494,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 errorBorder: OutlineInputBorder(
@@ -503,7 +503,7 @@ class _BillingPageState extends State<BillingPage> {
                                     width: 2.0,
                                   ),
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(15),
+                                    Radius.circular(10),
                                   ),
                                 ),
                                 filled: true,

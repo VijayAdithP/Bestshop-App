@@ -17,7 +17,7 @@ class InputTextFieldWidget extends StatelessWidget {
         ),
         height: 60,
         child: Material(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
           elevation: 3,
           shadowColor: const Color.fromARGB(141, 33, 149, 243),
           child: TextFormField(
@@ -37,7 +37,7 @@ class InputTextFieldWidget extends StatelessWidget {
                   width: 2.0,
                 ),
                 borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+                  Radius.circular(10),
                 ),
               ),
               enabledBorder: const OutlineInputBorder(
@@ -46,7 +46,7 @@ class InputTextFieldWidget extends StatelessWidget {
                   width: 2.0,
                 ),
                 borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+                  Radius.circular(10),
                 ),
               ),
               errorBorder: const OutlineInputBorder(
@@ -55,7 +55,7 @@ class InputTextFieldWidget extends StatelessWidget {
                   width: 2.0,
                 ),
                 borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+                  Radius.circular(10),
                 ),
               ),
               filled: true,

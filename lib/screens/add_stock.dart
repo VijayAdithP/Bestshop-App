@@ -121,6 +121,8 @@ class _stockadderState extends State<stockadder> {
                             customTitle: Text(
                               Categoryname,
                               textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w400),
                             ),
                           ),
                           EasyStep(
@@ -129,6 +131,8 @@ class _stockadderState extends State<stockadder> {
                                 backgroundImage: NetworkImage(
                                     '${ApiEndPoints.baseUrl}/$itemnameImg')),
                             customTitle: Text(
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w400),
                               itemnamename,
                               textAlign: TextAlign.center,
                             ),
@@ -139,6 +143,8 @@ class _stockadderState extends State<stockadder> {
                                 backgroundImage: NetworkImage(
                                     '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
                             customTitle: Text(
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w400),
                               Subcategoryname,
                               textAlign: TextAlign.center,
                             ),
@@ -149,6 +155,8 @@ class _stockadderState extends State<stockadder> {
                                 backgroundImage: NetworkImage(
                                     '${ApiEndPoints.baseUrl}/$brandnImg')),
                             customTitle: Text(
+                              style: const TextStyle(
+                                  fontSize: 12, fontWeight: FontWeight.w400),
                               brandname,
                               textAlign: TextAlign.center,
                             ),
