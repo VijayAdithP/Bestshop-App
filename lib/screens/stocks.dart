@@ -116,8 +116,8 @@ class _ExpandtileState extends State<Expandtile> {
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else {
-                      final Map<String, List<Map<String, dynamic>>> groupedItems =
-                          snapshot.data!;
+                      final Map<String, List<Map<String, dynamic>>>
+                          groupedItems = snapshot.data!;
                       final tableHeaders = [
                         'User',
                         'ID',
@@ -138,14 +138,15 @@ class _ExpandtileState extends State<Expandtile> {
                             child: ExpansionTile(
                               shape: const Border(),
                               title: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(shop)),
+                                alignment: Alignment.center,
+                                child: Text(shop),
+                              ),
                               children: [
                                 SingleChildScrollView(
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(10),
+                                      padding: const EdgeInsets.only(top: 1,left: 5,right: 5,bottom: 5),
                                       child: Table(
                                         defaultVerticalAlignment:
                                             TableCellVerticalAlignment.top,

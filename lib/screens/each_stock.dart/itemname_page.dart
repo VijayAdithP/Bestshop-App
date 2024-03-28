@@ -119,7 +119,9 @@ class _ItemNamePageState extends State<ItemNamePage> {
           Positioned.fill(
             top: 55,
             child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
                 : GridView.builder(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(

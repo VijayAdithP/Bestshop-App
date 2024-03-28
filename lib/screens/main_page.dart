@@ -186,7 +186,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
         }
       }
     }
-    return max * 1;
+    return max * 1.1;
   }
 
   @override
@@ -218,8 +218,8 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                       .toString()) ??
                   0,
               color: _barColors[i % _barColors.length],
-              width: 50,
-              borderRadius: BorderRadius.circular(0),
+              width: 60,
+              borderRadius: BorderRadius.circular(3),
             ),
         ],
       ),
@@ -241,10 +241,24 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       borderData: FlBorderData(
         show: false,
       ),
-      gridData: const FlGridData(
+      gridData: FlGridData(
         show: true,
         drawHorizontalLine: true,
         drawVerticalLine: false,
+        getDrawingHorizontalLine: (value) {
+          if (value == 1) {
+            return const FlLine(
+              color: Colors.grey,
+              strokeWidth: 2,
+            );
+          } 
+          else {
+            return const FlLine(
+              color: Colors.grey,
+              strokeWidth: 2,
+            );
+          }
+        },
       ),
       titlesData: FlTitlesData(
         show: true,
@@ -253,9 +267,10 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           showTitles: false,
         )),
         rightTitles: const AxisTitles(
-            sideTitles: SideTitles(
-          showTitles: false,
-        )),
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
+        ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
@@ -287,7 +302,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: 50, right: 70, left: 30, bottom: 10),
+                  top: 45, right: 70, left: 30, bottom: 10),
               child: BarChart(barChartData),
             ),
           ),
@@ -348,9 +363,9 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
               },
               divisions: _axisNames!.length - 1,
               label: _axisNames![_selectedIntervalIndex],
-              activeColor: Colors.blue,
-              inactiveColor: Colors.blue,
-              thumbColor: Colors.blue,
+              activeColor: const Color(0xFF4860b5),
+              inactiveColor: const Color(0xFF4860b5),
+              thumbColor: const Color(0xFF4860b5),
             ),
           ),
         ],

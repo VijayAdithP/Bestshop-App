@@ -71,75 +71,74 @@ class _CategoryPageState extends State<CategoryPage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisExtent: 188,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
-            ),
-            itemCount: _categories.length,
-            itemBuilder: (context, index) {
-              final category = _categories[index];
-              return GestureDetector(
-                child: Card(
-                  // child: ListTile(
-                  //   title: Text(category.name),
-                  //   leading: Image.network(
-                  //       ApiEndPoints.baseUrl + '/' + category.imagePath),
-                  // ),
-                  elevation: 2,
-                  shadowColor: Colors.black,
-                  color: Colors.white,
-                  margin: const EdgeInsets.all(10),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(
-                            category.imagePath.isEmpty
-                                ? 'https://media.istockphoto.com/id/1226328537/vector/image-place-holder-with-a-gray-camera-icon.jpg?s=612x612&w=0&k=20&c=qRydgCNlE44OUSSoz5XadsH7WCkU59-l-dwrvZzhXsI='
-                                : '${ApiEndPoints.baseUrl}/${category.imagePath}',
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: 188,
+                mainAxisSpacing: 5,
+                crossAxisSpacing: 5,
+              ),
+              itemCount: _categories.length,
+              itemBuilder: (context, index) {
+                final category = _categories[index];
+                return GestureDetector(
+                  child: Card(
+                    // child: ListTile(
+                    //   title: Text(category.name),
+                    //   leading: Image.network(
+                    //       ApiEndPoints.baseUrl + '/' + category.imagePath),
+                    // ),
+                    elevation: 2,
+                    shadowColor: Colors.black,
+                    color: Colors.white,
+                    margin: const EdgeInsets.all(10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundImage: NetworkImage(
+                              category.imagePath.isEmpty
+                                  ? "https://media.istockphoto.com/id/1226328537/vector/image-place-holder-with-a-gray-camera-icon.jpg?s=612x612&w=0&k=20&c=qRydgCNlE44OUSSoz5XadsH7WCkU59-l-dwrvZzhXsI="
+                                  : '${ApiEndPoints.baseUrl}/${category.imagePath}',
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 9,
-                        ),
-                        Text(
-                          category.name,
-                          style: const TextStyle(fontSize: 13),
-                        ),
-                      ],
+                          const SizedBox(
+                            height: 9,
+                          ),
+                          Text(
+                            category.name,
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                onTap: () async {
-                  final SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.remove('selecteditemname');
-                  prefs.remove('selectedsubcategoryname');
-                  prefs.remove('selectedbrandname');
-          
-                  prefs.setInt('selectedCategoryId', category.id);
-                  prefs.setString('selectedCategoryname', category.name);
-                  prefs.setString(
-                      'selectedCategoryImg', category.imagePath);
-                  widget.controller.animateToPage(1,
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeIn);
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => ItemNamePage(
-                  //       category_Id: category.id,
-                  //     ),
-                  //   ),
-                  // );
-                },
-              );
-            },
-          ),
+                  onTap: () async {
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('selecteditemname');
+                    prefs.remove('selectedsubcategoryname');
+                    prefs.remove('selectedbrandname');
+
+                    prefs.setInt('selectedCategoryId', category.id);
+                    prefs.setString('selectedCategoryname', category.name);
+                    prefs.setString('selectedCategoryImg', category.imagePath);
+                    widget.controller.animateToPage(1,
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeIn);
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => ItemNamePage(
+                    //       category_Id: category.id,
+                    //     ),
+                    //   ),
+                    // );
+                  },
+                );
+              },
+            ),
     );
   }
 }

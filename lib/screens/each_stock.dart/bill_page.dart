@@ -176,10 +176,9 @@ class _BillingPageState extends State<BillingPage> {
       Iterable<Match> matches = digitRegExp.allMatches(input);
       quantityList =
           matches.map((match) => int.parse(match.group(0)!)).toList();
-      print('Quantity List: $quantityList');
+      // print('Quantity List: $quantityList');
     });
   }
-  
 
   @override
   Widget build(BuildContext context) {
@@ -219,78 +218,140 @@ class _BillingPageState extends State<BillingPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              DropdownButton(
-                // borderRadius: BorderRadius.circular(20),
-                // dropdownColor: Colors.black,
-                focusColor: Colors.black,
-                // elevation: 10,
-                style: const TextStyle(color: Colors.black),
-                hint: const Text('Select a model'),
-                value: selectedModel,
-                onChanged: (newValue) async {
-                  final SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setInt('selectedmodelId', newValue['id']);
-                  prefs.setString('selectedmodelname', newValue['name']);
-                  setState(() {
-                    selectedModel = newValue;
-                    selectedModelId = newValue['id'];
-                    fetchColorData(selectedModelId!);
-                    selectedColor = null;
-                  });
-                },
-                items: _models.map<DropdownMenuItem<dynamic>>((item) {
-                  return DropdownMenuItem<dynamic>(
-                    value: item,
-                    child: Text(item['name']),
-                  );
-                }).toList(),
+              SizedBox(
+                width: 210,
+                child: Card(
+                  child: Center(
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10, left: 10),
+                        child: DropdownButton(
+                          isExpanded: true,
+                          borderRadius: BorderRadius.circular(10),
+                          underline: const Text(""),
+                          // dropdownColor: Colors.black,
+                          focusColor: Colors.black,
+                          // elevation: 10,
+                          style: const TextStyle(color: Colors.black),
+                          hint: const Text(
+                            'Select a model',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          value: selectedModel,
+                          onChanged: (newValue) async {
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setInt('selectedmodelId', newValue['id']);
+                            prefs.setString(
+                                'selectedmodelname', newValue['name']);
+                            setState(() {
+                              selectedModel = newValue;
+                              selectedModelId = newValue['id'];
+                              fetchColorData(selectedModelId!);
+                              selectedColor = null;
+                            });
+                          },
+                          items: _models.map<DropdownMenuItem<dynamic>>((item) {
+                            return DropdownMenuItem<dynamic>(
+                              value: item,
+                              child: Text(item['name']),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               // const SizedBox(height: 10),
-              DropdownButton(
-                style: const TextStyle(color: Colors.black),
-                hint: const Text('Select a color'),
-                value: selectedColor,
-                onChanged: (newValue) async {
-                  final SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setInt('selectedcolorId', newValue['id']);
-                  prefs.setString('selectedcolorname', newValue['name']);
-                  setState(() {
-                    selectedColor = newValue;
-                    selectedsizeId = newValue['id'];
-                    fetchColorSize(selectedsizeId!);
-                    selectedsize = null;
-                  });
-                },
-                items: _colors.map<DropdownMenuItem<dynamic>>((item) {
-                  return DropdownMenuItem<dynamic>(
-                    value: item,
-                    child: Text(item['name']),
-                  );
-                }).toList(),
+              SizedBox(
+                width: 210,
+                child: Card(
+                  child: Center(
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10, left: 10),
+                        child: DropdownButton(
+                          isExpanded: true,
+                          borderRadius: BorderRadius.circular(10),
+                          style: const TextStyle(color: Colors.black),
+                          hint: const Text(
+                            'Select a color',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          value: selectedColor,
+                          onChanged: (newValue) async {
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setInt('selectedcolorId', newValue['id']);
+                            prefs.setString(
+                                'selectedcolorname', newValue['name']);
+                            setState(() {
+                              selectedColor = newValue;
+                              selectedsizeId = newValue['id'];
+                              fetchColorSize(selectedsizeId!);
+                              selectedsize = null;
+                            });
+                          },
+                          items: _colors.map<DropdownMenuItem<dynamic>>((item) {
+                            return DropdownMenuItem<dynamic>(
+                              value: item,
+                              child: Text(item['name']),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               // const SizedBox(height: 20),
-              DropdownButton(
-                style: const TextStyle(color: Colors.black),
-                hint: const Text('Select a size'),
-                value: selectedsize,
-                onChanged: (newValue) async {
-                  final SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  // prefs.setIntList('selectedsizeId', newValue['id']);
-                  prefs.setString('selectedsizename', newValue['name']);
-                  sizeId = [newValue['id']];
-                  setState(() {
-                    selectedsize = newValue;
-                  });
-                },
-                items: selectedsizelist.map<DropdownMenuItem<dynamic>>((item) {
-                  return DropdownMenuItem<dynamic>(
-                    value: item,
-                    child: Text(item['name']),
-                  );
-                }).toList(),
+              SizedBox(
+                width: 210,
+                child: Card(
+                  child: Center(
+                    child: DropdownButtonHideUnderline(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10, left: 10),
+                        child: DropdownButton(
+                          isExpanded: true,
+                          borderRadius: BorderRadius.circular(10),
+                          // underline: const Text(""),
+                          style: const TextStyle(color: Colors.black),
+                          hint: const Text(
+                            'Select a size',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          value: selectedsize,
+                          onChanged: (newValue) async {
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            // prefs.setIntList('selectedsizeId', newValue['id']);
+                            prefs.setString(
+                                'selectedsizename', newValue['name']);
+                            sizeId = [newValue['id']];
+                            setState(() {
+                              selectedsize = newValue;
+                            });
+                          },
+                          items: selectedsizelist
+                              .map<DropdownMenuItem<dynamic>>((item) {
+                            return DropdownMenuItem<dynamic>(
+                              value: item,
+                              child: Text(item['name']),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
               SizedBox(
                 width: 200,
