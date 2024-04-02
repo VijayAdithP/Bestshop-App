@@ -15,6 +15,8 @@ import 'package:newbestshop/screens/each_stock.dart/itemname_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/subcategory_page.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 
+final _pageController = PageController();
+
 class stockadder extends StatefulWidget {
   const stockadder({super.key});
 
@@ -112,10 +114,23 @@ class _stockadderState extends State<stockadder> {
                         showStepBorder: false,
                         steps: [
                           EasyStep(
-                            customStep: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  '${ApiEndPoints.baseUrl}/$CategoryImg'),
+                            customStep: GestureDetector(
+                              onTap: () async {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.remove('selecteditemname');
+                                prefs.remove('selectedsubcategoryname');
+                                prefs.remove('selectedbrandname');
+
+                                _pageController.animateToPage(0,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeIn);
+                              },
+                              child: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    '${ApiEndPoints.baseUrl}/$CategoryImg'),
+                              ),
                             ),
                             customTitle: Text(
                               Categoryname,
@@ -123,12 +138,25 @@ class _stockadderState extends State<stockadder> {
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w400),
                             ),
+                            // onTap: () {},
                           ),
                           EasyStep(
-                            customStep: CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    '${ApiEndPoints.baseUrl}/$itemnameImg')),
+                            customStep: GestureDetector(
+                              onTap: () async {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.remove('selectedsubcategoryname');
+                                prefs.remove('selectedbrandname');
+
+                                _pageController.animateToPage(1,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeIn);
+                              },
+                              child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(
+                                      '${ApiEndPoints.baseUrl}/$itemnameImg')),
+                            ),
                             customTitle: Text(
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w400),
@@ -137,10 +165,20 @@ class _stockadderState extends State<stockadder> {
                             ),
                           ),
                           EasyStep(
-                            customStep: CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
+                            customStep: GestureDetector(
+                              onTap: () async {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                prefs.remove('selectedbrandname');
+                                _pageController.animateToPage(2,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeIn);
+                              },
+                              child: CircleAvatar(
+                                  radius: 50,
+                                  backgroundImage: NetworkImage(
+                                      '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
+                            ),
                             customTitle: Text(
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w400),
@@ -150,9 +188,10 @@ class _stockadderState extends State<stockadder> {
                           ),
                           EasyStep(
                             customStep: CircleAvatar(
-                                radius: 50,
-                                backgroundImage: NetworkImage(
-                                    '${ApiEndPoints.baseUrl}/$brandnImg')),
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                  '${ApiEndPoints.baseUrl}/$brandnImg'),
+                            ),
                             customTitle: Text(
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.w400),
@@ -231,8 +270,6 @@ class _PageViewCustomState extends State<PageViewCustom> {
     loadData();
     callReloadData();
   }
-
-  final _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
