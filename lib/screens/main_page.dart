@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
@@ -251,8 +249,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
               color: Colors.grey,
               strokeWidth: 2,
             );
-          } 
-          else {
+          } else {
             return const FlLine(
               color: Colors.grey,
               strokeWidth: 2,
@@ -263,9 +260,10 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       titlesData: FlTitlesData(
         show: true,
         topTitles: const AxisTitles(
-            sideTitles: SideTitles(
-          showTitles: false,
-        )),
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
+        ),
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(
             showTitles: false,
@@ -294,16 +292,19 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           ),
         ),
       ),
+      alignment: BarChartAlignment.center,
     );
 
     return Scaffold(
       body: Column(
         children: [
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  top: 45, right: 70, left: 30, bottom: 10),
-              child: BarChart(barChartData),
+            child: SizedBox(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    top: 45, right: 70, left: 30, bottom: 10),
+                child: BarChart(barChartData),
+              ),
             ),
           ),
           const SizedBox(

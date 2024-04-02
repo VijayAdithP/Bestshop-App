@@ -42,37 +42,41 @@ class _stockadderState extends State<stockadder> {
 
   Future<void> loadData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      final selectedCategoryImg = prefs.getString('selectedCategoryImg') ?? '';
-      final selecteditem_nameImg = prefs.getString('selecteditemnameImg') ?? '';
-      final selectedSubcategoryImg =
-          prefs.getString('selectedsubcategoryImg') ?? '';
-      final selectedbrandImg = prefs.getString('selectedbrandImg') ?? '';
+    if (mounted) {
+      setState(() {
+        final selectedCategoryImg =
+            prefs.getString('selectedCategoryImg') ?? '';
+        final selecteditem_nameImg =
+            prefs.getString('selecteditemnameImg') ?? '';
+        final selectedSubcategoryImg =
+            prefs.getString('selectedsubcategoryImg') ?? '';
+        final selectedbrandImg = prefs.getString('selectedbrandImg') ?? '';
 
-      final selectedCategoryname =
-          prefs.getString('selectedCategoryname') ?? '';
-      final selecteditemnamename = prefs.getString('selecteditemname') ?? '';
-      final selectedSubcategoryname =
-          prefs.getString('selectedsubcategoryname') ?? '';
-      final selectedbrandname = prefs.getString('selectedbrandname') ?? '';
+        final selectedCategoryname =
+            prefs.getString('selectedCategoryname') ?? '';
+        final selecteditemnamename = prefs.getString('selecteditemname') ?? '';
+        final selectedSubcategoryname =
+            prefs.getString('selectedsubcategoryname') ?? '';
+        final selectedbrandname = prefs.getString('selectedbrandname') ?? '';
 
-      Categoryname = selectedCategoryname;
-      itemnamename = selecteditemnamename;
-      Subcategoryname = selectedSubcategoryname;
-      brandname = selectedbrandname;
+        Categoryname = selectedCategoryname;
+        itemnamename = selecteditemnamename;
+        Subcategoryname = selectedSubcategoryname;
+        brandname = selectedbrandname;
 
-      CategoryImg = selectedCategoryImg;
-      itemnameImg = selecteditem_nameImg;
-      SubcategoryImg = selectedSubcategoryImg;
-      brandnImg = selectedbrandImg;
+        CategoryImg = selectedCategoryImg;
+        itemnameImg = selecteditem_nameImg;
+        SubcategoryImg = selectedSubcategoryImg;
+        brandnImg = selectedbrandImg;
 
-      nameList = [
-        selectedCategoryname,
-        selecteditemnamename,
-        selectedSubcategoryname,
-        selectedbrandname,
-      ];
-    });
+        nameList = [
+          selectedCategoryname,
+          selecteditemnamename,
+          selectedSubcategoryname,
+          selectedbrandname,
+        ];
+      });
+    }
   }
 
   @override
@@ -246,18 +250,20 @@ class _PageViewCustomState extends State<PageViewCustom> {
 
   Future<void> loadData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      final int selectedCategoryId = prefs.getInt('selectedCategoryId') ?? 0;
-      final int selecteditem_nameId = prefs.getInt('selecteditemnameId') ?? 0;
-      final int selectedsub_categoryId =
-          prefs.getInt('selectedsubcategoryId') ?? 0;
-      final int selectedbrandId = prefs.getInt('selectedbrandId') ?? 0;
+    if (mounted) {
+      setState(() {
+        final int selectedCategoryId = prefs.getInt('selectedCategoryId') ?? 0;
+        final int selecteditem_nameId = prefs.getInt('selecteditemnameId') ?? 0;
+        final int selectedsub_categoryId =
+            prefs.getInt('selectedsubcategoryId') ?? 0;
+        final int selectedbrandId = prefs.getInt('selectedbrandId') ?? 0;
 
-      category_Id = selectedCategoryId;
-      itemnameId = selecteditem_nameId;
-      brandId = selectedsub_categoryId;
-      modelId = selectedbrandId;
-    });
+        category_Id = selectedCategoryId;
+        itemnameId = selecteditem_nameId;
+        brandId = selectedsub_categoryId;
+        modelId = selectedbrandId;
+      });
+    }
   }
 
   @override
