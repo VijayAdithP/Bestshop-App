@@ -30,12 +30,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.4
+  http: ^1.2.1 
   get: ^4.6.5
   shared_preferences: ^2.0.15
-  fl_chart: ^0.66.2
+  fl_chart: ^0.67.0
   slidable_button: ^3.0.0+1
   easy_stepper: ^0.8.3
+  google_fonts: ^6.2.1
   
 
 
@@ -65,8 +66,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - assets/images/
+  assets:
+    - assets/images/
     # - assets\images\download (2).png
     # - images/a_dot_ham.jpeg
 

@@ -354,6 +354,9 @@ class _BillingPageState extends State<BillingPage> {
                 ),
               ),
               SizedBox(
+                height: 10,
+              ),
+              SizedBox(
                 width: 200,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -368,70 +371,65 @@ class _BillingPageState extends State<BillingPage> {
                             ),
                           ),
                           height: 60,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10),
-                            elevation: 3,
-                            shadowColor:
-                                const Color.fromARGB(141, 33, 149, 243),
-                            child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              onChanged: (value) => {
-                                setState(() {
-                                  convertAndPassToList();
-                                })
-                              },
-                              textAlignVertical: TextAlignVertical.center,
-                              textAlign: TextAlign.justify,
-                              controller: quantity,
-                              decoration: const InputDecoration(
-                                labelText: "Quantity",
-                                labelStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                isDense: true,
-                                contentPadding: EdgeInsets.only(
-                                  left: 15,
-                                  bottom: 39,
-                                ),
-                                alignLabelWithHint: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                hintStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                // hintText: "quantity",
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
+                            onChanged: (value) => {
+                              setState(() {
+                                convertAndPassToList();
+                              })
+                            },
+                            textAlignVertical: TextAlignVertical.center,
+                            textAlign: TextAlign.justify,
+                            controller: quantity,
+                            decoration: const InputDecoration(
+                              labelText: "Quantity",
+                              labelStyle: TextStyle(
+                                color: Color.fromARGB(146, 84, 87, 94),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
                               ),
+                              isDense: true,
+                              contentPadding: EdgeInsets.only(
+                                left: 15,
+                                bottom: 39,
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
+                              // hintText: "quantity",
                             ),
                           ),
                         ),
@@ -446,68 +444,63 @@ class _BillingPageState extends State<BillingPage> {
                             ),
                           ),
                           height: 60,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10),
-                            elevation: 3,
-                            shadowColor:
-                                const Color.fromARGB(141, 33, 149, 243),
-                            child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              onChanged: (value) => {
-                                setState(() {
-                                  convertAndPassToList();
-                                })
-                              },
-                              textAlignVertical: TextAlignVertical.center,
-                              textAlign: TextAlign.justify,
-                              controller: billnumbercontroller,
-                              decoration: const InputDecoration(
-                                labelText: "BillNumber",
-                                labelStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
+                            onChanged: (value) => {
+                              setState(() {
+                                convertAndPassToList();
+                              })
+                            },
+                            textAlignVertical: TextAlignVertical.center,
+                            textAlign: TextAlign.justify,
+                            controller: billnumbercontroller,
+                            decoration: const InputDecoration(
+                              labelText: "BillNumber",
+                              labelStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
+                              isDense: true,
+                              contentPadding: EdgeInsets.only(
+                                left: 15,
+                                bottom: 39,
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
                                 ),
-                                isDense: true,
-                                contentPadding: EdgeInsets.only(
-                                  left: 15,
-                                  bottom: 39,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
                                 ),
-                                alignLabelWithHint: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
                                 ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
                                 ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
                                 ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                hintStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
                                 ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -525,65 +518,60 @@ class _BillingPageState extends State<BillingPage> {
                             ),
                           ),
                           height: 60,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10),
-                            elevation: 3,
-                            shadowColor:
-                                const Color.fromARGB(141, 33, 149, 243),
-                            child: TextFormField(
-                              textInputAction: TextInputAction.next,
-                              textAlignVertical: TextAlignVertical.center,
-                              textAlign: TextAlign.justify,
-                              controller: sellingpricecontroller,
-                              decoration: const InputDecoration(
-                                labelText: "SellingPrice",
-                                labelStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                isDense: true,
-                                contentPadding: EdgeInsets.only(
-                                  left: 15,
-                                  bottom: 39,
-                                ),
-                                alignLabelWithHint: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                hintStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                // hintText: "sellingprice",
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
+                            textAlignVertical: TextAlignVertical.center,
+                            textAlign: TextAlign.justify,
+                            controller: sellingpricecontroller,
+                            decoration: const InputDecoration(
+                              labelText: "SellingPrice",
+                              labelStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
                               ),
+                              isDense: true,
+                              contentPadding: EdgeInsets.only(
+                                left: 15,
+                                bottom: 39,
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
+                              // hintText: "sellingprice",
                             ),
                           ),
                         ),
@@ -600,72 +588,67 @@ class _BillingPageState extends State<BillingPage> {
                             ),
                           ),
                           height: 60,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10),
-                            elevation: 3,
-                            shadowColor:
-                                const Color.fromARGB(141, 33, 149, 243),
-                            child: TextFormField(
-                              textInputAction: TextInputAction.next,
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
 
-                              onChanged: (value) => {
-                                setState(() {
-                                  convertAndPassToList();
-                                })
-                              },
-                              textAlignVertical: TextAlignVertical.center,
-                              textAlign: TextAlign.justify,
-                              controller: purchasingpricecontroller,
-                              // initialValue: "1",
-                              decoration: const InputDecoration(
-                                labelStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                labelText: "PurchasingPrice",
-                                isDense: true,
-                                contentPadding: EdgeInsets.only(
-                                  left: 15,
-                                  bottom: 39,
-                                ),
-                                alignLabelWithHint: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                hintStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                // hintText: "purchasing_price",
+                            onChanged: (value) => {
+                              setState(() {
+                                convertAndPassToList();
+                              })
+                            },
+                            textAlignVertical: TextAlignVertical.center,
+                            textAlign: TextAlign.justify,
+                            controller: purchasingpricecontroller,
+                            // initialValue: "1",
+                            decoration: const InputDecoration(
+                              labelStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
                               ),
+                              labelText: "PurchasingPrice",
+                              isDense: true,
+                              contentPadding: EdgeInsets.only(
+                                left: 15,
+                                bottom: 39,
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
+                              // hintText: "purchasing_price",
                             ),
                           ),
                         ),
@@ -681,65 +664,60 @@ class _BillingPageState extends State<BillingPage> {
                             ),
                           ),
                           height: 60,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(10),
-                            elevation: 3,
-                            shadowColor:
-                                const Color.fromARGB(141, 33, 149, 243),
-                            child: TextFormField(
-                              textInputAction: TextInputAction.done,
-                              textAlignVertical: TextAlignVertical.center,
-                              textAlign: TextAlign.justify,
-                              controller: mrpcontroller,
-                              decoration: const InputDecoration(
-                                labelText: "Mrp",
-                                labelStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                isDense: true,
-                                contentPadding: EdgeInsets.only(
-                                  left: 15,
-                                  bottom: 39,
-                                ),
-                                alignLabelWithHint: true,
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: Color.fromARGB(143, 0, 140, 255),
-                                    width: 2.0,
-                                  ),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                filled: true,
-                                fillColor: Colors.transparent,
-                                hintStyle: TextStyle(
-                                  color: Color.fromARGB(146, 87, 111, 168),
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                ),
-                                // hintText: "mrp",
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            textAlignVertical: TextAlignVertical.center,
+                            textAlign: TextAlign.justify,
+                            controller: mrpcontroller,
+                            decoration: const InputDecoration(
+                              labelText: "Mrp",
+                              labelStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
                               ),
+                              isDense: true,
+                              contentPadding: EdgeInsets.only(
+                                left: 15,
+                                bottom: 39,
+                              ),
+                              alignLabelWithHint: true,
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color.fromARGB(143, 0, 140, 255),
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.transparent,
+                              hintStyle: TextStyle(
+                                color: Color.fromARGB(146, 87, 111, 168),
+                                fontWeight: FontWeight.w400,
+                                fontSize: 16,
+                              ),
+                              // hintText: "mrp",
                             ),
                           ),
                         ),

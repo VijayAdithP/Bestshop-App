@@ -191,10 +191,17 @@ class _stockadderState extends State<stockadder> {
                             ),
                           ),
                           EasyStep(
-                            customStep: CircleAvatar(
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  '${ApiEndPoints.baseUrl}/$brandnImg'),
+                            customStep: GestureDetector(
+                              onTap: () {
+                                _pageController.animateToPage(3,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeIn);
+                              },
+                              child: CircleAvatar(
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    '${ApiEndPoints.baseUrl}/$brandnImg'),
+                              ),
                             ),
                             customTitle: Text(
                               style: const TextStyle(
@@ -280,18 +287,18 @@ class _PageViewCustomState extends State<PageViewCustom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF4860b5),
-        onPressed: () {
-          _pageController.previousPage(
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeIn);
-        },
-        child: const Icon(
-          Icons.arrow_back_ios_rounded,
-          color: Colors.white,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: const Color(0xFF4860b5),
+      //   onPressed: () {
+      //     _pageController.previousPage(
+      //         duration: const Duration(milliseconds: 200),
+      //         curve: Curves.easeIn);
+      //   },
+      //   child: const Icon(
+      //     Icons.arrow_back_ios_rounded,
+      //     color: Colors.white,
+      //   ),
+      // ),
 
       // IconButton(
       //   color: Colors.blue,

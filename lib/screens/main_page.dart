@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+// import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/stocks.dart';
@@ -92,18 +93,31 @@ class _Drawer_State extends State<Drawer_> {
             decoration: const BoxDecoration(
               color: Color(0xFF4860b5),
             ),
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 50),
-                child: Text(
-                  username,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 20,
+                ),
+                const CircleAvatar(
+                  radius: 30,
+                  backgroundImage: NetworkImage(
+                      "https://st3.depositphotos.com/6672868/13701/v/450/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    username,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
           ListTile(
@@ -184,7 +198,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
         }
       }
     }
-    return max * 1.1;
+    return max * 1.2;
   }
 
   @override
@@ -227,15 +241,24 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       maxY: _maxY,
       minY: 0,
       barGroups: barGroups,
+      backgroundColor: Colors.transparent,
       barTouchData: BarTouchData(
         enabled: true,
         touchTooltipData: BarTouchTooltipData(
-          tooltipBorder: const BorderSide(
-            color: Colors.blue,
-          ),
-          tooltipBgColor: Colors.white,
+          getTooltipColor: (BarChartGroupData group) => Colors.white,
         ),
       ),
+
+      // barTouchData: BarTouchData(
+      //   enabled: true,
+      //   // touchTooltipData: BarTouchTooltipData(
+      //   //   tooltipBorder: const BorderSide(
+      //   //     color: Colors.blue,
+      //   //   ),
+      // tooltipBgColor: Colors.white,
+
+      //   // ),
+      // ),
       borderData: FlBorderData(
         show: false,
       ),
@@ -291,6 +314,12 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
             reservedSize: 40,
           ),
         ),
+        leftTitles: const AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 46,
+          ),
+        ),
       ),
       alignment: BarChartAlignment.center,
     );
@@ -302,7 +331,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
             child: SizedBox(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    top: 45, right: 70, left: 30, bottom: 10),
+                    top: 40, right: 70, left: 30, bottom: 10),
                 child: BarChart(barChartData),
               ),
             ),
