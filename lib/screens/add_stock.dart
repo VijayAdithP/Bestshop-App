@@ -51,7 +51,6 @@ class _stockadderState extends State<stockadder> {
         final selectedSubcategoryImg =
             prefs.getString('selectedsubcategoryImg') ?? '';
         final selectedbrandImg = prefs.getString('selectedbrandImg') ?? '';
-
         final selectedCategoryname =
             prefs.getString('selectedCategoryname') ?? '';
         final selecteditemnamename = prefs.getString('selecteditemname') ?? '';
@@ -125,6 +124,10 @@ class _stockadderState extends State<stockadder> {
                                 prefs.remove('selecteditemname');
                                 prefs.remove('selectedsubcategoryname');
                                 prefs.remove('selectedbrandname');
+                                prefs.remove('selectedCategoryId');
+                                prefs.remove('selecteditemnameId');
+                                prefs.remove('selectedsubcategoryId');
+                                prefs.remove('selectedbrandId');
 
                                 _pageController.animateToPage(0,
                                     duration: const Duration(milliseconds: 300),
@@ -151,6 +154,9 @@ class _stockadderState extends State<stockadder> {
                                     await SharedPreferences.getInstance();
                                 prefs.remove('selectedsubcategoryname');
                                 prefs.remove('selectedbrandname');
+                                prefs.remove('selecteditemnameId');
+                                prefs.remove('selectedsubcategoryId');
+                                prefs.remove('selectedbrandId');
 
                                 _pageController.animateToPage(1,
                                     duration: const Duration(milliseconds: 300),
@@ -174,6 +180,8 @@ class _stockadderState extends State<stockadder> {
                                 final SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 prefs.remove('selectedbrandname');
+                                prefs.remove('selectedsubcategoryId');
+                                prefs.remove('selectedbrandId');
                                 _pageController.animateToPage(2,
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeIn);

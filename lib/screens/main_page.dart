@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:get/get_state_manager/get_state_manager.dart';
+// import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/stocks.dart';
@@ -210,15 +210,6 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
         ),
       );
     }
-
-    // if (_apiData == null || _axisNames == null || _bottomTitles == null) {
-    //   return const Scaffold(
-    //     body: Center(
-    //       child: Text('Failed to fetch data from API'),
-    //     ),
-    //   );
-    // }
-
     final barGroups = <BarChartGroupData>[
       BarChartGroupData(
         x: 1,
@@ -248,17 +239,6 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           getTooltipColor: (BarChartGroupData group) => Colors.white,
         ),
       ),
-
-      // barTouchData: BarTouchData(
-      //   enabled: true,
-      //   // touchTooltipData: BarTouchTooltipData(
-      //   //   tooltipBorder: const BorderSide(
-      //   //     color: Colors.blue,
-      //   //   ),
-      // tooltipBgColor: Colors.white,
-
-      //   // ),
-      // ),
       borderData: FlBorderData(
         show: false,
       ),
@@ -282,7 +262,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        topTitles: const AxisTitles(
+        bottomTitles: const AxisTitles(
           sideTitles: SideTitles(
             showTitles: false,
           ),
@@ -292,13 +272,13 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
             showTitles: false,
           ),
         ),
-        bottomTitles: AxisTitles(
+        topTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, titleMeta) {
               if (value.toInt() == 1) {
                 return Padding(
-                  padding: const EdgeInsets.only(top: 15),
+                  padding: const EdgeInsets.only(top: 20),
                   child: Text(
                     _axisNames![_selectedIntervalIndex],
                     style: const TextStyle(
@@ -311,13 +291,13 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
               }
               return const Text("safety");
             },
-            reservedSize: 40,
+            reservedSize: 45,
           ),
         ),
         leftTitles: const AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 46,
+            reservedSize: 55,
           ),
         ),
       ),
@@ -328,10 +308,11 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       body: Column(
         children: [
           Expanded(
-            child: SizedBox(
+            child: Container(
+              decoration: const BoxDecoration(color: Colors.transparent),
               child: Padding(
                 padding: const EdgeInsets.only(
-                    top: 40, right: 70, left: 30, bottom: 10),
+                    top: 5, right: 60, left: 5, bottom: 30),
                 child: BarChart(barChartData),
               ),
             ),

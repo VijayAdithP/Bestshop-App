@@ -1,7 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:newbestshop/controllers/login_controller.dart';
 import 'package:newbestshop/controllers/registeration_controller.dart';
-import 'package:newbestshop/screens/widgets/input_fields.dart';
 import 'package:newbestshop/screens/widgets/submit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,12 +30,6 @@ class _AuthScreenState extends State<AuthScreen> {
               radius: 90,
               backgroundColor: Color.fromARGB(90, 33, 149, 243),
             ),
-
-            // Image.asset(
-            //   'assets/images/fd099e33e8dfcdcd5cd1ac9fa47c2c28.jpg',
-            //   height: 170,
-            //   width: 150,
-            // ),
           ),
           const Positioned(
             right: 250,
@@ -46,12 +38,6 @@ class _AuthScreenState extends State<AuthScreen> {
               radius: 90,
               backgroundColor: Color.fromARGB(90, 33, 149, 243),
             ),
-
-            // Image.asset(
-            //   'assets/images/fd099e33e8dfcdcd5cd1ac9fa47c2c28.jpg',
-            //   height: 170,
-            //   width: 150,
-            // ),
           ),
           Padding(
             padding: const EdgeInsets.all(36),
@@ -65,10 +51,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF4860b5),
                   ),
-                  // TextStyle(
-                  //   color: Colors.blue.shade800,
-                  //   fontSize: 20,
-                  // ),
                 ),
                 const SizedBox(
                   height: 30,
@@ -85,199 +67,249 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget loginWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(
-          height: 20,
-        ),
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
 
-        // InputTextFieldWidget(loginController.emailController, 'username'),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 13),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
+          // InputTextFieldWidget(loginController.emailController, 'username'),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 13),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
               ),
-            ),
-            height: 60,
-            child: TextFormField(
-              textAlignVertical: TextAlignVertical.center,
-              textAlign: TextAlign.justify,
-              textInputAction: TextInputAction.next,
-              controller: loginController.emailController,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.only(
-                  left: 15,
-                  bottom: 39,
-                ),
-                alignLabelWithHint: true,
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(143, 0, 140, 255),
-                    width: 2.0,
+              height: 60,
+              child: TextFormField(
+                textAlignVertical: TextAlignVertical.center,
+                textAlign: TextAlign.justify,
+                textInputAction: TextInputAction.next,
+                controller: loginController.emailController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.only(
+                    left: 15,
+                    bottom: 39,
                   ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
+                  alignLabelWithHint: true,
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
                   ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(143, 0, 140, 255),
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
                   ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
                   ),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.red,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
                   ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
+                  errorStyle: const TextStyle(height: 0),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 16,
+                    // fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(146, 87, 111, 168),
                   ),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                hintStyle: GoogleFonts.poppins(
-                  fontSize: 16,
-                  // fontWeight: FontWeight.w500,
-                  fontWeight: FontWeight.w600,
-                  color: const Color.fromARGB(146, 87, 111, 168),
-                ),
 
-                // TextStyle(
-                //   color: Color.fromARGB(146, 87, 111, 168),
-                //   fontWeight: FontWeight.w400,
-                //   fontSize: 16,
-                // ),
-                hintText: 'username',
+                  // TextStyle(
+                  //   color: Color.fromARGB(146, 87, 111, 168),
+                  //   fontWeight: FontWeight.w400,
+                  //   fontSize: 16,
+                  // ),
+                  hintText: 'username',
+                ),
               ),
             ),
           ),
-        ),
 
-        const SizedBox(
-          height: 20,
-        ),
+          const SizedBox(
+            height: 20,
+          ),
 
-        // InputTextFieldWidget(
-        //   loginController.passwordController,
-        //   'password',
-        // ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 13),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
+          // InputTextFieldWidget(
+          //   loginController.passwordController,
+          //   'password',
+          // ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 13),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
               ),
-            ),
-            height: 60,
-            child: TextFormField(
-              textAlignVertical: TextAlignVertical.center,
-              textAlign: TextAlign.justify,
-              controller: loginController.passwordController,
-              textInputAction: TextInputAction.done,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.only(
-                  left: 15,
-                  bottom: 39,
+              height: 60,
+              child: TextFormField(
+                textAlignVertical: TextAlignVertical.center,
+                textAlign: TextAlign.justify,
+                textInputAction: TextInputAction.next,
+                controller: loginController.passwordController,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  isDense: true,
+                  contentPadding: const EdgeInsets.only(
+                    left: 15,
+                    bottom: 39,
+                  ),
+                  alignLabelWithHint: true,
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(143, 0, 140, 255),
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.red,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  errorStyle: const TextStyle(height: 0),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 16,
+                    // fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(146, 87, 111, 168),
+                  ),
+
+                  // TextStyle(
+                  //   color: Color.fromARGB(146, 87, 111, 168),
+                  //   fontWeight: FontWeight.w400,
+                  //   fontSize: 16,
+                  // ),
+                  hintText: 'password',
                 ),
-                alignLabelWithHint: true,
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(143, 0, 140, 255),
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                hintStyle: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: const Color.fromARGB(146, 87, 111, 168),
-                ),
-                hintText: 'password',
               ),
             ),
           ),
-        ),
 
-        const SizedBox(
-          height: 20,
-        ),
-        SubmitButton(
-          onPressed: () async {
-            final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
-            String username = loginController.emailController.text;
-            prefs.setString('username', username);
-            loginController.loginWithEmail();
-          },
-          title: 'Login',
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Don't have an account?",
-              style: GoogleFonts.outfit(
-                fontWeight: FontWeight.w500,
-                // fontSize: 16,
-                // fontWeight: FontWeight.w400,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                Get.off(() => const Register());
-              },
-              child: Text(
-                "Register",
+          const SizedBox(
+            height: 20,
+          ),
+          SubmitButton(
+            onPressed: () async {
+              final SharedPreferences prefs =
+                  await SharedPreferences.getInstance();
+              String username = loginController.emailController.text;
+              prefs.setString('username', username);
+              loginController.loginWithEmail();
+              if (_formKey.currentState!.validate()) {
+              } else {
+                // Show SnackBar if form is not valid
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please fill in all fields.'),
+                  ),
+                );
+              }
+            },
+            title: 'Login',
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Don't have an account?",
                 style: GoogleFonts.outfit(
+                  fontWeight: FontWeight.w500,
                   // fontSize: 16,
-                  fontWeight: FontWeight.w600,
-
-                  color: const Color(0xFF4860b5),
+                  // fontWeight: FontWeight.w400,
                 ),
-
-                // TextStyle(
-                //   color: Color(0xFF4860b5),
-                // ),
               ),
-            ),
-          ],
-        ),
-      ],
+              TextButton(
+                onPressed: () {
+                  Get.off(() => const Register());
+                },
+                child: Text(
+                  "Register",
+                  style: GoogleFonts.outfit(
+                    // fontSize: 16,
+                    fontWeight: FontWeight.w600,
+
+                    color: const Color(0xFF4860b5),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
@@ -305,12 +337,6 @@ class _RegisterState extends State<Register> {
               radius: 90,
               backgroundColor: Color.fromARGB(90, 33, 149, 243),
             ),
-
-            // Image.asset(
-            //   'assets/images/fd099e33e8dfcdcd5cd1ac9fa47c2c28.jpg',
-            //   height: 170,
-            //   width: 150,
-            // ),
           ),
           const Positioned(
             right: 250,
@@ -319,12 +345,6 @@ class _RegisterState extends State<Register> {
               radius: 90,
               backgroundColor: Color.fromARGB(90, 33, 149, 243),
             ),
-
-            // Image.asset(
-            //   'assets/images/fd099e33e8dfcdcd5cd1ac9fa47c2c28.jpg',
-            //   height: 170,
-            //   width: 150,
-            // ),
           ),
           Padding(
             padding: const EdgeInsets.all(36),
@@ -338,10 +358,6 @@ class _RegisterState extends State<Register> {
                     fontWeight: FontWeight.w600,
                     color: const Color(0xFF4860b5),
                   ),
-                  // TextStyle(
-                  //   color: Colors.blue.shade800,
-                  //   fontSize: 20,
-                  // ),
                 ),
                 const SizedBox(
                   height: 50,
@@ -358,180 +374,212 @@ class _RegisterState extends State<Register> {
   }
 
   Widget registerWidget() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // InputTextFieldWidget(
-        //     registerationController.nameController, 'username'),
+    GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-        Padding(
-          padding: const EdgeInsets.only(bottom: 13),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // InputTextFieldWidget(
+          //     registerationController.nameController, 'username'),
+
+          Padding(
+            padding: const EdgeInsets.only(bottom: 13),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
               ),
-            ),
-            height: 60,
-            child: TextFormField(
-              textInputAction: TextInputAction.next,
-              textAlignVertical: TextAlignVertical.center,
-              textAlign: TextAlign.justify,
-              controller: registerationController.nameController,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.only(
-                  left: 15,
-                  bottom: 39,
+              height: 60,
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '';
+                  }
+                  return null;
+                },
+                textInputAction: TextInputAction.next,
+                textAlignVertical: TextAlignVertical.center,
+                textAlign: TextAlign.justify,
+                controller: registerationController.nameController,
+                decoration: InputDecoration(
+                  errorStyle: const TextStyle(height: 0),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.only(
+                    left: 15,
+                    bottom: 39,
+                  ),
+                  alignLabelWithHint: true,
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(143, 0, 140, 255),
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(146, 87, 111, 168),
+                  ),
+                  hintText: 'username',
                 ),
-                alignLabelWithHint: true,
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(143, 0, 140, 255),
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                hintStyle: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: const Color.fromARGB(146, 87, 111, 168),
-                ),
-                hintText: 'username',
               ),
             ),
           ),
-        ),
 
-        const SizedBox(
-          height: 20,
-        ),
-        // InputTextFieldWidget(
-        //     registerationController.passwordController, 'password'),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 13),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
+          const SizedBox(
+            height: 20,
+          ),
+          // InputTextFieldWidget(
+          //     registerationController.passwordController, 'password'),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 13),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15),
+                ),
               ),
-            ),
-            height: 60,
-            child: TextFormField(
-              textInputAction: TextInputAction.done,
-              textAlignVertical: TextAlignVertical.center,
-              textAlign: TextAlign.justify,
-              controller: registerationController.passwordController,
-              decoration: InputDecoration(
-                isDense: true,
-                contentPadding: const EdgeInsets.only(
-                  left: 15,
-                  bottom: 39,
+              height: 60,
+              child: TextFormField(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '';
+                  }
+                  return null;
+                },
+                textInputAction: TextInputAction.done,
+                textAlignVertical: TextAlignVertical.center,
+                textAlign: TextAlign.justify,
+                controller: registerationController.passwordController,
+                decoration: InputDecoration(
+                  errorStyle: const TextStyle(height: 0),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.only(
+                    left: 15,
+                    bottom: 39,
+                  ),
+                  alignLabelWithHint: true,
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Color.fromARGB(143, 0, 140, 255),
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  errorBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: const Color.fromARGB(146, 87, 111, 168),
+                  ),
+                  hintText: 'password',
                 ),
-                alignLabelWithHint: true,
-                focusedBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Color.fromARGB(143, 0, 140, 255),
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                enabledBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                errorBorder: const OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.transparent,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                hintStyle: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: const Color.fromARGB(146, 87, 111, 168),
-                ),
-                hintText: 'password',
               ),
             ),
           ),
-        ),
 
-        const SizedBox(
-          height: 20,
-        ),
-        SubmitButton(
-          onPressed: () => registerationController.registerWithEmail(),
-          title: 'Register',
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Already have an account?",
-              style: GoogleFonts.outfit(
-                fontWeight: FontWeight.w500,
-                // fontSize: 16,
-                // fontWeight: FontWeight.w400,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => const AuthScreen()),
-                // );
-                Get.off(() => const AuthScreen());
-              },
-              child: Text(
-                "Sign In",
+          const SizedBox(
+            height: 20,
+          ),
+          SubmitButton(
+            title: 'Register',
+            onPressed: () {
+              registerationController.registerWithEmail();
+              if (_formKey.currentState!.validate()) {
+              } else {
+                // Show SnackBar if form is not valid
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Please fill in all fields.'),
+                  ),
+                );
+              }
+            },
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Already have an account?",
                 style: GoogleFonts.outfit(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w500,
                   // fontSize: 16,
                   // fontWeight: FontWeight.w400,
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+              TextButton(
+                onPressed: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const AuthScreen()),
+                  // );
+                  Get.off(() => const AuthScreen());
+                },
+                child: Text(
+                  "Sign In",
+                  style: GoogleFonts.outfit(
+                    fontWeight: FontWeight.w600,
+                    // fontSize: 16,
+                    // fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

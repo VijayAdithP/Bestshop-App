@@ -158,6 +158,11 @@ class _BillingPageState extends State<BillingPage> {
         prefs.remove('selectedmodelname');
         prefs.remove('selectedcolorname');
         prefs.remove('selectedsizename');
+        prefs.remove('selectedCategoryId');
+        prefs.remove('selecteditemnameId');
+        prefs.remove('selectedsubcategoryId');
+        prefs.remove('selectedbrandId');
+
         Get.offAll(() => const Home_Page());
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
@@ -180,16 +185,103 @@ class _BillingPageState extends State<BillingPage> {
     });
   }
 
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showConfirmationDialog() {
+    // Check if any of the text fields are empty
+    if (quantity.text.isEmpty ||
+        billnumbercontroller.text.isEmpty ||
+        sellingpricecontroller.text.isEmpty ||
+        purchasingpricecontroller.text.isEmpty ||
+        mrpcontroller.text.isEmpty) {
+      _showSnackbar("Please fill in all fields.");
+      return;
+    }
+
+    // Show confirmation dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SizedBox(
+          height: 200,
+          width: 100,
+          child: AlertDialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.all(10),
+            actions: <Widget>[
+              Container(
+                width: double.infinity,
+                height: 150,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: const Color(0xFF4860b5)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      style: const ButtonStyle(
+                        elevation: MaterialStatePropertyAll(3),
+                        backgroundColor: MaterialStatePropertyAll(Colors.blue),
+                        shape: MaterialStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        "Yes",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        postStocks();
+                      },
+                    ),
+                    ElevatedButton(
+                      style: const ButtonStyle(
+                        elevation: MaterialStatePropertyAll(3),
+                        backgroundColor: MaterialStatePropertyAll(Colors.red),
+                        shape: MaterialStatePropertyAll(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        "No",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   // title: const Text('Dropdowns'),
-      //   automaticallyImplyLeading: false,
-      // ),
       floatingActionButton: GestureDetector(
-        onTap: () => postStocks(),
+        onTap: _showConfirmationDialog,
         child: Container(
           width: 100,
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -353,7 +445,7 @@ class _BillingPageState extends State<BillingPage> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               SizedBox(

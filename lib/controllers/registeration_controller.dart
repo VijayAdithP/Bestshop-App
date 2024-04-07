@@ -28,19 +28,20 @@ class RegisterationController extends GetxController {
         passwordController.clear();
         Get.off(const Home_Page());
       } else {
-        throw jsonDecode(response.body)["Message"] ?? "Unknown Error Occured";
+        throw jsonDecode(response.body)["Message"] ?? "Invalid Input";
       }
     } catch (e) {
       Get.back();
       showDialog(
-          context: Get.context!,
-          builder: (context) {
-            return SimpleDialog(
-              title: const Text('Error'),
-              contentPadding: const EdgeInsets.all(20),
-              children: [Text(e.toString())],
-            );
-          });
+        context: Get.context!,
+        builder: (context) {
+          return SimpleDialog(
+            title: const Text('Opps!'),
+            contentPadding: const EdgeInsets.all(20),
+            children: [Text(e.toString())],
+          );
+        },
+      );
     }
   }
 }
