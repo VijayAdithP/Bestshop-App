@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 // import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/stocks.dart';
@@ -145,7 +146,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
   List<Map<String, dynamic>>? _apiData;
   List<String>? _axisNames;
   late List<String> _bottomTitles;
-  int _selectedIntervalIndex = 0;
+  // int _selectedIntervalIndex = 0;
   bool _isLoading = true;
   double _maxY = 25;
   final List<Color> _barColors = [
@@ -180,7 +181,6 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           _isLoading = false;
         });
       } else {
-        // print(token);
         throw Exception('Failed to load data from API');
       }
     } catch (e) {
@@ -201,6 +201,8 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
     return max * 1.2;
   }
 
+  final PageController _pageController = PageController(initialPage: 0);
+  int currentpage = 0;
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -210,15 +212,159 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
         ),
       );
     }
+
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.only(right: 60),
+              decoration: const BoxDecoration(color: Colors.transparent),
+              child: Padding(
+                padding: EdgeInsets.only(
+                    top: 5,
+                    // right: 30,
+                    left: 5,
+                    bottom: MediaQuery.of(context).size.height * 0.021),
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (int page) {
+                    setState(() {
+                      currentpage = page;
+                    });
+                  },
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _axisNames!.length,
+                  itemBuilder: (context, index) {
+                    return buildPage(index);
+                  },
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            // top: 100,
+            child: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List<Widget>.generate(
+                  _axisNames!.length,
+                  (index) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: InkWell(
+                      onTap: () {
+                        _pageController.animateToPage(index,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeIn);
+                      },
+                      child: CircleAvatar(
+                        radius: 5,
+                        backgroundColor:
+                            currentpage == index ? Colors.blue : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          const Divider(
+            height: 5,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          const SizedBox(
+            height: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.red,
+                ),
+                Text(
+                  "Product Count",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                CircleAvatar(
+                  backgroundColor: Colors.green,
+                ),
+                Text(
+                  "Product Price",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                CircleAvatar(
+                  backgroundColor: Colors.blue,
+                ),
+                Text(
+                  "Rate of Product",
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          // SliderTheme(
+          //   data: SliderThemeData(
+          //     activeTrackColor: const Color(0xFF4860b5),
+          //     inactiveTrackColor: Colors.grey[300],
+          //     trackShape: const RoundedRectSliderTrackShape(),
+          //     trackHeight: 30,
+          //     thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
+          //     thumbColor: const Color(0xFF4860b5),
+          //     overlayColor: Colors.transparent,
+          //     overlayShape: const RoundSliderOverlayShape(overlayRadius: 28.0),
+          //     tickMarkShape: const RoundSliderTickMarkShape(),
+          //     activeTickMarkColor: const Color(0xFF4860b5),
+          //     inactiveTickMarkColor: Colors.transparent,
+          //     valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
+          //     valueIndicatorColor: const Color(0xFF4860b5),
+          //     valueIndicatorTextStyle: const TextStyle(
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          //   child: Slider(
+          //     value: _selectedIntervalIndex.toDouble(),
+          //     min: 0,
+          //     max: _axisNames!.length.toDouble() - 1,
+          //     onChanged: (value) {
+          //       setState(() {
+          //         _selectedIntervalIndex = value.toInt();
+          //       });
+          //     },
+          //     divisions: _axisNames!.length - 1,
+          //     label: _axisNames![_selectedIntervalIndex],
+          //   ),
+          // ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPage(int index) {
     final barGroups = <BarChartGroupData>[
       BarChartGroupData(
         x: 1,
         barRods: [
           for (int i = 0; i < _bottomTitles.length; i++)
             BarChartRodData(
-              toY: double.tryParse(_apiData![_selectedIntervalIndex]
-                          [_bottomTitles[i]]
-                      .toString()) ??
+              toY: double.tryParse(
+                      _apiData![index][_bottomTitles[i]].toString()) ??
                   0,
               color: _barColors[i % _barColors.length],
               width: 60,
@@ -233,6 +379,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       minY: 0,
       barGroups: barGroups,
       backgroundColor: Colors.transparent,
+      baselineY: 0.00000000000001,
       barTouchData: BarTouchData(
         enabled: true,
         touchTooltipData: BarTouchTooltipData(
@@ -264,12 +411,14 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
         show: true,
         bottomTitles: const AxisTitles(
           sideTitles: SideTitles(
-            showTitles: false,
+            showTitles: true,
+            reservedSize: 6,
           ),
         ),
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(
             showTitles: false,
+            reservedSize: 55,
           ),
         ),
         topTitles: AxisTitles(
@@ -280,7 +429,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                 return Padding(
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
-                    _axisNames![_selectedIntervalIndex],
+                    _axisNames![index],
                     style: const TextStyle(
                       fontSize: 20,
                       color: Colors.grey,
@@ -304,84 +453,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       alignment: BarChartAlignment.center,
     );
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 5, right: 60, left: 5, bottom: 30),
-                child: BarChart(barChartData),
-              ),
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  // radius: 6,
-                  backgroundColor: Colors.red,
-                ),
-                Text(
-                  "Product Count",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                CircleAvatar(
-                  // radius: 6,
-                  backgroundColor: Colors.green,
-                ),
-                Text(
-                  "Product Price",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                CircleAvatar(
-                  // radius: 6,
-                  backgroundColor: Colors.blue,
-                ),
-                Text(
-                  "Rate of Product",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-              overlayShape: const RoundSliderOverlayShape(overlayRadius: 30),
-              trackShape: const RectangularSliderTrackShape(),
-            ),
-            child: Slider(
-              value: _selectedIntervalIndex.toDouble(),
-              min: 0,
-              max: _axisNames!.length.toDouble() - 1,
-              onChanged: (value) {
-                setState(() {
-                  _selectedIntervalIndex = value.toInt();
-                });
-              },
-              divisions: _axisNames!.length - 1,
-              label: _axisNames![_selectedIntervalIndex],
-              activeColor: const Color(0xFF4860b5),
-              inactiveColor: const Color(0xFF4860b5),
-              thumbColor: const Color(0xFF4860b5),
-            ),
-          ),
-        ],
-      ),
-    );
+    return BarChart(barChartData);
   }
 
   double? calculateInterval(double maxY) {

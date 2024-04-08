@@ -209,68 +209,82 @@ class _BillingPageState extends State<BillingPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SizedBox(
-          height: 200,
-          width: 100,
-          child: AlertDialog(
-            backgroundColor: Colors.transparent,
-            insetPadding: const EdgeInsets.all(10),
-            actions: <Widget>[
-              Container(
-                width: double.infinity,
-                height: 150,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: const Color(0xFF4860b5)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
-                      style: const ButtonStyle(
-                        elevation: MaterialStatePropertyAll(3),
-                        backgroundColor: MaterialStatePropertyAll(Colors.blue),
-                        shape: MaterialStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        "Yes",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        postStocks();
-                      },
-                    ),
-                    ElevatedButton(
-                      style: const ButtonStyle(
-                        elevation: MaterialStatePropertyAll(3),
-                        backgroundColor: MaterialStatePropertyAll(Colors.red),
-                        shape: MaterialStatePropertyAll(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                          ),
-                        ),
-                      ),
-                      child: const Text(
-                        "No",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
+        return AlertDialog(
+          backgroundColor: Colors.grey[800],
+          insetPadding: const EdgeInsets.all(10),
+          title: const Align(
+            alignment: Alignment.center,
+            child: Column(
+              children: [
+                Icon(
+                  Icons.add_task_rounded,
+                  size: 70,
+                  color: Colors.teal,
                 ),
-              ),
-            ],
+                Text(
+                  "Are you sure?",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
           ),
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 32,
+                    ),
+                    foregroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    side: const BorderSide(
+                      color: Colors.red,
+                    ),
+                  ),
+                  child: const Text(
+                    "No",
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 255, 0, 0),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                  style: const ButtonStyle(
+                    padding: MaterialStatePropertyAll(
+                      EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 32,
+                      ),
+                    ),
+                    backgroundColor: MaterialStatePropertyAll(Colors.teal),
+                    shape: MaterialStatePropertyAll(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(5),
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    "Yes",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    postStocks();
+                  },
+                ),
+              ],
+            ),
+          ],
         );
       },
     );

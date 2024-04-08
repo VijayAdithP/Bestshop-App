@@ -394,6 +394,10 @@ class _RegisterState extends State<Register> {
               ),
               height: 60,
               child: TextFormField(
+                textAlignVertical: TextAlignVertical.center,
+                textAlign: TextAlign.justify,
+                textInputAction: TextInputAction.next,
+                controller: registerationController.nameController,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -401,18 +405,22 @@ class _RegisterState extends State<Register> {
                   }
                   return null;
                 },
-                textInputAction: TextInputAction.next,
-                textAlignVertical: TextAlignVertical.center,
-                textAlign: TextAlign.justify,
-                controller: registerationController.nameController,
                 decoration: InputDecoration(
-                  errorStyle: const TextStyle(height: 0),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(
                     left: 15,
                     bottom: 39,
                   ),
                   alignLabelWithHint: true,
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Color.fromARGB(143, 0, 140, 255),
@@ -433,20 +441,28 @@ class _RegisterState extends State<Register> {
                   ),
                   errorBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.transparent,
+                      color: Colors.red,
                       width: 2.0,
                     ),
                     borderRadius: BorderRadius.all(
                       Radius.circular(20),
                     ),
                   ),
+                  errorStyle: const TextStyle(height: 0),
                   filled: true,
                   fillColor: Colors.white,
                   hintStyle: GoogleFonts.poppins(
                     fontSize: 16,
+                    // fontWeight: FontWeight.w500,
                     fontWeight: FontWeight.w600,
                     color: const Color.fromARGB(146, 87, 111, 168),
                   ),
+
+                  // TextStyle(
+                  //   color: Color.fromARGB(146, 87, 111, 168),
+                  //   fontWeight: FontWeight.w400,
+                  //   fontSize: 16,
+                  // ),
                   hintText: 'username',
                 ),
               ),
@@ -468,6 +484,10 @@ class _RegisterState extends State<Register> {
               ),
               height: 60,
               child: TextFormField(
+                textAlignVertical: TextAlignVertical.center,
+                textAlign: TextAlign.justify,
+                textInputAction: TextInputAction.next,
+                controller: registerationController.passwordController,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -475,18 +495,22 @@ class _RegisterState extends State<Register> {
                   }
                   return null;
                 },
-                textInputAction: TextInputAction.done,
-                textAlignVertical: TextAlignVertical.center,
-                textAlign: TextAlign.justify,
-                controller: registerationController.passwordController,
                 decoration: InputDecoration(
-                  errorStyle: const TextStyle(height: 0),
                   isDense: true,
                   contentPadding: const EdgeInsets.only(
                     left: 15,
                     bottom: 39,
                   ),
                   alignLabelWithHint: true,
+                  border: const OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(20),
+                    ),
+                  ),
                   focusedBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Color.fromARGB(143, 0, 140, 255),
@@ -507,20 +531,28 @@ class _RegisterState extends State<Register> {
                   ),
                   errorBorder: const OutlineInputBorder(
                     borderSide: BorderSide(
-                      color: Colors.transparent,
+                      color: Colors.red,
                       width: 2.0,
                     ),
                     borderRadius: BorderRadius.all(
                       Radius.circular(20),
                     ),
                   ),
+                  errorStyle: const TextStyle(height: 0),
                   filled: true,
                   fillColor: Colors.white,
                   hintStyle: GoogleFonts.poppins(
                     fontSize: 16,
+                    // fontWeight: FontWeight.w500,
                     fontWeight: FontWeight.w600,
                     color: const Color.fromARGB(146, 87, 111, 168),
                   ),
+
+                  // TextStyle(
+                  //   color: Color.fromARGB(146, 87, 111, 168),
+                  //   fontWeight: FontWeight.w400,
+                  //   fontSize: 16,
+                  // ),
                   hintText: 'password',
                 ),
               ),
@@ -532,13 +564,13 @@ class _RegisterState extends State<Register> {
           ),
           SubmitButton(
             title: 'Register',
-            onPressed: () {
+            onPressed: () async {
               registerationController.registerWithEmail();
               if (_formKey.currentState!.validate()) {
               } else {
-                // Show SnackBar if form is not valid
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
+                    duration: Duration(milliseconds: 500),
                     content: Text('Please fill in all fields.'),
                   ),
                 );
