@@ -57,6 +57,8 @@ class _CategoryPageState extends State<CategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
+
       // appBar: AppBar(
       //   title: const Text(''),
       //         actions: <Widget>[
@@ -82,6 +84,7 @@ class _CategoryPageState extends State<CategoryPage> {
                 final category = _categories[index];
                 return GestureDetector(
                   child: Card(
+                    surfaceTintColor: Colors.white,
                     // child: ListTile(
                     //   title: Text(category.name),
                     //   leading: Image.network(
@@ -89,7 +92,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     // ),
                     elevation: 2,
                     shadowColor: Colors.black,
-                    color: Colors.white,
+                    // color: Colors.white,
                     margin: const EdgeInsets.all(10),
                     child: Padding(
                       padding: const EdgeInsets.all(20),

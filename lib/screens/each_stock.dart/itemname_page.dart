@@ -74,6 +74,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       body: Stack(
         children: [
           Column(
@@ -93,7 +94,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
                       contentPadding: EdgeInsets.all(5),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color(0xFF4860b5),
+                          color: Colors.blue,
                         ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
@@ -101,8 +102,8 @@ class _ItemNamePageState extends State<ItemNamePage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          width: 2,
-                          color: Color(0xFF4860b5),
+                          width: 1.5,
+                          color: Colors.blue,
                         ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
@@ -149,6 +150,7 @@ class _ItemNamePageState extends State<ItemNamePage> {
                               'selecteditemnameImg', itemName.imagePath);
                         },
                         child: Card(
+                          surfaceTintColor: Colors.white,
                           elevation: 2,
                           shadowColor: Colors.black,
                           color: Colors.white,

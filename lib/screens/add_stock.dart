@@ -14,6 +14,7 @@ import 'package:newbestshop/screens/each_stock.dart/categoty_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/itemname_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/subcategory_page.dart';
 import 'package:easy_stepper/easy_stepper.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 final _pageController = PageController();
 
@@ -81,10 +82,11 @@ class _stockadderState extends State<stockadder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8),
             child: Container(
               width: double.infinity,
               height: 141,
@@ -142,8 +144,13 @@ class _stockadderState extends State<stockadder> {
                             customTitle: Text(
                               Categoryname,
                               textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w400),
+                              // style: const TextStyle(
+                              //
+                              // ),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                             // onTap: () {},
                           ),
@@ -168,8 +175,10 @@ class _stockadderState extends State<stockadder> {
                                       '${ApiEndPoints.baseUrl}/$itemnameImg')),
                             ),
                             customTitle: Text(
-                              style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w400),
+                              style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                               itemnamename,
                               textAlign: TextAlign.center,
                             ),
@@ -192,8 +201,10 @@ class _stockadderState extends State<stockadder> {
                                       '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
                             ),
                             customTitle: Text(
-                              style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w400),
+                                                            style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                               Subcategoryname,
                               textAlign: TextAlign.center,
                             ),
@@ -212,8 +223,10 @@ class _stockadderState extends State<stockadder> {
                               ),
                             ),
                             customTitle: Text(
-                              style: const TextStyle(
-                                  fontSize: 12, fontWeight: FontWeight.w400),
+                                                            style: GoogleFonts.poppins(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                               brandname,
                               textAlign: TextAlign.center,
                             ),
@@ -224,16 +237,20 @@ class _stockadderState extends State<stockadder> {
                       ),
                     )
                   else
-                    const Center(
+                    Center(
                       child: Text(
                         "Select a Category",
-                        style: TextStyle(fontSize: 19),
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                 ],
               ),
             ),
           ),
+          // const Divider(),
           Expanded(
             child: PageViewCustom(reloadData: loadData),
           ),
@@ -295,6 +312,8 @@ class _PageViewCustomState extends State<PageViewCustom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // backgroundColor: Colors.grey.shade300,
+
       // floatingActionButton: FloatingActionButton(
       //   backgroundColor: const Color(0xFF4860b5),
       //   onPressed: () {

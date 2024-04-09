@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:newbestshop/screens/widgets/input_fields.dart';
+// import 'package:newbestshop/screens/widgets/input_fields.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/main_page.dart';
 
@@ -210,7 +210,7 @@ class _BillingPageState extends State<BillingPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.grey[800],
+          backgroundColor: Colors.white,
           insetPadding: const EdgeInsets.all(10),
           title: const Align(
             alignment: Alignment.center,
@@ -219,11 +219,11 @@ class _BillingPageState extends State<BillingPage> {
                 Icon(
                   Icons.add_task_rounded,
                   size: 70,
-                  color: Colors.teal,
+                  color: Color(0xFF4860b5),
                 ),
                 Text(
                   "Are you sure?",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.black),
                 ),
               ],
             ),
@@ -264,7 +264,9 @@ class _BillingPageState extends State<BillingPage> {
                         horizontal: 32,
                       ),
                     ),
-                    backgroundColor: MaterialStatePropertyAll(Colors.teal),
+                    backgroundColor: MaterialStatePropertyAll(
+                      Color(0xFF4860b5),
+                    ),
                     shape: MaterialStatePropertyAll(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
@@ -293,6 +295,7 @@ class _BillingPageState extends State<BillingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       resizeToAvoidBottomInset: false,
       floatingActionButton: GestureDetector(
         onTap: _showConfirmationDialog,
@@ -318,517 +321,579 @@ class _BillingPageState extends State<BillingPage> {
           ),
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
+      body: Padding(
+        padding: const EdgeInsets.all(3.5),
+        child: Card(
+          surfaceTintColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5), // if you need this
+            side: BorderSide(
+              color: Colors.grey.withOpacity(0.2),
+              width: 1,
+            ),
+          ),
+          child: Stack(
             children: [
-              SizedBox(
-                width: 210,
-                child: Card(
-                  child: Center(
-                    child: DropdownButtonHideUnderline(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 10),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          borderRadius: BorderRadius.circular(10),
-                          underline: const Text(""),
-                          // dropdownColor: Colors.black,
-                          focusColor: Colors.black,
-                          // elevation: 10,
-                          style: const TextStyle(color: Colors.black),
-                          hint: const Text(
-                            'Select a model',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          value: selectedModel,
-                          onChanged: (newValue) async {
-                            final SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            prefs.setInt('selectedmodelId', newValue['id']);
-                            prefs.setString(
-                                'selectedmodelname', newValue['name']);
-                            setState(() {
-                              selectedModel = newValue;
-                              selectedModelId = newValue['id'];
-                              fetchColorData(selectedModelId!);
-                              selectedColor = null;
-                            });
-                          },
-                          items: _models.map<DropdownMenuItem<dynamic>>((item) {
-                            return DropdownMenuItem<dynamic>(
-                              value: item,
-                              child: Text(item['name']),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // const SizedBox(height: 10),
-              SizedBox(
-                width: 210,
-                child: Card(
-                  child: Center(
-                    child: DropdownButtonHideUnderline(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 10),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          borderRadius: BorderRadius.circular(10),
-                          style: const TextStyle(color: Colors.black),
-                          hint: const Text(
-                            'Select a color',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          value: selectedColor,
-                          onChanged: (newValue) async {
-                            final SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            prefs.setInt('selectedcolorId', newValue['id']);
-                            prefs.setString(
-                                'selectedcolorname', newValue['name']);
-                            setState(() {
-                              selectedColor = newValue;
-                              selectedsizeId = newValue['id'];
-                              fetchColorSize(selectedsizeId!);
-                              selectedsize = null;
-                            });
-                          },
-                          items: _colors.map<DropdownMenuItem<dynamic>>((item) {
-                            return DropdownMenuItem<dynamic>(
-                              value: item,
-                              child: Text(item['name']),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // const SizedBox(height: 20),
-              SizedBox(
-                width: 210,
-                child: Card(
-                  child: Center(
-                    child: DropdownButtonHideUnderline(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 10),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          borderRadius: BorderRadius.circular(10),
-                          // underline: const Text(""),
-                          style: const TextStyle(color: Colors.black),
-                          hint: const Text(
-                            'Select a size',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          value: selectedsize,
-                          onChanged: (newValue) async {
-                            final SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            // prefs.setIntList('selectedsizeId', newValue['id']);
-                            prefs.setString(
-                                'selectedsizename', newValue['name']);
-                            sizeId = [newValue['id']];
-                            setState(() {
-                              selectedsize = newValue;
-                            });
-                          },
-                          items: selectedsizelist
-                              .map<DropdownMenuItem<dynamic>>((item) {
-                            return DropdownMenuItem<dynamic>(
-                              value: item,
-                              child: Text(item['name']),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                width: 200,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (selectedsize != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 13),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                          height: 60,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            onChanged: (value) => {
-                              setState(() {
-                                convertAndPassToList();
-                              })
-                            },
-                            textAlignVertical: TextAlignVertical.center,
-                            textAlign: TextAlign.justify,
-                            controller: quantity,
-                            decoration: const InputDecoration(
-                              labelText: "Quantity",
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(146, 84, 87, 94),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              isDense: true,
-                              contentPadding: EdgeInsets.only(
-                                left: 15,
-                                bottom: 39,
-                              ),
-                              alignLabelWithHint: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
+              // const Positioned(
+              //   right: 340,
+              //   top: 10,
+              //   child: CircleAvatar(
+              //     radius: 80,
+              //     backgroundColor: Color.fromARGB(90, 33, 149, 243),
+              //   ),
+              // ),
+              // const Positioned(
+              //   right: 270,
+              //   top: -50,
+              //   child: CircleAvatar(
+              //     radius: 80,
+              //     backgroundColor: Color.fromARGB(90, 33, 149, 243),
+              //   ),
+              // ),
+              Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 210,
+                        child: Card(
+                          // surfaceTintColor: Colors.white,
+                          child: Center(
+                            child: DropdownButtonHideUnderline(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  borderRadius: BorderRadius.circular(10),
+                                  underline: const Text(""),
+                                  // dropdownColor: Colors.black,
+                                  focusColor: Colors.black,
+                                  // elevation: 10,
+                                  style: const TextStyle(color: Colors.black),
+                                  hint: const Text(
+                                    'Select a model',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  value: selectedModel,
+                                  onChanged: (newValue) async {
+                                    final SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setInt(
+                                        'selectedmodelId', newValue['id']);
+                                    prefs.setString(
+                                        'selectedmodelname', newValue['name']);
+                                    setState(() {
+                                      selectedModel = newValue;
+                                      selectedModelId = newValue['id'];
+                                      fetchColorData(selectedModelId!);
+                                      selectedColor = null;
+                                    });
+                                  },
+                                  items: _models
+                                      .map<DropdownMenuItem<dynamic>>((item) {
+                                    return DropdownMenuItem<dynamic>(
+                                      value: item,
+                                      child: Text(item['name']),
+                                    );
+                                  }).toList(),
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              hintStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              // hintText: "quantity",
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (selectedsize != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 13),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                          height: 60,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            onChanged: (value) => {
-                              setState(() {
-                                convertAndPassToList();
-                              })
-                            },
-                            textAlignVertical: TextAlignVertical.center,
-                            textAlign: TextAlign.justify,
-                            controller: billnumbercontroller,
-                            decoration: const InputDecoration(
-                              labelText: "BillNumber",
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              isDense: true,
-                              contentPadding: EdgeInsets.only(
-                                left: 15,
-                                bottom: 39,
-                              ),
-                              alignLabelWithHint: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              hintStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
                               ),
                             ),
                           ),
                         ),
                       ),
-                    if (selectedsize != null)
-                      // InputTextFieldWidget(
-                      //     sellingpricecontroller, "sellingprice"),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 13),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                          ),
-                          height: 60,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            textAlignVertical: TextAlignVertical.center,
-                            textAlign: TextAlign.justify,
-                            controller: sellingpricecontroller,
-                            decoration: const InputDecoration(
-                              labelText: "SellingPrice",
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              isDense: true,
-                              contentPadding: EdgeInsets.only(
-                                left: 15,
-                                bottom: 39,
-                              ),
-                              alignLabelWithHint: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
+                      // const SizedBox(height: 10),
+                      SizedBox(
+                        width: 210,
+                        child: Card(
+                          // surfaceTintColor: Colors.white,
+                          child: Center(
+                            child: DropdownButtonHideUnderline(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  borderRadius: BorderRadius.circular(10),
+                                  style: const TextStyle(color: Colors.black),
+                                  hint: const Text(
+                                    'Select a color',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  value: selectedColor,
+                                  onChanged: (newValue) async {
+                                    final SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    prefs.setInt(
+                                        'selectedcolorId', newValue['id']);
+                                    prefs.setString(
+                                        'selectedcolorname', newValue['name']);
+                                    setState(() {
+                                      selectedColor = newValue;
+                                      selectedsizeId = newValue['id'];
+                                      fetchColorSize(selectedsizeId!);
+                                      selectedsize = null;
+                                    });
+                                  },
+                                  items: _colors
+                                      .map<DropdownMenuItem<dynamic>>((item) {
+                                    return DropdownMenuItem<dynamic>(
+                                      value: item,
+                                      child: Text(item['name']),
+                                    );
+                                  }).toList(),
                                 ),
                               ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              hintStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              // hintText: "sellingprice",
                             ),
                           ),
                         ),
                       ),
-                    if (selectedsize != null)
-                      // InputTextFieldWidget(
-                      // purchasingpricecontroller, "purchasing price"),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 13),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
+                      // const SizedBox(height: 20),
+                      SizedBox(
+                        width: 210,
+                        child: Card(
+                          // surfaceTintColor: Colors.white,
+                          child: Center(
+                            child: DropdownButtonHideUnderline(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 10, left: 10),
+                                child: DropdownButton(
+                                  isExpanded: true,
+                                  borderRadius: BorderRadius.circular(10),
+                                  // underline: const Text(""),
+                                  style: const TextStyle(color: Colors.black),
+                                  hint: const Text(
+                                    'Select a size',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  value: selectedsize,
+                                  onChanged: (newValue) async {
+                                    final SharedPreferences prefs =
+                                        await SharedPreferences.getInstance();
+                                    // prefs.setIntList('selectedsizeId', newValue['id']);
+                                    prefs.setString(
+                                        'selectedsizename', newValue['name']);
+                                    sizeId = [newValue['id']];
+                                    setState(() {
+                                      selectedsize = newValue;
+                                    });
+                                  },
+                                  items: selectedsizelist
+                                      .map<DropdownMenuItem<dynamic>>((item) {
+                                    return DropdownMenuItem<dynamic>(
+                                      value: item,
+                                      child: Text(item['name']),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
                             ),
                           ),
-                          height: 60,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      SizedBox(
+                        width: 200,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (selectedsize != null)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 13),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  height: 60,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.next,
+                                    onChanged: (value) => {
+                                      setState(() {
+                                        convertAndPassToList();
+                                      })
+                                    },
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textAlign: TextAlign.justify,
+                                    controller: quantity,
+                                    decoration: const InputDecoration(
+                                      labelText: "Quantity",
+                                      labelStyle: TextStyle(
+                                        color: Color.fromARGB(146, 84, 87, 94),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 39,
+                                      ),
+                                      alignLabelWithHint: true,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      hintStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      // hintText: "quantity",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (selectedsize != null)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 13),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  height: 60,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.next,
+                                    onChanged: (value) => {
+                                      setState(() {
+                                        convertAndPassToList();
+                                      })
+                                    },
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textAlign: TextAlign.justify,
+                                    controller: billnumbercontroller,
+                                    decoration: const InputDecoration(
+                                      labelText: "BillNumber",
+                                      labelStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 39,
+                                      ),
+                                      alignLabelWithHint: true,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      hintStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (selectedsize != null)
+                              // InputTextFieldWidget(
+                              //     sellingpricecontroller, "sellingprice"),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 13),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  height: 60,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.next,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textAlign: TextAlign.justify,
+                                    controller: sellingpricecontroller,
+                                    decoration: const InputDecoration(
+                                      labelText: "SellingPrice",
+                                      labelStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 39,
+                                      ),
+                                      alignLabelWithHint: true,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      hintStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      // hintText: "sellingprice",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (selectedsize != null)
+                              // InputTextFieldWidget(
+                              // purchasingpricecontroller, "purchasing price"),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 13),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  height: 60,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.next,
 
-                            onChanged: (value) => {
-                              setState(() {
-                                convertAndPassToList();
-                              })
-                            },
-                            textAlignVertical: TextAlignVertical.center,
-                            textAlign: TextAlign.justify,
-                            controller: purchasingpricecontroller,
-                            // initialValue: "1",
-                            decoration: const InputDecoration(
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              labelText: "PurchasingPrice",
-                              isDense: true,
-                              contentPadding: EdgeInsets.only(
-                                left: 15,
-                                bottom: 39,
-                              ),
-                              alignLabelWithHint: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
+                                    onChanged: (value) => {
+                                      setState(() {
+                                        convertAndPassToList();
+                                      })
+                                    },
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textAlign: TextAlign.justify,
+                                    controller: purchasingpricecontroller,
+                                    // initialValue: "1",
+                                    decoration: const InputDecoration(
+                                      labelStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      labelText: "PurchasingPrice",
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 39,
+                                      ),
+                                      alignLabelWithHint: true,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      hintStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      // hintText: "purchasing_price",
+                                    ),
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
+                              ),
+                            if (selectedsize != null)
+                              // InputTextFieldWidget(mrpcontroller, "Mrp"),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 13),
+                                child: Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(15),
+                                    ),
+                                  ),
+                                  height: 60,
+                                  child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    textInputAction: TextInputAction.done,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    textAlign: TextAlign.justify,
+                                    controller: mrpcontroller,
+                                    decoration: const InputDecoration(
+                                      labelText: "Mrp",
+                                      labelStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.only(
+                                        left: 15,
+                                        bottom: 39,
+                                      ),
+                                      alignLabelWithHint: true,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color: Colors.grey,
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      errorBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                          color:
+                                              Color.fromARGB(143, 0, 140, 255),
+                                          width: 2.0,
+                                        ),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      filled: true,
+                                      fillColor: Colors.transparent,
+                                      hintStyle: TextStyle(
+                                        color:
+                                            Color.fromARGB(146, 87, 111, 168),
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16,
+                                      ),
+                                      // hintText: "mrp",
+                                    ),
+                                  ),
                                 ),
                               ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              hintStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              // hintText: "purchasing_price",
-                            ),
-                          ),
+                          ],
                         ),
                       ),
-                    if (selectedsize != null)
-                      // InputTextFieldWidget(mrpcontroller, "Mrp"),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 13),
-                        child: Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(15),
-                            ),
-                          ),
-                          height: 60,
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.done,
-                            textAlignVertical: TextAlignVertical.center,
-                            textAlign: TextAlign.justify,
-                            controller: mrpcontroller,
-                            decoration: const InputDecoration(
-                              labelText: "Mrp",
-                              labelStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              isDense: true,
-                              contentPadding: EdgeInsets.only(
-                                left: 15,
-                                bottom: 39,
-                              ),
-                              alignLabelWithHint: true,
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Color.fromARGB(143, 0, 140, 255),
-                                  width: 2.0,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(10),
-                                ),
-                              ),
-                              filled: true,
-                              fillColor: Colors.transparent,
-                              hintStyle: TextStyle(
-                                color: Color.fromARGB(146, 87, 111, 168),
-                                fontWeight: FontWeight.w400,
-                                fontSize: 16,
-                              ),
-                              // hintText: "mrp",
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

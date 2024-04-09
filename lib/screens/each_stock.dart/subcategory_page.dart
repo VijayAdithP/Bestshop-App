@@ -74,6 +74,7 @@ class _subcategoryPageState extends State<subcategoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       body: Stack(
         children: [
           Column(
@@ -93,7 +94,7 @@ class _subcategoryPageState extends State<subcategoryPage> {
                       contentPadding: EdgeInsets.all(5),
                       border: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Color(0xFF4860b5),
+                          color: Colors.blue,
                         ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
@@ -101,8 +102,8 @@ class _subcategoryPageState extends State<subcategoryPage> {
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          width: 2,
-                          color: Color(0xFF4860b5),
+                          width: 1.5,
+                          color: Colors.blue,
                         ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
@@ -156,6 +157,8 @@ class _subcategoryPageState extends State<subcategoryPage> {
                           // );
                         },
                         child: Card(
+                          surfaceTintColor: Colors.white,
+
                           // child: ListTile(
                           //   title: Text(category.name),
                           //   leading: Image.network(

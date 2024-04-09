@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Expandtile extends StatefulWidget {
   const Expandtile({Key? key}) : super(key: key);
@@ -51,6 +52,7 @@ class _ExpandtileState extends State<Expandtile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -63,13 +65,18 @@ class _ExpandtileState extends State<Expandtile> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: ElevatedButton.icon(
-                label: const Text(
+                label: Text(
                   "Pick a date",
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     fontSize: 20,
-                    color: Colors.white,
                     fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
+                  // style: TextStyle(
+                  //   fontSize: 20,
+                  //   color: Colors.white,
+                  //   fontWeight: FontWeight.w600,
+                  // ),
                 ),
                 icon: const Icon(
                   Icons.edit_calendar,
@@ -92,6 +99,40 @@ class _ExpandtileState extends State<Expandtile> {
                     initialDate: DateTime.now(),
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
+                    builder: (BuildContext context, Widget? child) {
+                      return Theme(
+                        data: ThemeData.dark().copyWith(
+                          colorScheme: const ColorScheme.light(
+                            primary: Colors.white,
+                            onPrimary: Color(0xFF4860b5),
+                            onSurface: Color(0xFF4860b5),
+                            onBackground: Color(0xFF4860b5),
+                            // background: Colors.white,
+                          ),
+                          textButtonTheme: TextButtonThemeData(
+                            style: TextButton.styleFrom(
+                              backgroundColor: const Color(0xFF4860b5),
+                            ),
+                          ),
+                          textTheme: TextTheme(
+                            headlineLarge:
+                                Theme.of(context).textTheme.headlineLarge,
+                            titleLarge:
+                                Theme.of(context).textTheme.headlineLarge,
+                            // labelSmall: AppTextStyle
+                            //     .style14wBlueButton, // Title - SELECT DATE
+                            // bodyLarge: AppTextStyle
+                            //     .style14wBlueButton, // year gridbview picker
+                            // titleMedium:
+                            //     AppTextStyle.style14wBlueButton, // input
+                            // titleSmall: AppTextStyle
+                            //     .style14wBlueButton, // month/year picker
+                            // bodySmall: AppTextStyle.style14wBlueButton // days
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
                   );
                   if (picked != null) {
                     setState(() {
@@ -135,18 +176,27 @@ class _ExpandtileState extends State<Expandtile> {
                       return ListView(
                         children: groupedItems.keys.map((shop) {
                           return Card(
+                            surfaceTintColor: Colors.white,
                             child: ExpansionTile(
                               shape: const Border(),
                               title: Align(
                                 alignment: Alignment.center,
-                                child: Text(shop),
+                                child: Text(
+                                  shop,
+                                  style: GoogleFonts.poppins(
+                                    // fontSize: 20,
+                                    fontWeight: FontWeight.w500,
+                                    // color: Colors.white,
+                                  ),
+                                ),
                               ),
                               children: [
                                 SingleChildScrollView(
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(top: 1,left: 5,right: 5,bottom: 5),
+                                      padding: const EdgeInsets.only(
+                                          top: 1, left: 5, right: 5, bottom: 5),
                                       child: Table(
                                         defaultVerticalAlignment:
                                             TableCellVerticalAlignment.top,
@@ -188,9 +238,13 @@ class _ExpandtileState extends State<Expandtile> {
                                                               8.0),
                                                       child: Text(
                                                         header,
-                                                        style: const TextStyle(
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          // fontSize: 20,
                                                           fontWeight:
-                                                              FontWeight.bold,
+                                                              FontWeight.w600,
+                                                          color: const Color(
+                                                              0xFF4860b5),
                                                         ),
                                                       ),
                                                     ),
@@ -213,9 +267,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item['user']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['user']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -223,9 +284,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item['id']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['id']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -233,9 +301,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item['shop']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['shop']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -243,9 +318,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item['date']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['date']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -253,9 +335,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item['time']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['time']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -263,9 +352,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item['name']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['name']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -273,10 +369,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item[
-                                                                  'model_name']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['model_name']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -284,10 +386,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item[
-                                                                  'color_name']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['color_name']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -295,10 +403,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item[
-                                                                  'size_name']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['size_name']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -306,10 +420,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item[
-                                                                  'quantity']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['quantity']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -317,9 +437,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item['mrp']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['mrp']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                   TableCell(
@@ -327,10 +454,16 @@ class _ExpandtileState extends State<Expandtile> {
                                                       padding:
                                                           const EdgeInsets.all(
                                                               8.0),
-                                                      child: Text(item[
-                                                                  'total_price']
-                                                              ?.toString() ??
-                                                          ''),
+                                                      child: Text(
+                                                        item['total_price']
+                                                                ?.toString() ??
+                                                            '',
+                                                        style:
+                                                            GoogleFonts.poppins(
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ],

@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-// import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/stocks.dart';
@@ -11,6 +9,7 @@ import 'package:newbestshop/utils/api_endpoints.dart';
 import 'add_stock.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
@@ -28,23 +27,39 @@ class _Home_PageState extends State<Home_Page> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF4860b5),
+        //  backgroundColor: Colors.grey.shade300,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const [
+        backgroundColor: Colors.grey.shade300,
+        selectedLabelStyle: GoogleFonts.poppins(
+          // fontSize: 24,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+        unselectedLabelStyle: GoogleFonts.poppins(
+          // fontSize: 24,
+          fontWeight: FontWeight.w500,
+          color: Colors.white,
+        ),
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
+            backgroundColor: Colors.grey.shade300,
+            icon: const Icon(Icons.dashboard),
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.inventory),
+            backgroundColor: Colors.grey.shade300,
+            icon: const Icon(Icons.inventory),
             label: 'Inventory',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            backgroundColor: Colors.grey.shade300,
+            icon: const Icon(Icons.shopping_cart),
             label: 'Add Stocks',
           ),
         ],
@@ -112,8 +127,9 @@ class _Drawer_State extends State<Drawer_> {
                   alignment: Alignment.bottomLeft,
                   child: Text(
                     username,
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontSize: 24,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
                   ),
@@ -122,7 +138,14 @@ class _Drawer_State extends State<Drawer_> {
             ),
           ),
           ListTile(
-            title: const Text('Logout'),
+            title: Text(
+              'Logout',
+              style: GoogleFonts.poppins(
+                // fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF4860b5),
+              ),
+            ),
             textColor: const Color.fromARGB(255, 0, 0, 0),
             onTap: () async {
               _logoutController.logout();
@@ -214,37 +237,47 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
     }
 
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Container(
-              margin: const EdgeInsets.only(right: 60),
-              decoration: const BoxDecoration(color: Colors.transparent),
-              child: Padding(
-                padding: EdgeInsets.only(
-                    top: 5,
-                    // right: 30,
-                    left: 5,
-                    bottom: MediaQuery.of(context).size.height * 0.021),
-                child: PageView.builder(
-                  controller: _pageController,
-                  onPageChanged: (int page) {
-                    setState(() {
-                      currentpage = page;
-                    });
-                  },
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _axisNames!.length,
-                  itemBuilder: (context, index) {
-                    return buildPage(index);
-                  },
+      backgroundColor: Colors.grey.shade300,
+      body: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(4),
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+
+        // Define how the card's content should be clipped
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        child: Column(
+          children: [
+            Expanded(
+              child: Container(
+                // margin: const EdgeInsets.only(right: 60),
+                decoration: const BoxDecoration(color: Colors.transparent),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                      top: 5,
+                      right: 30,
+                      left: 10,
+                      bottom: MediaQuery.of(context).size.height * 0.021),
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (int page) {
+                      setState(() {
+                        currentpage = page;
+                      });
+                    },
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _axisNames!.length,
+                    itemBuilder: (context, index) {
+                      return buildPage(index);
+                    },
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            // top: 100,
-            child: Container(
+            Container(
               color: Colors.transparent,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -268,90 +301,95 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const Divider(
-            height: 5,
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          const SizedBox(
-            height: 20,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.red,
-                ),
-                Text(
-                  "Product Count",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.green,
-                ),
-                Text(
-                  "Product Price",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                CircleAvatar(
-                  backgroundColor: Colors.blue,
-                ),
-                Text(
-                  "Rate of Product",
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+            const SizedBox(
+              height: 10,
             ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          // SliderTheme(
-          //   data: SliderThemeData(
-          //     activeTrackColor: const Color(0xFF4860b5),
-          //     inactiveTrackColor: Colors.grey[300],
-          //     trackShape: const RoundedRectSliderTrackShape(),
-          //     trackHeight: 30,
-          //     thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
-          //     thumbColor: const Color(0xFF4860b5),
-          //     overlayColor: Colors.transparent,
-          //     overlayShape: const RoundSliderOverlayShape(overlayRadius: 28.0),
-          //     tickMarkShape: const RoundSliderTickMarkShape(),
-          //     activeTickMarkColor: const Color(0xFF4860b5),
-          //     inactiveTickMarkColor: Colors.transparent,
-          //     valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
-          //     valueIndicatorColor: const Color(0xFF4860b5),
-          //     valueIndicatorTextStyle: const TextStyle(
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          //   child: Slider(
-          //     value: _selectedIntervalIndex.toDouble(),
-          //     min: 0,
-          //     max: _axisNames!.length.toDouble() - 1,
-          //     onChanged: (value) {
-          //       setState(() {
-          //         _selectedIntervalIndex = value.toInt();
-          //       });
-          //     },
-          //     divisions: _axisNames!.length - 1,
-          //     label: _axisNames![_selectedIntervalIndex],
-          //   ),
-          // ),
-        ],
+            const Divider(
+              height: 5,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            SizedBox(
+              height: 20,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircleAvatar(
+                    // radius: ,
+                    backgroundColor: Colors.red,
+                  ),
+                  Text(
+                    "Product Count",
+                    // style: TextStyle(
+                    //   fontSize: 10,
+                    //   fontWeight: FontWeight.w500,
+                    // ),
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const CircleAvatar(
+                    backgroundColor: Colors.green,
+                  ),
+                  Text(
+                    "Product Price",
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const CircleAvatar(
+                    backgroundColor: Colors.blue,
+                  ),
+                  Text(
+                    "Rate of Product",
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            // SliderTheme(
+            //   data: SliderThemeData(
+            //     activeTrackColor: const Color(0xFF4860b5),
+            //     inactiveTrackColor: Colors.grey[300],
+            //     trackShape: const RoundedRectSliderTrackShape(),
+            //     trackHeight: 30,
+            //     thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
+            //     thumbColor: const Color(0xFF4860b5),
+            //     overlayColor: Colors.transparent,
+            //     overlayShape: const RoundSliderOverlayShape(overlayRadius: 28.0),
+            //     tickMarkShape: const RoundSliderTickMarkShape(),
+            //     activeTickMarkColor: const Color(0xFF4860b5),
+            //     inactiveTickMarkColor: Colors.transparent,
+            //     valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
+            //     valueIndicatorColor: const Color(0xFF4860b5),
+            //     valueIndicatorTextStyle: const TextStyle(
+            //       color: Colors.white,
+            //     ),
+            //   ),
+            //   child: Slider(
+            //     value: _selectedIntervalIndex.toDouble(),
+            //     min: 0,
+            //     max: _axisNames!.length.toDouble() - 1,
+            //     onChanged: (value) {
+            //       setState(() {
+            //         _selectedIntervalIndex = value.toInt();
+            //       });
+            //     },
+            //     divisions: _axisNames!.length - 1,
+            //     label: _axisNames![_selectedIntervalIndex],
+            //   ),
+            // ),
+          ],
+        ),
       ),
     );
   }
@@ -367,7 +405,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                       _apiData![index][_bottomTitles[i]].toString()) ??
                   0,
               color: _barColors[i % _barColors.length],
-              width: 60,
+              width: 65,
               borderRadius: BorderRadius.circular(3),
             ),
         ],
@@ -415,10 +453,17 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
             reservedSize: 6,
           ),
         ),
-        rightTitles: const AxisTitles(
+        rightTitles:  AxisTitles(
           sideTitles: SideTitles(
-            showTitles: false,
-            reservedSize: 55,
+            showTitles: true,
+            getTitlesWidget: (value, meta) {
+              return const Text(
+                ""
+                // value.toInt().toString(),
+                // textAlign: TextAlign.left,
+              );
+            },
+            // reservedSize: 55,
           ),
         ),
         topTitles: AxisTitles(
@@ -430,7 +475,12 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                   padding: const EdgeInsets.only(top: 20),
                   child: Text(
                     _axisNames![index],
-                    style: const TextStyle(
+                    // style: const TextStyle(
+                    //   fontSize: 20,
+                    //   color: Colors.grey,
+                    //   fontWeight: FontWeight.w500,
+                    // ),
+                    style: GoogleFonts.poppins(
                       fontSize: 20,
                       color: Colors.grey,
                       fontWeight: FontWeight.w500,
@@ -445,6 +495,17 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
         ),
         leftTitles: const AxisTitles(
           sideTitles: SideTitles(
+            // getTitlesWidget: (value, meta) {
+            //   return Text(
+            //     value.toInt().toString(),
+            //     // textAlign: TextAlign.left,
+            //     style: GoogleFonts.poppins(
+            //       // fontSize: 20,
+            //       // color: Colors.grey,
+            //       fontWeight: FontWeight.w500,
+            //     ),
+            //   );
+            // },
             showTitles: true,
             reservedSize: 55,
           ),

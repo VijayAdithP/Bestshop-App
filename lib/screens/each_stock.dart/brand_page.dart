@@ -74,6 +74,7 @@ class _brandPageState extends State<brandPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade300,
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
@@ -89,26 +90,21 @@ class _brandPageState extends State<brandPage> {
                   ),
                   height: 40,
                   child: TextFormField(
-                  
                     onChanged: _searchItem,
                     decoration: const InputDecoration(
-                      
                       contentPadding: EdgeInsets.all(5),
                       border: OutlineInputBorder(
-
                         borderSide: BorderSide(
-
-                          color: Color(0xFF4860b5),
+                          color: Colors.blue,
                         ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
-                        
                         borderSide: BorderSide(
-                          width: 2,
-                          color: Color(0xFF4860b5),
+                          width: 1.5,
+                          color: Colors.blue,
                         ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(20),
@@ -142,14 +138,13 @@ class _brandPageState extends State<brandPage> {
                           widget.controller.animateToPage(4,
                               duration: const Duration(milliseconds: 300),
                               curve: Curves.easeIn);
-      
+
                           final SharedPreferences prefs =
                               await SharedPreferences.getInstance();
                           prefs.setInt('selectedbrandId', brand.id);
                           prefs.setString('selectedbrandname', brand.name);
-                          prefs.setString(
-                              'selectedbrandImg', brand.imagePath);
-      
+                          prefs.setString('selectedbrandImg', brand.imagePath);
+
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(
@@ -160,6 +155,8 @@ class _brandPageState extends State<brandPage> {
                           // );
                         },
                         child: Card(
+                          surfaceTintColor: Colors.white,
+
                           // child: ListTile(
                           //   title: Text(category.name),
                           //   leading: Image.network(
