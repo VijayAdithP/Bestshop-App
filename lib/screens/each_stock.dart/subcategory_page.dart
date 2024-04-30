@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:newbestshop/models/api_data.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class subcategoryPage extends StatefulWidget {
   final int itemnameId;
@@ -179,7 +180,10 @@ class _subcategoryPageState extends State<subcategoryPage> {
                                         '${ApiEndPoints.baseUrl}/${subcategory.imagePath}')),
                                 Text(
                                   subcategory.name,
-                                  style: const TextStyle(fontSize: 13),
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),

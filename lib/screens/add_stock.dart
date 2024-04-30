@@ -201,7 +201,7 @@ class _stockadderState extends State<stockadder> {
                                       '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
                             ),
                             customTitle: Text(
-                                                            style: GoogleFonts.poppins(
+                              style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -223,7 +223,7 @@ class _stockadderState extends State<stockadder> {
                               ),
                             ),
                             customTitle: Text(
-                                                            style: GoogleFonts.poppins(
+                              style: GoogleFonts.poppins(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),

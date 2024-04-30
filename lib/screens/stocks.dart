@@ -59,7 +59,7 @@ class _ExpandtileState extends State<Expandtile> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Container(
-              height: 50,
+              height: 60,
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(20),
@@ -176,6 +176,8 @@ class _ExpandtileState extends State<Expandtile> {
                       return ListView(
                         children: groupedItems.keys.map((shop) {
                           return Card(
+                            shadowColor: Colors.black,
+                            elevation: 3,
                             surfaceTintColor: Colors.white,
                             child: ExpansionTile(
                               shape: const Border(),
@@ -194,6 +196,7 @@ class _ExpandtileState extends State<Expandtile> {
                                 SingleChildScrollView(
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
+                                    
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                           top: 1, left: 5, right: 5, bottom: 5),

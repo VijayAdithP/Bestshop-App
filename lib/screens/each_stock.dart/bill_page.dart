@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:newbestshop/screens/widgets/input_fields.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/main_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class BillingPage extends StatefulWidget {
   final int modelId;
@@ -212,18 +213,22 @@ class _BillingPageState extends State<BillingPage> {
         return AlertDialog(
           backgroundColor: Colors.white,
           insetPadding: const EdgeInsets.all(10),
-          title: const Align(
+          title: Align(
             alignment: Alignment.center,
             child: Column(
               children: [
-                Icon(
+                const Icon(
                   Icons.add_task_rounded,
                   size: 70,
                   color: Color(0xFF4860b5),
                 ),
                 Text(
                   "Are you sure?",
-                  style: TextStyle(color: Colors.black),
+                  style: GoogleFonts.poppins(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -246,11 +251,16 @@ class _BillingPageState extends State<BillingPage> {
                       color: Colors.red,
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "No",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 255, 0, 0),
+                    style: GoogleFonts.poppins(
+                      color: const Color.fromARGB(255, 255, 0, 0),
+                      // fontSize: 23,
+                      fontWeight: FontWeight.w500,
                     ),
+                    // style: TextStyle(
+                    //   color: Color.fromARGB(255, 255, 0, 0),
+                    // ),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -275,9 +285,14 @@ class _BillingPageState extends State<BillingPage> {
                       ),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "Yes",
-                    style: TextStyle(color: Colors.white),
+                    // style: TextStyle(color: Colors.white),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      // fontSize: 23,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -304,18 +319,23 @@ class _BillingPageState extends State<BillingPage> {
           padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           decoration: BoxDecoration(
               color: primaryColor, borderRadius: BorderRadius.circular(8)),
-          child: const Row(
+          child: Row(
             children: [
-              Icon(
+              const Icon(
                 Icons.add,
                 color: Colors.white,
               ),
               Text(
                 "Add",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500),
+                // style: TextStyle(
+                //     color: Colors.white,
+                //     fontSize: 16,
+                //     fontWeight: FontWeight.w500),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
@@ -373,10 +393,11 @@ class _BillingPageState extends State<BillingPage> {
                                   focusColor: Colors.black,
                                   // elevation: 10,
                                   style: const TextStyle(color: Colors.black),
-                                  hint: const Text(
+                                  hint: Text(
                                     'Select a model',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
+                                    style: GoogleFonts.poppins(
+                                      // fontSize: 23,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   value: selectedModel,
@@ -398,7 +419,13 @@ class _BillingPageState extends State<BillingPage> {
                                       .map<DropdownMenuItem<dynamic>>((item) {
                                     return DropdownMenuItem<dynamic>(
                                       value: item,
-                                      child: Text(item['name']),
+                                      child: Text(
+                                        item['name'],
+                                        style: GoogleFonts.poppins(
+                                            // fontSize: 23,
+                                            // fontWeight: FontWeight.w500,
+                                            ),
+                                      ),
                                     );
                                   }).toList(),
                                 ),
@@ -421,10 +448,11 @@ class _BillingPageState extends State<BillingPage> {
                                   isExpanded: true,
                                   borderRadius: BorderRadius.circular(10),
                                   style: const TextStyle(color: Colors.black),
-                                  hint: const Text(
+                                  hint: Text(
                                     'Select a color',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
+                                    style: GoogleFonts.poppins(
+                                      // fontSize: 23,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   value: selectedColor,
@@ -446,7 +474,13 @@ class _BillingPageState extends State<BillingPage> {
                                       .map<DropdownMenuItem<dynamic>>((item) {
                                     return DropdownMenuItem<dynamic>(
                                       value: item,
-                                      child: Text(item['name']),
+                                      child: Text(
+                                        item['name'],
+                                        style: GoogleFonts.poppins(
+                                            // fontSize: 23,
+                                            // fontWeight: FontWeight.w500,
+                                            ),
+                                      ),
                                     );
                                   }).toList(),
                                 ),
@@ -470,10 +504,11 @@ class _BillingPageState extends State<BillingPage> {
                                   borderRadius: BorderRadius.circular(10),
                                   // underline: const Text(""),
                                   style: const TextStyle(color: Colors.black),
-                                  hint: const Text(
+                                  hint: Text(
                                     'Select a size',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
+                                    style: GoogleFonts.poppins(
+                                      // fontSize: 23,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                   value: selectedsize,
@@ -492,7 +527,13 @@ class _BillingPageState extends State<BillingPage> {
                                       .map<DropdownMenuItem<dynamic>>((item) {
                                     return DropdownMenuItem<dynamic>(
                                       value: item,
-                                      child: Text(item['name']),
+                                      child: Text(
+                                        item['name'],
+                                        style: GoogleFonts.poppins(
+                                            // fontSize: 23,
+                                            // fontWeight: FontWeight.w500,
+                                            ),
+                                      ),
                                     );
                                   }).toList(),
                                 ),

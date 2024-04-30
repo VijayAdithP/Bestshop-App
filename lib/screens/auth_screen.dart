@@ -281,33 +281,33 @@ class _AuthScreenState extends State<AuthScreen> {
           const SizedBox(
             height: 5,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Don't have an account?",
-                style: GoogleFonts.outfit(
-                  fontWeight: FontWeight.w500,
-                  // fontSize: 16,
-                  // fontWeight: FontWeight.w400,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  Get.off(() => const Register());
-                },
-                child: Text(
-                  "Register",
-                  style: GoogleFonts.outfit(
-                    // fontSize: 16,
-                    fontWeight: FontWeight.w600,
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     Text(
+          //       "Don't have an account?",
+          //       style: GoogleFonts.outfit(
+          //         fontWeight: FontWeight.w500,
+          //         // fontSize: 16,
+          //         // fontWeight: FontWeight.w400,
+          //       ),
+          //     ),
+          //     TextButton(
+          //       onPressed: () {
+          //         Get.off(() => const Register());
+          //       },
+          //       child: Text(
+          //         "Register",
+          //         style: GoogleFonts.outfit(
+          //           // fontSize: 16,
+          //           fontWeight: FontWeight.w600,
 
-                    color: const Color(0xFF4860b5),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          //           color: const Color(0xFF4860b5),
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

@@ -11,6 +11,18 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+String formatNumber(double value) {
+  if (value >= 1000000) {
+    double result = value / 1000000;
+    return '${result.toStringAsFixed(1)}m';
+  } else if (value >= 1000) {
+    double result = value / 1000;
+    return '${result.toStringAsFixed(1)}k';
+  } else {
+    return value.toStringAsFixed(0);
+  }
+}
+
 class Home_Page extends StatefulWidget {
   const Home_Page({super.key});
   @override
@@ -30,6 +42,14 @@ class _Home_PageState extends State<Home_Page> {
       backgroundColor: Colors.grey.shade300,
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        title: Text(
+          "BestShop",
+          style: GoogleFonts.poppins(
+            // fontSize: 24,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF4860b5),
         //  backgroundColor: Colors.grey.shade300,
@@ -257,10 +277,11 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                 decoration: const BoxDecoration(color: Colors.transparent),
                 child: Padding(
                   padding: EdgeInsets.only(
-                      top: 5,
-                      right: 30,
-                      left: 10,
-                      bottom: MediaQuery.of(context).size.height * 0.021),
+                    top: 5,
+                    right: MediaQuery.of(context).size.height * 0.04,
+                    left: 15,
+                    bottom: MediaQuery.of(context).size.height * 0.021,
+                  ),
                   child: PageView.builder(
                     controller: _pageController,
                     onPageChanged: (int page) {
@@ -453,17 +474,16 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
             reservedSize: 6,
           ),
         ),
-        rightTitles:  AxisTitles(
+        rightTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
             getTitlesWidget: (value, meta) {
-              return const Text(
-                ""
-                // value.toInt().toString(),
-                // textAlign: TextAlign.left,
-              );
+              return const Text(""
+                  // value.toInt().toString(),
+                  // textAlign: TextAlign.left,
+                  );
             },
-            // reservedSize: 55,
+            reservedSize: 35,
           ),
         ),
         topTitles: AxisTitles(
@@ -481,7 +501,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                     //   fontWeight: FontWeight.w500,
                     // ),
                     style: GoogleFonts.poppins(
-                      fontSize: 20,
+                      fontSize: 15,
                       color: Colors.grey,
                       fontWeight: FontWeight.w500,
                     ),
@@ -493,21 +513,23 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
             reservedSize: 45,
           ),
         ),
-        leftTitles: const AxisTitles(
+        leftTitles: AxisTitles(
           sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 45,
             // getTitlesWidget: (value, meta) {
+            //   if (meta.axisPosition == 0) return Container();
             //   return Text(
-            //     value.toInt().toString(),
-            //     // textAlign: TextAlign.left,
-            //     style: GoogleFonts.poppins(
-            //       // fontSize: 20,
-            //       // color: Colors.grey,
-            //       fontWeight: FontWeight.w500,
-            //     ),
+            //     formatNumber(value),
             //   );
             // },
-            showTitles: true,
-            reservedSize: 55,
+            getTitlesWidget: (value, meta) {
+              if (meta.axisPosition == 0) return Container();
+              return Text(
+                formatNumber(value),
+                style: const TextStyle(color: Colors.black87),
+              );
+            },
           ),
         ),
       ),

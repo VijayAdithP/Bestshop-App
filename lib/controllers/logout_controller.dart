@@ -23,7 +23,7 @@ class LogoutController extends GetxController {
         var response = await http.post(url, headers: headers);
 
         if (response.statusCode == 200) {
-          // await prefs.remove('token');
+          await prefs.remove('token');
           await prefs.clear();
           Get.offAll(const AuthScreen());
         } else {
