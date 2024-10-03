@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = 'http://10.150.11.64:5000';
+  static const String baseUrl = 'http://10.40.32.128:5000';
   static AuthEndPoints authEndpoints = AuthEndPoints();
 }
 
@@ -10,6 +10,7 @@ class AuthEndPoints {
   final String dashboardData = '/api/stock/dashboard-data';
   final String stocksadd = '/api/stock/stock';
   final String stockview = '/api/stock/stock?date=';
+  final String stockViewLocation = '/api/stock/stock?shop_location=';
   final String categories = '/api/structure/category';
   final String itemname = '/api/structure/item-name?category=';
   final String subcategory = '/api/structure/sub-category?item_name=';
@@ -17,4 +18,16 @@ class AuthEndPoints {
   final String branddrop = '/api/structure/model?brand=';
   final String modeldrop = '/api/structure/color?model=';
   final String colordrop = '/api/structure/size?color=';
+  final String downloadCSV = '/api/stock/export-csv';
+
+  //add & update inventory
+  final String updateCategories = '/api/structure/category';
+  final String updateItemname = '/api/structure/item_name?category=';
+  final String deleteSubcategory = '/api/structuresub-category?item_name=';
+  final String updateBrand = '/api/structure/brand?sub_category=';
+  final String updateBranddrop = '/api/structure/model?brand=';
+  final String updateModeldrop = '/api/structure/color?model=';
+  final String updateColordrop = '/api/structure/size?color=';
+  // location
+  final String getLocation = '/api/master/shop-location';
 }

@@ -14,12 +14,7 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
   ]);
   runApp(
-    // const GetMaterialApp(
-    //   debugShowCheckedModeBanner: false,
-    //   home: Home_Page(),
-
     GetMaterialApp(
-      
       debugShowCheckedModeBanner: false,
       home: token != null ? const Home_Page() : const AuthScreen(),
     ),

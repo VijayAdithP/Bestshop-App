@@ -1,13 +1,6 @@
-// import 'dart:convert';
-// import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:newbestshop/screens/widgets/input_fields.dart';
-// import 'package:newbestshop/models/api_data.dart';
-// import 'package:get/get.dart';
-// import 'main_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/bill_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/brand_page.dart';
 import 'package:newbestshop/screens/each_stock.dart/categoty_page.dart';
@@ -82,7 +75,28 @@ class _stockadderState extends State<stockadder> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade200,
+      appBar: AppBar(
+        title: Text(
+          "Add Stocks",
+          style: GoogleFonts.poppins(
+            // fontSize: 24,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+        leading: InkWell(
+          onTap: () {
+            Scaffold.of(context).openDrawer();
+          },
+          child: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF4860b5),
+      ),
       body: Column(
         children: [
           Padding(
@@ -312,26 +326,7 @@ class _PageViewCustomState extends State<PageViewCustom> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.grey.shade300,
-
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: const Color(0xFF4860b5),
-      //   onPressed: () {
-      //     _pageController.previousPage(
-      //         duration: const Duration(milliseconds: 200),
-      //         curve: Curves.easeIn);
-      //   },
-      //   child: const Icon(
-      //     Icons.arrow_back_ios_rounded,
-      //     color: Colors.white,
-      //   ),
-      // ),
-
-      // IconButton(
-      //   color: Colors.blue,
-      //   onPressed: () {},
-      //   icon: Icon(Icons.arrow_back_ios_rounded),
-      // ),
+      backgroundColor: Colors.grey.shade200,
       body: PageView(
         scrollBehavior: const ScrollBehavior(),
         controller: _pageController,

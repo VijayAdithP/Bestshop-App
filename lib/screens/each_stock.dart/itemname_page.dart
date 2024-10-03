@@ -1,6 +1,10 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
+ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:newbestshop/models/menuEnumModel.dart';
+import 'package:newbestshop/screens/widgets/Add%20Stock/deleteProduct.dart';
+import 'package:newbestshop/screens/widgets/Add%20Stock/floatingbutton.dart';
+import 'package:newbestshop/screens/widgets/Add%20Stock/updateProduct.dart';
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:newbestshop/models/api_data.dart';
@@ -22,7 +26,8 @@ class _ItemNamePageState extends State<ItemNamePage> {
   late List<apidata> _filteredItemNames;
   bool _isLoading = true;
   String searchQuery = '';
-
+  TextEditingController editItemNameController = TextEditingController();
+  TextEditingController addItemNameCategoryController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -62,6 +67,89 @@ class _ItemNamePageState extends State<ItemNamePage> {
     }
   }
 
+  Future<void> updateItemname(String? itemName, int? itemId) async {
+    try {
+      final Uri apiUri = Uri.parse(
+          '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.updateItemname}${widget.category_Id}');
+      final response = await http.put(
+        apiUri,
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            "id": itemId,
+            "name": itemName,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        _fetchItemNames();
+        Navigator.of(context).pop();
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+    }
+  }
+
+  Future<void> addItemname(String? itemName) async {
+    try {
+      final Uri apiUri = Uri.parse(
+          '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.itemname}${widget.category_Id}');
+      final response = await http.post(
+        apiUri,
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            "category": widget.category_Id,
+            "name": itemName,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        _fetchItemNames();
+        Navigator.of(context).pop();
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+    }
+  }
+
+  Future<void> deleteItemname(int? itemNameId) async {
+    try {
+      final Uri apiUri = Uri.parse(
+          '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.updateItemname}${widget.category_Id}');
+      final response = await http.delete(
+        apiUri,
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            "id": itemNameId,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        _fetchItemNames();
+        Navigator.of(context).pop();
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+    }
+  }
+
   void _searchItem(String query) {
     setState(() {
       searchQuery = query;
@@ -75,7 +163,29 @@ class _ItemNamePageState extends State<ItemNamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade200,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromRGBO(72, 96, 181, 1),
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return FloatingButton(
+                  controller: addItemNameCategoryController,
+                  function: (categoryName) {
+                    addItemname(categoryName);
+                  },
+                  titleText: "Add Item",
+                  hintText: "Enter Item name",
+                );
+              });
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 35,
+        ),
+      ),
       body: Stack(
         children: [
           Column(
@@ -83,102 +193,177 @@ class _ItemNamePageState extends State<ItemNamePage> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  height: 40,
-                  child: TextFormField(
-                    onChanged: _searchItem,
-                    decoration: const InputDecoration(
-                      contentPadding: EdgeInsets.all(5),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.blue,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
+                child: TextFormField(
+                  onChanged: _searchItem,
+                  decoration: const InputDecoration(
+                    fillColor: Colors.white,
+                    filled: true,
+                    contentPadding: EdgeInsets.all(5),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: Colors.white,
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          width: 1.5,
-                          color: Colors.blue,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20),
-                        ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
                       ),
-                      prefixIcon: Icon(Icons.search),
-                      hintText: 'Search...',
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 1.5,
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    prefixIcon: Icon(Icons.search),
+                    hintText: 'Search...',
                   ),
                 ),
               ),
             ],
           ),
           Positioned.fill(
-            top: 55,
+            top: 60,
             child: _isLoading
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisExtent: 180,
-                      mainAxisSpacing: 5,
-                      crossAxisSpacing: 5,
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5.0,
                     ),
-                    itemCount: _filteredItemNames.length,
-                    itemBuilder: (context, index) {
-                      final itemName = _filteredItemNames[index];
-                      return GestureDetector(
-                        onTap: () async {
-                          widget.controller.animateToPage(2,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeIn);
-                          final SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          prefs.remove('selectedsubcategoryname');
-                          prefs.remove('selectedbrandname');
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisExtent: 180,
+                        mainAxisSpacing: 5,
+                        crossAxisSpacing: 5,
+                      ),
+                      itemCount: _filteredItemNames.length,
+                      itemBuilder: (context, index) {
+                        final itemName = _filteredItemNames[index];
+                        return GestureDetector(
+                          onTap: () async {
+                            widget.controller.animateToPage(2,
+                                duration: const Duration(milliseconds: 100),
+                                curve: Curves.easeIn);
+                            final SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.remove('selectedsubcategoryname');
+                            prefs.remove('selectedbrandname');
 
-                          prefs.setInt('selecteditemnameId', itemName.id);
-                          prefs.setString('selecteditemname', itemName.name);
-                          prefs.setString(
-                              'selecteditemnameImg', itemName.imagePath);
-                        },
-                        child: Card(
-                          surfaceTintColor: Colors.white,
-                          elevation: 2,
-                          shadowColor: Colors.black,
-                          color: Colors.white,
-                          margin: const EdgeInsets.all(10),
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            prefs.setInt('selecteditemnameId', itemName.id);
+                            prefs.setString('selecteditemname', itemName.name);
+                            prefs.setString(
+                                'selecteditemnameImg', itemName.imagePath);
+                          },
+                          child: Card(
+                            surfaceTintColor: Colors.white,
+                            elevation: 2,
+                            shadowColor: Colors.black,
+                            color: Colors.white,
+                            margin: const EdgeInsets.all(10),
+                            child: Stack(
                               children: [
-                                CircleAvatar(
-                                  radius: 50,
-                                  backgroundImage: NetworkImage(
-                                      '${ApiEndPoints.baseUrl}/${itemName.imagePath}'),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage: NetworkImage(
+                                              '${ApiEndPoints.baseUrl}/${itemName.imagePath}'),
+                                        ),
+                                        Text(
+                                          itemName.name,
+                                          style: GoogleFonts.poppins(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                Text(
-                                  itemName.name,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
+                                Positioned(
+                                  right: 0,
+                                  top: 0,
+                                  child: PopupMenuButton<String>(
+                                    elevation: 0,
+                                    iconColor: Colors.black,
+                                    color: Colors.white,
+                                    onSelected: (String choice) {
+                                      if (choice == MenuItems.update) {
+                                        editItemNameController =
+                                            TextEditingController(
+                                                text: itemName.name);
+
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return UpdateproductDialog(
+                                                controller:
+                                                    editItemNameController,
+                                                function:
+                                                    (updatedCategoryName) {
+                                                  updateItemname(
+                                                      updatedCategoryName,
+                                                      itemName.id);
+                                                },
+                                              );
+                                            });
+                                      } else if (choice == MenuItems.delete) {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return DeleteproductDialog(
+                                                id: itemName.id,
+                                                function: (categoryId) {
+                                                  deleteItemname(categoryId);
+                                                },
+                                              );
+                                            });
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return MenuItems.choices
+                                          .map((String choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice,
+                                          child: ListTile(
+                                            title: Text(
+                                              choice,
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: choice == "Delete"
+                                                    ? Colors.red
+                                                    : Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            leading: Icon(
+                                              color: choice == "Delete"
+                                                  ? Colors.red
+                                                  : Colors.black,
+                                              MenuItems.choiceIcons[choice],
+                                            ),
+                                          ),
+                                        );
+                                      }).toList();
+                                    },
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
           ),
         ],

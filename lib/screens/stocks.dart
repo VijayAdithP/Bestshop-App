@@ -1,152 +1,321 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:newbestshop/models/locationModel.dart';
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class Expandtile extends StatefulWidget {
-  const Expandtile({Key? key}) : super(key: key);
+  const Expandtile({super.key});
 
   @override
   State<Expandtile> createState() => _ExpandtileState();
 }
 
-Future<Map<String, List<Map<String, dynamic>>>> fetchStockItemsGroupedByShop(
-    DateTime selectedDate) async {
-  String formattedDate =
-      "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
-  String api =
-      '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stockview}$formattedDate';
+class _ExpandtileState extends State<Expandtile> {
+  @override
+  void initState() {
+    super.initState();
+    _futureStockItems = fetchStockItemsGroupedByShop(_selectedDate!);
+    getShopLocation();
+  }
 
-  try {
+  Future<Map<String, List<Map<String, dynamic>>>> fetchStockItemsGroupedByShop(
+      DateTime selectedDate) async {
+    String formattedDate =
+        "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
+    String api = 
+    // selectedShopIds.isEmpty
+        // ?
+         '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stockview}$formattedDate';
+        // : '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stockview}$formattedDate&shop_location=$selectedLocationId';
+
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+      print(token);
+      final response = await http.get(
+        Uri.parse(api),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonData = json.decode(response.body);
+        Map<String, List<Map<String, dynamic>>> groupedItems = {};
+        for (var item in jsonData) {
+          String shop = item['shop'];
+          if (!groupedItems.containsKey(shop)) {
+            groupedItems[shop] = [];
+          }
+          groupedItems[shop]!.add(item);
+        }
+        return groupedItems;
+      } else {
+        throw Exception('Failed to load stock items: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to load stock items: $e');
+    }
+  }
+
+  Future<void> getShopLocation() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
-    final response = await http.get(
-      Uri.parse(api),
-      headers: {'Authorization': 'Bearer $token'},
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonData = json.decode(response.body);
-      Map<String, List<Map<String, dynamic>>> groupedItems = {};
-      for (var item in jsonData) {
-        String shop = item['shop'];
-        if (!groupedItems.containsKey(shop)) {
-          groupedItems[shop] = [];
-        }
-        groupedItems[shop]!.add(item);
-      }
-      return groupedItems;
-    } else {
-      throw Exception('Failed to load stock items: ${response.statusCode}');
-    }
-  } catch (e) {
-    throw Exception('Failed to load stock items: $e');
-  }
-}
 
-class _ExpandtileState extends State<Expandtile> {
+    try {
+      final response = await http.get(
+        Uri.parse(
+            ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getLocation),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        setState(() {
+          locations = data.map((shop) => Location.fromJson(shop)).toList();
+        });
+      } else {
+        throw Exception('Failed to load shop locations');
+      }
+    } catch (e) {
+      throw Exception('Error: $e');
+    }
+  }
+
+  Future<void> downloadCsvFile() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    String formattedDate =
+        "${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}";
+    try {
+      if (await _requestStoragePermission()) {}
+      final Uri uri = Uri.parse(
+              ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.downloadCSV)
+          .replace(
+        queryParameters: {
+          'date': formattedDate,
+          'shop_location': selectedShopIds.toList(),
+        },
+      );
+
+      final response =
+          await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+
+      if (response.statusCode == 200) {
+        final directory = await getExternalStorageDirectory();
+        final filePath = '${directory!.path}/exported_stock.csv';
+        final file = File(filePath);
+
+        await file.writeAsBytes(response.bodyBytes);
+      }
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return SimpleDialog(
+              children: [
+                Text(e.toString()),
+              ],
+            );
+          });
+    }
+  }
+
+  Future<bool> _requestStoragePermission() async {
+    if (await Permission.manageExternalStorage.isGranted) {
+      return true;
+    }
+
+    final status = await Permission.manageExternalStorage.request();
+
+    if (status.isGranted) {
+      return true;
+    } else {
+      print('Storage permission denied.');
+    }
+
+    return false;
+  }
+
   late Future<Map<String, List<Map<String, dynamic>>>>? _futureStockItems;
-  DateTime? _selectedDate;
+  DateTime? _selectedDate = DateTime.now();
+  List<Location> locations = [];
+  Set<String> selectedShopIds = {};
+  int? selectedLocationId;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      appBar: AppBar(
+        title: Text(
+          "Inventory",
+          style: GoogleFonts.poppins(
+            // fontSize: 24,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+          ),
+        ),
+        leading: InkWell(
+          onTap: () {
+            Scaffold.of(context).openDrawer();
+          },
+          child: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF4860b5),
+        actions: [
+          GestureDetector(
+            onTap: downloadCsvFile,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 20.0,
+              ),
+              child: Icon(
+                Icons.download,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: Colors.grey.shade200,
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              height: 60,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: ElevatedButton.icon(
-                label: Text(
-                  "Pick a date",
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+            locations.isNotEmpty
+                ? Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
+                    children: locations
+                        .map((shop) => ChoiceChip(
+                              label: Text(shop.name!),
+                              selected: selectedLocationId == shop.id,
+                              onSelected: (bool selected) {
+                                setState(() {
+                                  selectedLocationId =
+                                      selected ? shop.id : null;
+                                });
+                                _futureStockItems =
+                                    fetchStockItemsGroupedByShop(
+                                        _selectedDate!);
+                              },
+                            ))
+                        .toList(),
+                  )
+                : const Center(
+                    child: CircularProgressIndicator(),
                   ),
-                  // style: TextStyle(
-                  //   fontSize: 20,
-                  //   color: Colors.white,
-                  //   fontWeight: FontWeight.w600,
-                  // ),
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                icon: const Icon(
-                  Icons.edit_calendar,
-                  color: Colors.white,
-                ),
-                style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      side: BorderSide.none,
-                    ),
-                  ),
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color(0xFF4860b5),
-                  ),
-                ),
-                onPressed: () async {
-                  final DateTime? picked = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now(),
-                    firstDate: DateTime(2000),
-                    lastDate: DateTime(2100),
-                    builder: (BuildContext context, Widget? child) {
-                      return Theme(
-                        data: ThemeData.dark().copyWith(
-                          colorScheme: const ColorScheme.light(
-                            primary: Colors.white,
-                            onPrimary: Color(0xFF4860b5),
-                            onSurface: Color(0xFF4860b5),
-                            onBackground: Color(0xFF4860b5),
-                            // background: Colors.white,
-                          ),
-                          textButtonTheme: TextButtonThemeData(
-                            style: TextButton.styleFrom(
-                              backgroundColor: const Color(0xFF4860b5),
+                child: ElevatedButton.icon(
+                  label: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Pick a date",
+                        style: GoogleFonts.poppins(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                      if (_selectedDate != null)
+                        FittedBox(
+                          child: Text(
+                            DateFormat.yMEd().format(_selectedDate!),
+                            style: GoogleFonts.poppins(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
                             ),
                           ),
-                          textTheme: TextTheme(
-                            headlineLarge:
-                                Theme.of(context).textTheme.headlineLarge,
-                            titleLarge:
-                                Theme.of(context).textTheme.headlineLarge,
-                            // labelSmall: AppTextStyle
-                            //     .style14wBlueButton, // Title - SELECT DATE
-                            // bodyLarge: AppTextStyle
-                            //     .style14wBlueButton, // year gridbview picker
-                            // titleMedium:
-                            //     AppTextStyle.style14wBlueButton, // input
-                            // titleSmall: AppTextStyle
-                            //     .style14wBlueButton, // month/year picker
-                            // bodySmall: AppTextStyle.style14wBlueButton // days
-                          ),
                         ),
-                        child: child!,
-                      );
-                    },
-                  );
-                  if (picked != null) {
-                    setState(() {
-                      _selectedDate = picked;
-                      _futureStockItems =
-                          fetchStockItemsGroupedByShop(_selectedDate!);
-                    });
-                  }
-                },
+                    ],
+                  ),
+                  icon: const Icon(
+                    Icons.edit_calendar,
+                    color: Colors.white,
+                  ),
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide.none,
+                      ),
+                    ),
+                    backgroundColor: WidgetStateProperty.all<Color>(
+                      const Color(0xFF4860b5),
+                    ),
+                  ),
+                  onPressed: () async {
+                    final DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                      builder: (BuildContext context, Widget? child) {
+                        return Theme(
+                          data: ThemeData.dark().copyWith(
+                            colorScheme: const ColorScheme.light(
+                              primary: Colors.white,
+                              onPrimary: Color(0xFF4860b5),
+                              onSurface: Color(0xFF4860b5),
+                              // onBackground: Color(0xFF4860b5),
+                              // background: Colors.white,
+                            ),
+                            textButtonTheme: TextButtonThemeData(
+                              style: TextButton.styleFrom(
+                                backgroundColor: const Color(0xFF4860b5),
+                              ),
+                            ),
+                            textTheme: TextTheme(
+                              headlineLarge:
+                                  Theme.of(context).textTheme.headlineLarge,
+                              titleLarge:
+                                  Theme.of(context).textTheme.headlineLarge,
+                            ),
+                          ),
+                          child: child!,
+                        );
+                      },
+                    );
+                    if (picked != null) {
+                      setState(() {
+                        _selectedDate = picked;
+                        _futureStockItems =
+                            fetchStockItemsGroupedByShop(_selectedDate!);
+                      });
+                    }
+                  },
+                ),
               ),
             ),
             const SizedBox(
               height: 5,
             ),
+            // if (_futureStockItems == null)
             if (_selectedDate != null && _futureStockItems != null)
               Expanded(
                 child: FutureBuilder<Map<String, List<Map<String, dynamic>>>>(
@@ -156,6 +325,8 @@ class _ExpandtileState extends State<Expandtile> {
                       return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (_futureStockItems == null) {
+                      return const Text("no data");
                     } else {
                       final Map<String, List<Map<String, dynamic>>>
                           groupedItems = snapshot.data!;
@@ -176,304 +347,103 @@ class _ExpandtileState extends State<Expandtile> {
                       return ListView(
                         children: groupedItems.keys.map((shop) {
                           return Card(
+                            color: Colors.white,
                             shadowColor: Colors.black,
-                            elevation: 3,
+                            elevation: 0,
                             surfaceTintColor: Colors.white,
                             child: ExpansionTile(
+                              initiallyExpanded: true,
                               shape: const Border(),
                               title: Align(
-                                alignment: Alignment.center,
+                                alignment: Alignment.centerLeft,
                                 child: Text(
                                   shop,
                                   style: GoogleFonts.poppins(
-                                    // fontSize: 20,
                                     fontWeight: FontWeight.w500,
-                                    // color: Colors.white,
                                   ),
                                 ),
                               ),
                               children: [
-                                SingleChildScrollView(
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 1, left: 5, right: 5, bottom: 5),
-                                      child: Table(
-                                        defaultVerticalAlignment:
-                                            TableCellVerticalAlignment.top,
-                                        border:
-                                            // const TableBorder(
-                                            //   horizontalInside:
-                                            //       BorderSide(color: Colors.grey),
-                                            //   verticalInside: BorderSide.none,
-                                            // ),
-                                            TableBorder.all(
-                                          color: Colors.grey,
-                                          // style: BorderStyle.solid,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 1,
+                                          left: 5,
+                                          right: 5,
+                                          bottom: 5,
                                         ),
-                                        columnWidths: const {
-                                          0: FixedColumnWidth(100.0),
-                                          1: FixedColumnWidth(100.0),
-                                          2: FixedColumnWidth(100.0),
-                                          3: FixedColumnWidth(100.0),
-                                          4: FixedColumnWidth(100.0),
-                                          5: FixedColumnWidth(350.0),
-                                          6: FixedColumnWidth(100.0),
-                                          7: FixedColumnWidth(100.0),
-                                          8: FixedColumnWidth(100.0),
-                                          9: FixedColumnWidth(100.0),
-                                          10: FixedColumnWidth(100.0),
-                                          11: FixedColumnWidth(100.0),
-                                        },
-                                        children: [
-                                          TableRow(
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey[300],
-                                            ),
-                                            children: tableHeaders
-                                                .map(
-                                                  (header) => TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        header,
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          // fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: const Color(
-                                                              0xFF4860b5),
-                                                        ),
-                                                      ),
+                                        child: DataTable(
+                                          // border: TableBorder(
+                                          //   verticalInside: BorderSide(
+                                          //     color: Colors.grey[400]!,
+                                          //   ),
+                                          // ),
+                                          columnSpacing: 30.0,
+                                          horizontalMargin: 12.0,
+                                          dataRowMaxHeight: 70,
+                                          columns: tableHeaders
+                                              .map(
+                                                (header) => DataColumn(
+                                                  label: Text(
+                                                    header,
+                                                    style: GoogleFonts.poppins(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: const Color(
+                                                          0xFF4860b5),
                                                     ),
-                                                  ),
-                                                )
-                                                .toList(),
-                                          ),
-                                          ...groupedItems[shop]!.map(
-                                            (item) {
-                                              return TableRow(
-                                                decoration: const BoxDecoration(
-                                                  border: Border(
-                                                    bottom: BorderSide(
-                                                        color: Colors.grey),
                                                   ),
                                                 ),
-                                                children: [
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['user']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['id']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['shop']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['date']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['time']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['name']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['model_name']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['color_name']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['size_name']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['quantity']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['mrp']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  TableCell(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                              8.0),
-                                                      child: Text(
-                                                        item['total_price']
-                                                                ?.toString() ??
-                                                            '',
-                                                        style:
-                                                            GoogleFonts.poppins(
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          ),
-                                        ],
+                                              )
+                                              .toList(),
+                                          rows: groupedItems[shop]!.map((item) {
+                                            return DataRow(
+                                              cells: [
+                                                DataCell(Text(
+                                                    item['user']?.toString() ??
+                                                        '')),
+                                                DataCell(Text(
+                                                    item['id']?.toString() ??
+                                                        '')),
+                                                DataCell(Text(
+                                                    item['shop']?.toString() ??
+                                                        '')),
+                                                DataCell(Text(
+                                                    item['date']?.toString() ??
+                                                        '')),
+                                                DataCell(Text(
+                                                    item['time']?.toString() ??
+                                                        '')),
+                                                DataCell(Text(
+                                                    item['name']?.toString() ??
+                                                        '')),
+                                                DataCell(Text(item['model_name']
+                                                        ?.toString() ??
+                                                    '')),
+                                                DataCell(Text(item['color_name']
+                                                        ?.toString() ??
+                                                    '')),
+                                                DataCell(Text(item['size_name']
+                                                        ?.toString() ??
+                                                    '')),
+                                                DataCell(Text(item['quantity']
+                                                        ?.toString() ??
+                                                    '')),
+                                                DataCell(Text(
+                                                    item['mrp']?.toString() ??
+                                                        '')),
+                                                DataCell(Text(
+                                                    item['total_price']
+                                                            ?.toString() ??
+                                                        '')),
+                                              ],
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
                                     ),
                                   ),

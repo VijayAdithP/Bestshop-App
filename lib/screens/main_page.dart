@@ -2,10 +2,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
+import 'package:newbestshop/screens/auth_screen.dart';
 import 'package:newbestshop/screens/stocks.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'add_stock.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,19 +43,19 @@ class _Home_PageState extends State<Home_Page> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(
-          "BestShop",
-          style: GoogleFonts.poppins(
-            // fontSize: 24,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-          ),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF4860b5),
-        //  backgroundColor: Colors.grey.shade300,
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     "Shop Management",
+      //     style: GoogleFonts.poppins(
+      //       // fontSize: 24,
+      //       fontWeight: FontWeight.w500,
+      //       color: Colors.white,
+      //     ),
+      //   ),
+      //   iconTheme: const IconThemeData(color: Colors.white),
+      //   backgroundColor: const Color(0xFF4860b5),
+      //   //  backgroundColor: Colors.grey.shade300,
+      // ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey.shade300,
         selectedLabelStyle: GoogleFonts.poppins(
@@ -159,6 +161,48 @@ class _Drawer_State extends State<Drawer_> {
           ),
           ListTile(
             title: Text(
+              'Add Users',
+              style: GoogleFonts.poppins(
+                // fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF4860b5),
+              ),
+            ),
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Register(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: Text(
+              'Update/Add Stocks',
+              style: GoogleFonts.poppins(
+                // fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF4860b5),
+              ),
+            ),
+            textColor: const Color.fromARGB(255, 0, 0, 0),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Register(),
+                ),
+              );
+            },
+          ),
+          // Expanded(
+          //     child: Container(
+          //   width: MediaQuery.of(context).size.width,
+          // )),
+          ListTile(
+            title: Text(
               'Logout',
               style: GoogleFonts.poppins(
                 // fontSize: 20,
@@ -171,7 +215,7 @@ class _Drawer_State extends State<Drawer_> {
               _logoutController.logout();
             },
           ),
-          const Divider(),
+          // const Divider(),
         ],
       ),
     );
@@ -179,17 +223,17 @@ class _Drawer_State extends State<Drawer_> {
 }
 
 class FlBarChartExample extends StatefulWidget {
-  const FlBarChartExample({Key? key}) : super(key: key);
+  const FlBarChartExample({super.key});
 
   @override
   FlBarChartExampleState createState() => FlBarChartExampleState();
 }
 
 class FlBarChartExampleState extends State<FlBarChartExample> {
+  final LogoutController _logoutController = Get.put(LogoutController());
   List<Map<String, dynamic>>? _apiData;
   List<String>? _axisNames;
   late List<String> _bottomTitles;
-  // int _selectedIntervalIndex = 0;
   bool _isLoading = true;
   double _maxY = 25;
   final List<Color> _barColors = [
@@ -213,10 +257,25 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
             ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.dashboardData),
         headers: {'Authorization': 'Bearer $token'},
       );
+      if (response.statusCode != 200 &&
+          json.decode(response.body)['error'] ==
+              'Unauthorized: Invalid token') {
+        Get.offAll(const AuthScreen());
+      }
       if (response.statusCode == 200) {
-        final jsonData = json.decode(response.body) as List<dynamic>;
+        final jsonData = json.decode(response.body);
+        // if (jsonData is Map<String, dynamic> && jsonData.containsKey('error')) {
+        //   if (jsonData['error'] == 'Unauthorized: Invalid token') {
+        //     _handleUnauthorizedAccess();
+        //     return;
+        //   } else {
+        //     throw Exception('Error: ${jsonData['error']}');
+        //   }
+        // }
+
+        final dataList = jsonData as List<dynamic>;
         setState(() {
-          _apiData = List<Map<String, dynamic>>.from(jsonData);
+          _apiData = List<Map<String, dynamic>>.from(dataList);
           _axisNames =
               _apiData!.map((data) => data['time_interval'] as String).toList();
           _bottomTitles = ['total_quantity', 'total_price', 'rate_of_product'];
@@ -244,174 +303,153 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
     return max * 1.2;
   }
 
-  final PageController _pageController = PageController(initialPage: 0);
-  int currentpage = 0;
+  final PageController _pageController = PageController(initialPage: 2);
+  int currentpage = 2;
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      body: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-          side: BorderSide(
-            color: Colors.grey.withOpacity(0.2),
-            width: 1,
+      appBar: AppBar(
+        title: Text(
+          "Shop Management",
+          style: GoogleFonts.poppins(
+            // fontSize: 24,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
           ),
         ),
-
-        // Define how the card's content should be clipped
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                // margin: const EdgeInsets.only(right: 60),
-                decoration: const BoxDecoration(color: Colors.transparent),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: 5,
-                    right: MediaQuery.of(context).size.height * 0.04,
-                    left: 15,
-                    bottom: MediaQuery.of(context).size.height * 0.021,
-                  ),
-                  child: PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: (int page) {
-                      setState(() {
-                        currentpage = page;
-                      });
-                    },
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _axisNames!.length,
-                    itemBuilder: (context, index) {
-                      return buildPage(index);
-                    },
-                  ),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF4860b5),
+        leading: InkWell(
+          onTap: () {
+            Scaffold.of(context).openDrawer();
+          },
+          child: const Icon(
+            Icons.menu,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      backgroundColor: Colors.grey.shade300,
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+                side: BorderSide(
+                  color: Colors.grey.withOpacity(0.2),
+                  width: 1,
                 ),
               ),
-            ),
-            Container(
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List<Widget>.generate(
-                  _axisNames!.length,
-                  (index) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: InkWell(
-                      onTap: () {
-                        _pageController.animateToPage(index,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeIn);
-                      },
-                      child: CircleAvatar(
-                        radius: 5,
-                        backgroundColor:
-                            currentpage == index ? Colors.blue : Colors.grey,
+              clipBehavior: Clip.antiAliasWithSaveLayer,
+              child: Column(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.transparent,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          top: 5,
+                          right: MediaQuery.of(context).size.height * 0.04,
+                          left: 15,
+                          bottom: MediaQuery.of(context).size.height * 0.021,
+                        ),
+                        child: PageView.builder(
+                          controller: _pageController,
+                          onPageChanged: (int page) {
+                            setState(() {
+                              currentpage = page;
+                            });
+                          },
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _axisNames!.length,
+                          itemBuilder: (context, index) {
+                            return buildPage(index);
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Divider(
-              height: 5,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            SizedBox(
-              height: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const CircleAvatar(
-                    // radius: ,
-                    backgroundColor: Colors.red,
-                  ),
-                  Text(
-                    "Product Count",
-                    // style: TextStyle(
-                    //   fontSize: 10,
-                    //   fontWeight: FontWeight.w500,
-                    // ),
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
+                  Container(
+                    color: Colors.transparent,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SmoothPageIndicator(
+                          controller: _pageController,
+                          count: _axisNames!.length,
+                          effect: const ExpandingDotsEffect(
+                            dotHeight: 10,
+                            dotWidth: 10,
+                            spacing: 10,
+                            activeDotColor: Colors.blue,
+                            dotColor: Colors.grey,
+                          ),
+                          onDotClicked: (index) {
+                            _pageController.animateToPage(index,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeIn);
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  const CircleAvatar(
-                    backgroundColor: Colors.green,
+                  const SizedBox(
+                    height: 10,
                   ),
-                  Text(
-                    "Product Price",
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
+                  const Divider(
+                    height: 5,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 20,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircleAvatar(
+                          backgroundColor: Colors.red,
+                        ),
+                        Text(
+                          "Product Count",
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const CircleAvatar(
+                          backgroundColor: Colors.green,
+                        ),
+                        Text(
+                          "Product Price",
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const CircleAvatar(
+                          backgroundColor: Colors.blue,
+                        ),
+                        Text(
+                          "Rate of Product",
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const CircleAvatar(
-                    backgroundColor: Colors.blue,
-                  ),
-                  Text(
-                    "Rate of Product",
-                    style: GoogleFonts.poppins(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  const SizedBox(
+                    height: 20,
                   ),
                 ],
               ),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            // SliderTheme(
-            //   data: SliderThemeData(
-            //     activeTrackColor: const Color(0xFF4860b5),
-            //     inactiveTrackColor: Colors.grey[300],
-            //     trackShape: const RoundedRectSliderTrackShape(),
-            //     trackHeight: 30,
-            //     thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
-            //     thumbColor: const Color(0xFF4860b5),
-            //     overlayColor: Colors.transparent,
-            //     overlayShape: const RoundSliderOverlayShape(overlayRadius: 28.0),
-            //     tickMarkShape: const RoundSliderTickMarkShape(),
-            //     activeTickMarkColor: const Color(0xFF4860b5),
-            //     inactiveTickMarkColor: Colors.transparent,
-            //     valueIndicatorShape: const PaddleSliderValueIndicatorShape(),
-            //     valueIndicatorColor: const Color(0xFF4860b5),
-            //     valueIndicatorTextStyle: const TextStyle(
-            //       color: Colors.white,
-            //     ),
-            //   ),
-            //   child: Slider(
-            //     value: _selectedIntervalIndex.toDouble(),
-            //     min: 0,
-            //     max: _axisNames!.length.toDouble() - 1,
-            //     onChanged: (value) {
-            //       setState(() {
-            //         _selectedIntervalIndex = value.toInt();
-            //       });
-            //     },
-            //     divisions: _axisNames!.length - 1,
-            //     label: _axisNames![_selectedIntervalIndex],
-            //   ),
-            // ),
-          ],
-        ),
-      ),
     );
   }
 

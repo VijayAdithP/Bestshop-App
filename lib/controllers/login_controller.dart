@@ -13,6 +13,8 @@ class LoginController extends GetxController {
 
   Future<void> loginWithEmail() async {
     var headers = {'Content-Type': 'application/json'};
+    // print(emailController.text);
+    // print(passwordController.text);
     try {
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.loginEmail);

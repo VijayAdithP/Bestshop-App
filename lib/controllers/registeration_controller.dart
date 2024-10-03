@@ -7,7 +7,7 @@ import 'package:newbestshop/screens/main_page.dart';
 
 class RegisterationController extends GetxController {
   TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  TextEditingController phonenumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   Future<void> registerWithEmail() async {
