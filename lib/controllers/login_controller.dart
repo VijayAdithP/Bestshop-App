@@ -28,6 +28,7 @@ class LoginController extends GetxController {
 
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
+        print(json);
         var token = json['token'];
         final SharedPreferences? prefs = await _prefs;
         await prefs?.setString('token', token);

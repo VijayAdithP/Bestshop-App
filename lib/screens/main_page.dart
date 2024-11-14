@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:newbestshop/controllers/logout_controller.dart';
 import 'package:get/get.dart';
 import 'package:newbestshop/screens/auth_screen.dart';
 import 'package:newbestshop/screens/stocks.dart';
 import 'package:http/http.dart' as http;
+import 'package:newbestshop/screens/valuable-stock.dart';
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -43,28 +45,13 @@ class _Home_PageState extends State<Home_Page> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       resizeToAvoidBottomInset: true,
-      // appBar: AppBar(
-      //   title: Text(
-      //     "Shop Management",
-      //     style: GoogleFonts.poppins(
-      //       // fontSize: 24,
-      //       fontWeight: FontWeight.w500,
-      //       color: Colors.white,
-      //     ),
-      //   ),
-      //   iconTheme: const IconThemeData(color: Colors.white),
-      //   backgroundColor: const Color(0xFF4860b5),
-      //   //  backgroundColor: Colors.grey.shade300,
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey.shade300,
         selectedLabelStyle: GoogleFonts.poppins(
-          // fontSize: 24,
           fontWeight: FontWeight.w600,
-          color: Colors.white,
+          color: HexColor("#563A9C"),
         ),
         unselectedLabelStyle: GoogleFonts.poppins(
-          // fontSize: 24,
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),
@@ -124,12 +111,11 @@ class _Drawer_State extends State<Drawer_> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
+      child: Column(
         children: [
           DrawerHeader(
-            decoration: const BoxDecoration(
-              color: Color(0xFF4860b5),
+            decoration: BoxDecoration(
+              color: HexColor("#6A42C2"),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -163,10 +149,13 @@ class _Drawer_State extends State<Drawer_> {
             title: Text(
               'Add Users',
               style: GoogleFonts.poppins(
-                // fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF4860b5),
+                color: HexColor("#563A9C"),
               ),
+            ),
+            leading: Icon(
+              Icons.add,
+              color: HexColor("#563A9C"),
             ),
             textColor: const Color.fromARGB(255, 0, 0, 0),
             onTap: () {
@@ -180,35 +169,56 @@ class _Drawer_State extends State<Drawer_> {
           ),
           ListTile(
             title: Text(
-              'Update/Add Stocks',
+              'Most Valuable Stock',
               style: GoogleFonts.poppins(
-                // fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF4860b5),
+                color: HexColor("#563A9C"),
               ),
+            ),
+            leading: Icon(
+              Icons.auto_graph_rounded,
+              color: HexColor("#563A9C"),
             ),
             textColor: const Color.fromARGB(255, 0, 0, 0),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Register(),
+                  builder: (context) => const Valuablestock(),
                 ),
               );
             },
           ),
-          // Expanded(
-          //     child: Container(
-          //   width: MediaQuery.of(context).size.width,
-          // )),
+
+          const Expanded(child: SizedBox()),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16,
+            ),
+            child: Container(
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
+              ),
+              child: const Divider(
+                thickness: 1,
+                color: Colors.grey,
+              ),
+            ),
+          ),
           ListTile(
             title: Text(
               'Logout',
               style: GoogleFonts.poppins(
                 // fontSize: 20,
                 fontWeight: FontWeight.w600,
-                color: const Color(0xFF4860b5),
+                color: HexColor("#563A9C"),
               ),
+            ),
+            leading: Icon(
+              Icons.logout,
+              color: HexColor("#563A9C"),
             ),
             textColor: const Color.fromARGB(255, 0, 0, 0),
             onTap: () async {
@@ -252,6 +262,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
+      print(token);
       final response = await http.get(
         Uri.parse(
             ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.dashboardData),
@@ -264,14 +275,6 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
       }
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
-        // if (jsonData is Map<String, dynamic> && jsonData.containsKey('error')) {
-        //   if (jsonData['error'] == 'Unauthorized: Invalid token') {
-        //     _handleUnauthorizedAccess();
-        //     return;
-        //   } else {
-        //     throw Exception('Error: ${jsonData['error']}');
-        //   }
-        // }
 
         final dataList = jsonData as List<dynamic>;
         setState(() {
@@ -318,7 +321,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF4860b5),
+        backgroundColor: HexColor("#6A42C2"),
         leading: InkWell(
           onTap: () {
             Scaffold.of(context).openDrawer();
@@ -329,7 +332,7 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
           ),
         ),
       ),
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.grey.shade200,
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(),
@@ -381,11 +384,11 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                         SmoothPageIndicator(
                           controller: _pageController,
                           count: _axisNames!.length,
-                          effect: const ExpandingDotsEffect(
+                          effect: ExpandingDotsEffect(
                             dotHeight: 10,
                             dotWidth: 10,
                             spacing: 10,
-                            activeDotColor: Colors.blue,
+                            activeDotColor: HexColor("#563A9C"),
                             dotColor: Colors.grey,
                           ),
                           onDotClicked: (index) {
@@ -465,7 +468,10 @@ class FlBarChartExampleState extends State<FlBarChartExample> {
                   0,
               color: _barColors[i % _barColors.length],
               width: 65,
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(10),
+                topRight: Radius.circular(10),
+              ),
             ),
         ],
       ),

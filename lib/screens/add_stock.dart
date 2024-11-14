@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:newbestshop/utils/api_endpoints.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:newbestshop/screens/each_stock.dart/bill_page.dart';
@@ -95,7 +97,8 @@ class _stockadderState extends State<stockadder> {
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF4860b5),
+        // backgroundColor: const Color(0xFF4860b5),
+        backgroundColor: HexColor("#6A42C2"),
       ),
       body: Column(
         children: [
@@ -106,11 +109,11 @@ class _stockadderState extends State<stockadder> {
               height: 141,
               decoration: BoxDecoration(
                 color: Colors.white,
-                boxShadow: const [
+                boxShadow: [
                   BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 0.50,
-                    spreadRadius: 0.1,
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 5,
+                    spreadRadius: 0.5,
                   )
                 ],
                 borderRadius: BorderRadius.circular(10),
@@ -145,15 +148,36 @@ class _stockadderState extends State<stockadder> {
                                 prefs.remove('selectedsubcategoryId');
                                 prefs.remove('selectedbrandId');
 
+                                prefs.remove('selecteditemnameImg');
+                                prefs.remove('selectedsubcategoryImg');
+                                prefs.remove('selectedbrandImg');
+
                                 _pageController.animateToPage(0,
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeIn);
                               },
                               child: CircleAvatar(
                                 radius: 50,
-                                backgroundImage: NetworkImage(
-                                    '${ApiEndPoints.baseUrl}/$CategoryImg'),
+                                backgroundColor: Colors.white,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      '${ApiEndPoints.baseUrl}/$CategoryImg',
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                        "https://media.istockphoto.com/id/1226328537/vector/image-place-holder-with-a-gray-camera-icon.jpg?s=612x612&w=0&k=20&c=qRydgCNlE44OUSSoz5XadsH7WCkU59-l-dwrvZzhXsI="),
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
+                              // CircleAvatar(
+                              //   radius: 50,
+                              //   backgroundImage: NetworkImage(
+                              //       '${ApiEndPoints.baseUrl}/$CategoryImg'),
+                              // ),
                             ),
                             customTitle: Text(
                               Categoryname,
@@ -175,18 +199,43 @@ class _stockadderState extends State<stockadder> {
                                     await SharedPreferences.getInstance();
                                 prefs.remove('selectedsubcategoryname');
                                 prefs.remove('selectedbrandname');
-                                prefs.remove('selecteditemnameId');
                                 prefs.remove('selectedsubcategoryId');
                                 prefs.remove('selectedbrandId');
 
-                                _pageController.animateToPage(1,
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeIn);
+                                prefs.remove('selectedsubcategoryImg');
+                                prefs.remove('selectedbrandImg');
+
+                                if (prefs.getString('selecteditemname') !=
+                                        null ||
+                                    prefs.getString('selecteditemnameImg') !=
+                                        null) {
+                                  _pageController.animateToPage(1,
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      curve: Curves.easeIn);
+                                }
                               },
                               child: CircleAvatar(
-                                  radius: 50,
-                                  backgroundImage: NetworkImage(
-                                      '${ApiEndPoints.baseUrl}/$itemnameImg')),
+                                radius: 50,
+                                backgroundColor: Colors.white,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      '${ApiEndPoints.baseUrl}/$itemnameImg',
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                        "https://media.istockphoto.com/id/1226328537/vector/image-place-holder-with-a-gray-camera-icon.jpg?s=612x612&w=0&k=20&c=qRydgCNlE44OUSSoz5XadsH7WCkU59-l-dwrvZzhXsI="),
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              // CircleAvatar(
+                              //     radius: 50,
+                              //     backgroundImage: NetworkImage(
+                              //         '${ApiEndPoints.baseUrl}/$itemnameImg')),
                             ),
                             customTitle: Text(
                               style: GoogleFonts.poppins(
@@ -203,16 +252,44 @@ class _stockadderState extends State<stockadder> {
                                 final SharedPreferences prefs =
                                     await SharedPreferences.getInstance();
                                 prefs.remove('selectedbrandname');
-                                prefs.remove('selectedsubcategoryId');
                                 prefs.remove('selectedbrandId');
-                                _pageController.animateToPage(2,
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeIn);
+                                prefs.remove('selectedbrandImg');
+
+                                if (prefs.getString(
+                                            'selectedsubcategoryname') !=
+                                        null ||
+                                    prefs.getString('selectedsubcategoryId') !=
+                                        null ||
+                                    prefs.getString('selectedsubcategoryImg') !=
+                                        null) {
+                                  _pageController.animateToPage(2,
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      curve: Curves.easeIn);
+                                }
                               },
                               child: CircleAvatar(
-                                  radius: 50,
-                                  backgroundImage: NetworkImage(
-                                      '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
+                                radius: 50,
+                                backgroundColor: Colors.white,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      '${ApiEndPoints.baseUrl}/$SubcategoryImg',
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                        "https://media.istockphoto.com/id/1226328537/vector/image-place-holder-with-a-gray-camera-icon.jpg?s=612x612&w=0&k=20&c=qRydgCNlE44OUSSoz5XadsH7WCkU59-l-dwrvZzhXsI="),
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+
+                              // CircleAvatar(
+                              //     radius: 50,
+                              //     backgroundImage: NetworkImage(
+                              //         '${ApiEndPoints.baseUrl}/$SubcategoryImg')),
                             ),
                             customTitle: Text(
                               style: GoogleFonts.poppins(
@@ -225,16 +302,44 @@ class _stockadderState extends State<stockadder> {
                           ),
                           EasyStep(
                             customStep: GestureDetector(
-                              onTap: () {
-                                _pageController.animateToPage(3,
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeIn);
+                              onTap: () async {
+                                final SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+
+                                if (prefs.getString('selectedbrandname') !=
+                                        null ||
+                                    prefs.getString('selectedbrandId') !=
+                                        null ||
+                                    prefs.getString('selectedbrandImg') !=
+                                        null) {
+                                  _pageController.animateToPage(3,
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      curve: Curves.easeIn);
+                                }
                               },
                               child: CircleAvatar(
                                 radius: 50,
-                                backgroundImage: NetworkImage(
-                                    '${ApiEndPoints.baseUrl}/$brandnImg'),
+                                backgroundColor: Colors.white,
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      '${ApiEndPoints.baseUrl}/$brandnImg',
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: NetworkImage(
+                                        "https://media.istockphoto.com/id/1226328537/vector/image-place-holder-with-a-gray-camera-icon.jpg?s=612x612&w=0&k=20&c=qRydgCNlE44OUSSoz5XadsH7WCkU59-l-dwrvZzhXsI="),
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
+                              // CircleAvatar(
+                              //   radius: 50,
+                              //   backgroundImage: NetworkImage(
+                              //       '${ApiEndPoints.baseUrl}/$brandnImg'),
+                              // ),
                             ),
                             customTitle: Text(
                               style: GoogleFonts.poppins(
@@ -316,6 +421,7 @@ class _PageViewCustomState extends State<PageViewCustom> {
   void initState() {
     super.initState();
     _pageController.addListener(_onPageViewChange);
+    setState(() {});
   }
 
   void _onPageViewChange() {

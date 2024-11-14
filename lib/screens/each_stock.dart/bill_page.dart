@@ -1,9 +1,9 @@
 import 'dart:convert';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:newbestshop/models/menuEnumModel.dart';
 import 'package:newbestshop/screens/widgets/Add%20Stock/deleteProduct.dart';
 import 'package:newbestshop/screens/widgets/Add%20Stock/floatingbutton.dart';
 import 'package:newbestshop/screens/widgets/Add%20Stock/updateProduct.dart';
-import 'package:newbestshop/utils/color.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:newbestshop/utils/api_endpoints.dart';
@@ -72,12 +72,11 @@ class _BillingPageState extends State<BillingPage> {
       backgroundColor: Colors.grey.shade200,
       resizeToAvoidBottomInset: false,
       body: Padding(
-        padding: const EdgeInsets.all(3.5),
+        padding: const EdgeInsets.only(right: 3.5, left: 3.5),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 8.0,
-              vertical: 5,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -109,6 +108,7 @@ class _BillingPageState extends State<BillingPage> {
                             context: context,
                             builder: (context) {
                               return FloatingButton(
+                                imageFunction: (image) {},
                                 addImage: false,
                                 controller: addModelController,
                                 function: (modelName) {
@@ -287,6 +287,7 @@ class _BillingPageState extends State<BillingPage> {
                               context: context,
                               builder: (context) {
                                 return FloatingButton(
+                                  imageFunction: (image) {},
                                   addImage: false,
                                   controller: addColorsController,
                                   function: (colorName) {
@@ -465,6 +466,7 @@ class _BillingPageState extends State<BillingPage> {
                               context: context,
                               builder: (context) {
                                 return FloatingButton(
+                                  imageFunction: (image) {},
                                   addImage: false,
                                   controller: addSizeController,
                                   function: (size) {
@@ -655,29 +657,29 @@ class _BillingPageState extends State<BillingPage> {
                                 textAlignVertical: TextAlignVertical.center,
                                 textAlign: TextAlign.justify,
                                 controller: quantity,
-                                decoration: const InputDecoration(
+                                decoration: InputDecoration(
                                   hintText: "Enter the Quantity",
-                                  labelStyle: TextStyle(
+                                  labelStyle: const TextStyle(
                                     color: Color.fromARGB(146, 84, 87, 94),
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
                                   ),
                                   isDense: true,
-                                  contentPadding: EdgeInsets.only(
+                                  contentPadding: const EdgeInsets.only(
                                     left: 15,
                                     bottom: 39,
                                   ),
                                   alignLabelWithHint: true,
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      color: HexColor("#8B5DFF"),
                                       width: 1.0,
                                     ),
-                                    borderRadius: BorderRadius.all(
+                                    borderRadius: const BorderRadius.all(
                                       Radius.circular(10),
                                     ),
                                   ),
-                                  enabledBorder: OutlineInputBorder(
+                                  enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide(
                                       color: Colors.grey,
                                       width: 1.0,
@@ -688,16 +690,16 @@ class _BillingPageState extends State<BillingPage> {
                                   ),
                                   errorBorder: OutlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: Color.fromARGB(143, 0, 140, 255),
+                                      color: HexColor("#8B5DFF"),
                                       width: 1.0,
                                     ),
-                                    borderRadius: BorderRadius.all(
+                                    borderRadius: const BorderRadius.all(
                                       Radius.circular(10),
                                     ),
                                   ),
                                   filled: true,
                                   fillColor: Colors.white,
-                                  hintStyle: TextStyle(
+                                  hintStyle: const TextStyle(
                                     color: Color.fromARGB(146, 87, 111, 168),
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
@@ -752,29 +754,29 @@ class _BillingPageState extends State<BillingPage> {
                                   textAlignVertical: TextAlignVertical.center,
                                   textAlign: TextAlign.justify,
                                   controller: billnumbercontroller,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "Enter the BillNumber",
-                                    labelStyle: TextStyle(
+                                    labelStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
                                     ),
                                     isDense: true,
-                                    contentPadding: EdgeInsets.only(
+                                    contentPadding: const EdgeInsets.only(
                                       left: 15,
                                       bottom: 39,
                                     ),
                                     alignLabelWithHint: true,
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
-                                    enabledBorder: OutlineInputBorder(
+                                    enabledBorder: const OutlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey,
                                         width: 1.0,
@@ -785,16 +787,16 @@ class _BillingPageState extends State<BillingPage> {
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintStyle: TextStyle(
+                                    hintStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
@@ -846,29 +848,29 @@ class _BillingPageState extends State<BillingPage> {
                                   textAlignVertical: TextAlignVertical.center,
                                   textAlign: TextAlign.justify,
                                   controller: sellingpricecontroller,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "Enter the Selling price",
-                                    labelStyle: TextStyle(
+                                    labelStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
                                     ),
                                     isDense: true,
-                                    contentPadding: EdgeInsets.only(
+                                    contentPadding: const EdgeInsets.only(
                                       left: 15,
                                       bottom: 39,
                                     ),
                                     alignLabelWithHint: true,
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
-                                    enabledBorder: OutlineInputBorder(
+                                    enabledBorder: const OutlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey,
                                         width: 1.0,
@@ -879,16 +881,16 @@ class _BillingPageState extends State<BillingPage> {
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintStyle: TextStyle(
+                                    hintStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
@@ -948,29 +950,29 @@ class _BillingPageState extends State<BillingPage> {
                                   textAlign: TextAlign.justify,
                                   controller: purchasingpricecontroller,
                                   // initialValue: "1",
-                                  decoration: const InputDecoration(
-                                    labelStyle: TextStyle(
+                                  decoration: InputDecoration(
+                                    labelStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
                                     ),
                                     hintText: "Enter the Purchasing price",
                                     isDense: true,
-                                    contentPadding: EdgeInsets.only(
+                                    contentPadding: const EdgeInsets.only(
                                       left: 15,
                                       bottom: 39,
                                     ),
                                     alignLabelWithHint: true,
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
-                                    enabledBorder: OutlineInputBorder(
+                                    enabledBorder: const OutlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey,
                                         width: 1.0,
@@ -981,16 +983,16 @@ class _BillingPageState extends State<BillingPage> {
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintStyle: TextStyle(
+                                    hintStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
@@ -1042,29 +1044,29 @@ class _BillingPageState extends State<BillingPage> {
                                   textAlignVertical: TextAlignVertical.center,
                                   textAlign: TextAlign.justify,
                                   controller: mrpcontroller,
-                                  decoration: const InputDecoration(
+                                  decoration: InputDecoration(
                                     hintText: "Enter the Mrp",
-                                    labelStyle: TextStyle(
+                                    labelStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
                                     ),
                                     isDense: true,
-                                    contentPadding: EdgeInsets.only(
+                                    contentPadding: const EdgeInsets.only(
                                       left: 15,
                                       bottom: 39,
                                     ),
                                     alignLabelWithHint: true,
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
-                                    enabledBorder: OutlineInputBorder(
+                                    enabledBorder: const OutlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.grey,
                                         width: 1.0,
@@ -1075,16 +1077,16 @@ class _BillingPageState extends State<BillingPage> {
                                     ),
                                     errorBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                        color: Color.fromARGB(143, 0, 140, 255),
+                                        color: HexColor("#8B5DFF"),
                                         width: 1.0,
                                       ),
-                                      borderRadius: BorderRadius.all(
+                                      borderRadius: const BorderRadius.all(
                                         Radius.circular(10),
                                       ),
                                     ),
                                     filled: true,
                                     fillColor: Colors.white,
-                                    hintStyle: TextStyle(
+                                    hintStyle: const TextStyle(
                                       color: Color.fromARGB(146, 87, 111, 168),
                                       fontWeight: FontWeight.w400,
                                       fontSize: 16,
@@ -1107,7 +1109,7 @@ class _BillingPageState extends State<BillingPage> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 15, vertical: 5),
                             decoration: BoxDecoration(
-                                color: primaryColor,
+                                color: HexColor("#563A9C"),
                                 borderRadius: BorderRadius.circular(8)),
                             child: Row(
                               children: [
@@ -1196,7 +1198,7 @@ class _BillingPageState extends State<BillingPage> {
           selectedsizelist = [];
         });
         fetchModelData();
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       } else {
         print("Request failed with status: ${response.statusCode}");
       }
@@ -1326,7 +1328,7 @@ class _BillingPageState extends State<BillingPage> {
           selectedsizelist = [];
         });
         fetchColorData(_selectedModelId);
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       } else {
         print("Request failed with status: ${response.statusCode}");
       }
@@ -1447,7 +1449,7 @@ class _BillingPageState extends State<BillingPage> {
           selectedsizelist = [];
         });
         fetchColorSize(selectedsizeId);
-        Navigator.of(context).pop();
+        // Navigator.of(context).pop();
       } else {
         print("Request failed with status: ${response.statusCode}");
       }
@@ -1652,10 +1654,11 @@ class _BillingPageState extends State<BillingPage> {
             alignment: Alignment.center,
             child: Column(
               children: [
-                const Icon(
+                Icon(
                   Icons.add_task_rounded,
                   size: 70,
-                  color: Color(0xFF4860b5),
+                  // color: Color(0xFF4860b5),
+                  color: HexColor("#563A9C"),
                 ),
                 Text(
                   "Are you sure?",
@@ -1706,7 +1709,7 @@ class _BillingPageState extends State<BillingPage> {
                       ),
                     ),
                     backgroundColor: WidgetStatePropertyAll(
-                      Color(0xFF4860b5),
+                      Color.fromRGBO(85, 58, 156, 1),
                     ),
                     shape: WidgetStatePropertyAll(
                       RoundedRectangleBorder(

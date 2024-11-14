@@ -1,15 +1,21 @@
 import 'dart:io';
 
+import 'package:chips_choice/chips_choice.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:newbestshop/models/locationModel.dart';
+import 'package:newbestshop/screens/widgets/Add%20Stock/deleteProduct.dart';
 import 'dart:convert';
 import 'package:newbestshop/utils/api_endpoints.dart';
+import 'package:newbestshop/utils/color.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class Expandtile extends StatefulWidget {
   const Expandtile({super.key});
@@ -19,10 +25,26 @@ class Expandtile extends StatefulWidget {
 }
 
 class _ExpandtileState extends State<Expandtile> {
+  late TextEditingController idController;
+  late TextEditingController quantityController;
+  late TextEditingController sellingPriceController;
+  late TextEditingController mrpController;
+
   @override
   void initState() {
     super.initState();
     _futureStockItems = fetchStockItemsGroupedByShop(_selectedDate!);
+    _fetchTokenAndItemNames();
+    getShopLocation();
+  }
+
+  late String _token;
+  Future<void> _fetchTokenAndItemNames() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    setState(() {
+      _token = token;
+    });
     getShopLocation();
   }
 
@@ -30,16 +52,12 @@ class _ExpandtileState extends State<Expandtile> {
       DateTime selectedDate) async {
     String formattedDate =
         "${selectedDate.year}-${selectedDate.month}-${selectedDate.day}";
-    String api = 
-    // selectedShopIds.isEmpty
-        // ?
-         '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stockview}$formattedDate';
-        // : '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stockview}$formattedDate&shop_location=$selectedLocationId';
+    String api =
+        '${ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stockview}$formattedDate&shop_location=$selectedLocation';
 
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
-      print(token);
       final response = await http.get(
         Uri.parse(api),
         headers: {
@@ -67,57 +85,76 @@ class _ExpandtileState extends State<Expandtile> {
   }
 
   Future<void> getShopLocation() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token') ?? '';
+    if (mounted) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
 
-    try {
-      final response = await http.get(
-        Uri.parse(
-            ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getLocation),
-        headers: {
-          'Authorization': 'Bearer $token',
-          'Content-Type': 'application/json',
-        },
-      );
+      try {
+        final response = await http.get(
+          Uri.parse(
+              ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.getLocation),
+          headers: {
+            'Authorization': 'Bearer $token',
+            'Content-Type': 'application/json',
+          },
+        );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        setState(() {
-          locations = data.map((shop) => Location.fromJson(shop)).toList();
-        });
-      } else {
-        throw Exception('Failed to load shop locations');
+        if (response.statusCode == 200) {
+          final List<dynamic> data = jsonDecode(response.body);
+          setState(() {
+            locations = data.map((shop) => Location.fromJson(shop)).toList();
+          });
+        } else {
+          throw Exception('Failed to load shop locations');
+        }
+      } catch (e) {
+        throw Exception('Error: $e');
       }
-    } catch (e) {
-      throw Exception('Error: $e');
     }
   }
 
-  Future<void> downloadCsvFile() async {
+  Future<void> downloadCsvFile(int? locationIndex) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
     String formattedDate =
         "${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}";
+
     try {
-      if (await _requestStoragePermission()) {}
-      final Uri uri = Uri.parse(
-              ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.downloadCSV)
-          .replace(
-        queryParameters: {
-          'date': formattedDate,
-          'shop_location': selectedShopIds.toList(),
-        },
-      );
+      if (!await _requestStoragePermission()) {
+        print('Storage permission denied');
+        return;
+      }
+      if (!await _requestStoragePermission()) {
+        final Uri uri = Uri.parse(
+          ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.downloadCSV,
+        ).replace(
+          queryParameters: {
+            'date': formattedDate,
+            'shop_location': locationIndex.toString(),
+          },
+        );
 
-      final response =
-          await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+        final response =
+            await http.get(uri, headers: {'Authorization': 'Bearer $token'});
 
-      if (response.statusCode == 200) {
-        final directory = await getExternalStorageDirectory();
-        final filePath = '${directory!.path}/exported_stock.csv';
-        final file = File(filePath);
+        if (response.statusCode == 200) {
+          final directory = await getExternalStorageDirectory();
+          final filePath = '${directory!.path}/exported_stock.csv';
+          final file = File(filePath);
 
-        await file.writeAsBytes(response.bodyBytes);
+          await file.writeAsBytes(response.bodyBytes);
+
+          print('File saved at: $filePath');
+
+          // Try opening the file
+          final result = await OpenFile.open(filePath);
+          if (result.type != ResultType.done) {
+            print('Error opening PDF: ${result.message}');
+          }
+          print('OpenFile result: ${result.type}, message: ${result.message}');
+        }
+      } else {
+        print('Permission denied');
       }
     } catch (e) {
       showDialog(
@@ -147,13 +184,130 @@ class _ExpandtileState extends State<Expandtile> {
 
     return false;
   }
+//   Future<void> downloadCsvFile(int? locationIndex) async {
+//     final SharedPreferences prefs = await SharedPreferences.getInstance();
+//     final token = prefs.getString('token') ?? '';
+//     String formattedDate =
+//         "${_selectedDate!.year}-${_selectedDate!.month}-${_selectedDate!.day}";
+
+//     try {
+//       if (await _requestStoragePermission()) {}
+
+//       final Uri uri = Uri.parse(
+//         ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.downloadCSV,
+//       ).replace(
+//         queryParameters: {
+//           'date': formattedDate,
+//           'shop_location': locationIndex.toString(),
+//         },
+//       );
+
+//       final response =
+//           await http.get(uri, headers: {'Authorization': 'Bearer $token'});
+
+//       if (response.statusCode == 200) {
+//         final directory =
+//             await getExternalStorageDirectory(); // Ensure correct directory
+//         final filePath =
+//             '${directory!.path}/exported_stock.csv'; // Define the file path
+//         final file = File(filePath);
+
+//         await file.writeAsBytes(response.bodyBytes); // Save the file
+
+//         print('File saved at: $filePath'); // Debugging to check file path
+
+// // Open the file
+//         final result = await OpenFile.open(filePath);
+  // if (result.type != ResultType.done) {
+  //   print('Error opening PDF: ${result.message}');
+  // }
+//       }
+//     } catch (e) {
+//       showDialog(
+//           context: context,
+//           builder: (context) {
+//             return SimpleDialog(
+//               children: [
+//                 Text(e.toString()),
+//               ],
+//             );
+//           });
+//     }
+//   }
+
+  Future<void> deleteStock(int? stockId) async {
+    try {
+      final Uri apiUri = Uri.parse(
+          ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stocksDelete);
+      final response = await http.delete(
+        apiUri,
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            "id": stockId,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          _futureStockItems = fetchStockItemsGroupedByShop(_selectedDate!);
+        });
+        Navigator.of(context).pop();
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+    }
+  }
+
+  Future<void> updateStock(String? quantity, String? stockId,
+      String? sellingPrice, String? mrp) async {
+    try {
+      final Uri apiUri = Uri.parse(
+          ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.stocksedit);
+      final response = await http.put(
+        apiUri,
+        headers: {
+          'Authorization': 'Bearer $_token',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(
+          {
+            "id": stockId,
+            "quantity": quantity,
+            "selling_price": sellingPrice,
+            "mrp": mrp,
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        // _fetchItemNames();
+        Navigator.of(context).pop();
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error occurred: $e");
+    }
+  }
 
   late Future<Map<String, List<Map<String, dynamic>>>>? _futureStockItems;
   DateTime? _selectedDate = DateTime.now();
   List<Location> locations = [];
+  List<Location> downloadLocations = [];
   Set<String> selectedShopIds = {};
   int? selectedLocationId;
-
+  int tag = 1;
+  List<String> tags = [];
+  bool isSelected = false;
+  int selectedLocation = 1;
+  GlobalKey<FormState> editStockKey = GlobalKey<FormState>();
+  Set<int> selectedIndices = {};
+  int? selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -161,7 +315,6 @@ class _ExpandtileState extends State<Expandtile> {
         title: Text(
           "Inventory",
           style: GoogleFonts.poppins(
-            // fontSize: 24,
             fontWeight: FontWeight.w500,
             color: Colors.white,
           ),
@@ -176,10 +329,129 @@ class _ExpandtileState extends State<Expandtile> {
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF4860b5),
+        // backgroundColor: const Color(0xFF4860b5),
+        backgroundColor: HexColor("#6A42C2"),
+
         actions: [
           GestureDetector(
-            onTap: downloadCsvFile,
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return StatefulBuilder(
+                    builder: (context, stfSetState) {
+                      return Dialog(
+                        child: SizedBox(
+                          height: 400,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              right: 10,
+                              left: 10,
+                              bottom: 20,
+                              top: 10,
+                            ),
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: ListView.builder(
+                                    itemCount: locations.length,
+                                    itemBuilder: (context, index) {
+                                      return RadioListTile<int>(
+                                        selectedTileColor:
+                                            const Color(0xFF4860b5),
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15))),
+                                        title: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 5),
+                                          child: Text(
+                                            locations[index].name!,
+                                            style: TextStyle(
+                                              color: selectedIndex == index
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        value: index,
+                                        groupValue: selectedIndex,
+                                        activeColor: Colors.white,
+                                        tileColor: selectedIndex == index
+                                            ? Colors.blue
+                                            : Colors.transparent,
+                                        selected: selectedIndex == index,
+                                        onChanged: (int? value) {
+                                          stfSetState(() {
+                                            selectedIndex = value;
+                                          });
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 30,
+                                ),
+                                IntrinsicHeight(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                          ),
+                                          child: Text(
+                                            "No",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 17),
+                                          ),
+                                        ),
+                                      ),
+                                      VerticalDivider(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        thickness: 1,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          downloadCsvFile(selectedIndex! + 1);
+                                        },
+                                        child: const Padding(
+                                          padding: EdgeInsets.only(
+                                            left: 10,
+                                            right: 10,
+                                          ),
+                                          child: Text(
+                                            "yes",
+                                            style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    72, 96, 181, 1),
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 17),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
             child: const Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 20.0,
@@ -199,24 +471,34 @@ class _ExpandtileState extends State<Expandtile> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             locations.isNotEmpty
-                ? Wrap(
-                    spacing: 8.0,
-                    runSpacing: 4.0,
-                    children: locations
-                        .map((shop) => ChoiceChip(
-                              label: Text(shop.name!),
-                              selected: selectedLocationId == shop.id,
-                              onSelected: (bool selected) {
-                                setState(() {
-                                  selectedLocationId =
-                                      selected ? shop.id : null;
-                                });
-                                _futureStockItems =
-                                    fetchStockItemsGroupedByShop(
-                                        _selectedDate!);
-                              },
-                            ))
-                        .toList(),
+                ? ChipsChoice.single(
+                    padding: EdgeInsets.zero,
+                    choiceStyle: C2ChipStyle.toned(
+                      foregroundColor: Colors.black,
+                      selectedStyle: const C2ChipStyle(
+                        elevation: 0,
+                      ),
+                    ),
+                    value: tag.toString(),
+                    onChanged: (val) {
+                      setState(() {
+                        tag = int.tryParse(val) ?? 0;
+                        selectedLocation = tag;
+                        _futureStockItems =
+                            fetchStockItemsGroupedByShop(_selectedDate!);
+                      });
+                    },
+                    choiceCheckmark: true,
+                    choiceItems: C2Choice.listFrom<String, Location>(
+                      style: (index, location) => const C2ChipStyle(
+                        height: 40,
+                        avatarForegroundStyle: TextStyle(fontSize: 15),
+                        foregroundStyle: TextStyle(fontSize: 15),
+                      ),
+                      source: locations,
+                      value: (index, location) => location.id?.toString() ?? '',
+                      label: (index, location) => location.name ?? 'Unknown',
+                    ),
                   )
                 : const Center(
                     child: CircularProgressIndicator(),
@@ -266,41 +548,76 @@ class _ExpandtileState extends State<Expandtile> {
                       ),
                     ),
                     backgroundColor: WidgetStateProperty.all<Color>(
-                      const Color(0xFF4860b5),
+                      const Color.fromRGBO(106, 66, 194, 1),
                     ),
                   ),
                   onPressed: () async {
-                    final DateTime? picked = await showDatePicker(
+                    DateTime? picked = await showDialog<DateTime>(
                       context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      builder: (BuildContext context, Widget? child) {
-                        return Theme(
-                          data: ThemeData.dark().copyWith(
-                            colorScheme: const ColorScheme.light(
-                              primary: Colors.white,
-                              onPrimary: Color(0xFF4860b5),
-                              onSurface: Color(0xFF4860b5),
-                              // onBackground: Color(0xFF4860b5),
-                              // background: Colors.white,
-                            ),
-                            textButtonTheme: TextButtonThemeData(
-                              style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFF4860b5),
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          backgroundColor: lighterbackgroundblue,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20.0),
+                            child: Container(
+                              height: 400,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SfDateRangePicker(
+                                  view: DateRangePickerView.month,
+                                  selectionMode:
+                                      DateRangePickerSelectionMode.single,
+                                  initialSelectedDate: _selectedDate,
+                                  onSelectionChanged:
+                                      (DateRangePickerSelectionChangedArgs
+                                          args) {
+                                    Navigator.of(context).pop(args.value);
+                                  },
+                                  todayHighlightColor: greyblue,
+                                  backgroundColor: lighterbackgroundblue,
+                                  selectionTextStyle: TextStyle(
+                                    color: lighterbackgroundblue,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  selectionColor: greyblue,
+                                  monthCellStyle: DateRangePickerMonthCellStyle(
+                                    todayTextStyle: TextStyle(
+                                      color: greyblue,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textStyle: TextStyle(
+                                      color: greyblue,
+                                    ),
+                                  ),
+                                  headerStyle: DateRangePickerHeaderStyle(
+                                    backgroundColor: lighterbackgroundblue,
+                                    textStyle: TextStyle(
+                                      color: greyblue,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  monthViewSettings:
+                                      DateRangePickerMonthViewSettings(
+                                    viewHeaderStyle:
+                                        DateRangePickerViewHeaderStyle(
+                                      textStyle: TextStyle(
+                                        color: greyblue,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                            textTheme: TextTheme(
-                              headlineLarge:
-                                  Theme.of(context).textTheme.headlineLarge,
-                              titleLarge:
-                                  Theme.of(context).textTheme.headlineLarge,
-                            ),
                           ),
-                          child: child!,
                         );
                       },
                     );
+
                     if (picked != null) {
                       setState(() {
                         _selectedDate = picked;
@@ -308,6 +625,43 @@ class _ExpandtileState extends State<Expandtile> {
                             fetchStockItemsGroupedByShop(_selectedDate!);
                       });
                     }
+
+                    // final DateTime? picked = await showDatePicker(
+                    //   context: context,
+                    //   initialDate: DateTime.now(),
+                    //   firstDate: DateTime(2000),
+                    //   lastDate: DateTime(2100),
+                    //   builder: (BuildContext context, Widget? child) {
+                    //     return Theme(
+                    //       data: ThemeData.dark().copyWith(
+                    //         colorScheme: const ColorScheme.light(
+                    //           primary: Colors.white,
+                    //           onPrimary: Color(0xFF4860b5),
+                    //           onSurface: Color(0xFF4860b5),
+                    //         ),
+                    //         textButtonTheme: TextButtonThemeData(
+                    //           style: TextButton.styleFrom(
+                    //             backgroundColor: const Color(0xFF4860b5),
+                    //           ),
+                    //         ),
+                    //         textTheme: TextTheme(
+                    //           headlineLarge:
+                    //               Theme.of(context).textTheme.headlineLarge,
+                    //           titleLarge:
+                    //               Theme.of(context).textTheme.headlineLarge,
+                    //         ),
+                    //       ),
+                    //       child: child!,
+                    //     );
+                    //   },
+                    // );
+                    // if (picked != null) {
+                    //   setState(() {
+                    //     _selectedDate = picked;
+                    //     _futureStockItems =
+                    //         fetchStockItemsGroupedByShop(_selectedDate!);
+                    //   });
+                    // }
                   },
                 ),
               ),
@@ -341,8 +695,11 @@ class _ExpandtileState extends State<Expandtile> {
                         'Color Name',
                         'Size Name',
                         'Quantity',
+                        'Selling Price',
                         'MRP',
                         'Total Price',
+                        'Edit',
+                        'Delete',
                       ];
                       return ListView(
                         children: groupedItems.keys.map((shop) {
@@ -365,7 +722,8 @@ class _ExpandtileState extends State<Expandtile> {
                               ),
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
                                   child: SingleChildScrollView(
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.horizontal,
@@ -377,11 +735,6 @@ class _ExpandtileState extends State<Expandtile> {
                                           bottom: 5,
                                         ),
                                         child: DataTable(
-                                          // border: TableBorder(
-                                          //   verticalInside: BorderSide(
-                                          //     color: Colors.grey[400]!,
-                                          //   ),
-                                          // ),
                                           columnSpacing: 30.0,
                                           horizontalMargin: 12.0,
                                           dataRowMaxHeight: 70,
@@ -434,12 +787,604 @@ class _ExpandtileState extends State<Expandtile> {
                                                         ?.toString() ??
                                                     '')),
                                                 DataCell(Text(
+                                                    item['selling_price']
+                                                            ?.toString() ??
+                                                        '')),
+                                                DataCell(Text(
                                                     item['mrp']?.toString() ??
                                                         '')),
                                                 DataCell(Text(
                                                     item['total_price']
                                                             ?.toString() ??
                                                         '')),
+                                                DataCell(GestureDetector(
+                                                  onTap: () {
+                                                    idController =
+                                                        TextEditingController(
+                                                            text: item['id']
+                                                                .toString());
+
+                                                    quantityController =
+                                                        TextEditingController(
+                                                            text: item[
+                                                                    'quantity']
+                                                                .toString());
+
+                                                    sellingPriceController =
+                                                        TextEditingController(
+                                                            text: item[
+                                                                    'selling_price']
+                                                                .toString());
+
+                                                    mrpController =
+                                                        TextEditingController(
+                                                            text: item['mrp']
+                                                                .toString());
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Form(
+                                                            key: editStockKey,
+                                                            child: SimpleDialog(
+                                                              backgroundColor:
+                                                                  Colors.grey
+                                                                      .shade100,
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                              ),
+                                                              title: const Text(
+                                                                  "Edit Stocks:"),
+                                                              titleTextStyle:
+                                                                  const TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      color: Colors
+                                                                          .black),
+                                                              children: [
+                                                                Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                          .symmetric(
+                                                                    horizontal:
+                                                                        10,
+                                                                    vertical:
+                                                                        10,
+                                                                  ),
+                                                                  child: Column(
+                                                                      mainAxisSize:
+                                                                          MainAxisSize
+                                                                              .min,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        const Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "Id",
+                                                                              style: TextStyle(
+                                                                                fontSize: 19,
+                                                                              ),
+                                                                            ),
+                                                                            Text(
+                                                                              "*",
+                                                                              style: TextStyle(
+                                                                                color: Colors.red,
+                                                                                fontSize: 19,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                        TextFormField(
+                                                                          textAlignVertical:
+                                                                              TextAlignVertical.center,
+                                                                          textAlign:
+                                                                              TextAlign.justify,
+                                                                          textInputAction:
+                                                                              TextInputAction.next,
+                                                                          controller:
+                                                                              idController,
+                                                                          autovalidateMode:
+                                                                              AutovalidateMode.onUserInteraction,
+                                                                          validator:
+                                                                              (value) {
+                                                                            if (value == null ||
+                                                                                value.isEmpty) {
+                                                                              return '';
+                                                                            }
+                                                                            return null;
+                                                                          },
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            helperText:
+                                                                                ' ',
+                                                                            isDense:
+                                                                                true,
+                                                                            contentPadding:
+                                                                                const EdgeInsets.only(
+                                                                              left: 15,
+                                                                              bottom: 39,
+                                                                            ),
+                                                                            alignLabelWithHint:
+                                                                                true,
+                                                                            border:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            focusedBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: HexColor("#8B5DFF"),
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: const BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            enabledBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.red,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorStyle:
+                                                                                const TextStyle(height: 0),
+                                                                            filled:
+                                                                                true,
+                                                                            fillColor:
+                                                                                Colors.white,
+                                                                            hintStyle:
+                                                                                GoogleFonts.poppins(
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: const Color.fromARGB(146, 87, 111, 168),
+                                                                            ),
+                                                                            hintText:
+                                                                                'Id',
+                                                                          ),
+                                                                        ),
+                                                                        const Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "Quantity",
+                                                                              style: TextStyle(
+                                                                                fontSize: 19,
+                                                                              ),
+                                                                            ),
+                                                                            Text(
+                                                                              "*",
+                                                                              style: TextStyle(
+                                                                                color: Colors.red,
+                                                                                fontSize: 19,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                        TextFormField(
+                                                                          textAlignVertical:
+                                                                              TextAlignVertical.center,
+                                                                          textAlign:
+                                                                              TextAlign.justify,
+                                                                          textInputAction:
+                                                                              TextInputAction.next,
+                                                                          controller:
+                                                                              quantityController,
+                                                                          autovalidateMode:
+                                                                              AutovalidateMode.onUserInteraction,
+                                                                          validator:
+                                                                              (value) {
+                                                                            if (value == null ||
+                                                                                value.isEmpty) {
+                                                                              return '';
+                                                                            }
+                                                                            return null;
+                                                                          },
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            helperText:
+                                                                                ' ',
+                                                                            isDense:
+                                                                                true,
+                                                                            contentPadding:
+                                                                                const EdgeInsets.only(
+                                                                              left: 15,
+                                                                              bottom: 39,
+                                                                            ),
+                                                                            alignLabelWithHint:
+                                                                                true,
+                                                                            border:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            focusedBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: HexColor("#8B5DFF"),
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: const BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            enabledBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.red,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorStyle:
+                                                                                const TextStyle(height: 0),
+                                                                            filled:
+                                                                                true,
+                                                                            fillColor:
+                                                                                Colors.white,
+                                                                            hintStyle:
+                                                                                GoogleFonts.poppins(
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: const Color.fromARGB(146, 87, 111, 168),
+                                                                            ),
+                                                                            hintText:
+                                                                                'quantity',
+                                                                          ),
+                                                                        ),
+                                                                        const Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              "Selling Price",
+                                                                              style: TextStyle(
+                                                                                fontSize: 19,
+                                                                              ),
+                                                                            ),
+                                                                            Text(
+                                                                              "*",
+                                                                              style: TextStyle(
+                                                                                color: Colors.red,
+                                                                                fontSize: 19,
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                        TextFormField(
+                                                                          textAlignVertical:
+                                                                              TextAlignVertical.center,
+                                                                          textAlign:
+                                                                              TextAlign.justify,
+                                                                          textInputAction:
+                                                                              TextInputAction.next,
+                                                                          controller:
+                                                                              sellingPriceController,
+                                                                          autovalidateMode:
+                                                                              AutovalidateMode.onUserInteraction,
+                                                                          validator:
+                                                                              (value) {
+                                                                            if (value == null ||
+                                                                                value.isEmpty) {
+                                                                              return '';
+                                                                            }
+                                                                            return null;
+                                                                          },
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            helperText:
+                                                                                ' ',
+                                                                            isDense:
+                                                                                true,
+                                                                            contentPadding:
+                                                                                const EdgeInsets.only(
+                                                                              left: 15,
+                                                                              bottom: 39,
+                                                                            ),
+                                                                            alignLabelWithHint:
+                                                                                true,
+                                                                            border:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            focusedBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: HexColor("#8B5DFF"),
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: const BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            enabledBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.red,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorStyle:
+                                                                                const TextStyle(height: 0),
+                                                                            filled:
+                                                                                true,
+                                                                            fillColor:
+                                                                                Colors.white,
+                                                                            hintStyle:
+                                                                                GoogleFonts.poppins(
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: const Color.fromARGB(146, 87, 111, 168),
+                                                                            ),
+                                                                            hintText:
+                                                                                'sellingPrice',
+                                                                          ),
+                                                                        ),
+                                                                        const Text(
+                                                                          "Mrp",
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                19,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                        TextFormField(
+                                                                          textAlignVertical:
+                                                                              TextAlignVertical.center,
+                                                                          textAlign:
+                                                                              TextAlign.justify,
+                                                                          textInputAction:
+                                                                              TextInputAction.done,
+                                                                          controller:
+                                                                              mrpController,
+                                                                          autovalidateMode:
+                                                                              AutovalidateMode.onUserInteraction,
+                                                                          validator:
+                                                                              (value) {
+                                                                            if (value == null ||
+                                                                                value.isEmpty) {
+                                                                              return '';
+                                                                            }
+                                                                            return null;
+                                                                          },
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            helperText:
+                                                                                ' ',
+                                                                            isDense:
+                                                                                true,
+                                                                            contentPadding:
+                                                                                const EdgeInsets.only(
+                                                                              left: 15,
+                                                                              bottom: 39,
+                                                                            ),
+                                                                            alignLabelWithHint:
+                                                                                true,
+                                                                            border:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            focusedBorder:
+                                                                                OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: HexColor("#8B5DFF"),
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: const BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            enabledBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.transparent,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorBorder:
+                                                                                const OutlineInputBorder(
+                                                                              borderSide: BorderSide(
+                                                                                color: Colors.red,
+                                                                                width: 2.0,
+                                                                              ),
+                                                                              borderRadius: BorderRadius.all(
+                                                                                Radius.circular(10),
+                                                                              ),
+                                                                            ),
+                                                                            errorStyle:
+                                                                                const TextStyle(height: 0),
+                                                                            filled:
+                                                                                true,
+                                                                            fillColor:
+                                                                                Colors.white,
+                                                                            hintStyle:
+                                                                                GoogleFonts.poppins(
+                                                                              fontSize: 16,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: const Color.fromARGB(146, 87, 111, 168),
+                                                                            ),
+                                                                            hintText:
+                                                                                'mrp',
+                                                                          ),
+                                                                        ),
+                                                                        Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.symmetric(
+                                                                            vertical:
+                                                                                15,
+                                                                          ),
+                                                                          child:
+                                                                              IntrinsicHeight(
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                              children: [
+                                                                                GestureDetector(
+                                                                                  onTap: () {
+                                                                                    Navigator.of(context).pop();
+                                                                                  },
+                                                                                  child: const Padding(
+                                                                                    padding: EdgeInsets.only(
+                                                                                      left: 10,
+                                                                                      right: 10,
+                                                                                    ),
+                                                                                    child: Text(
+                                                                                      "No",
+                                                                                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.w500, fontSize: 17),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                VerticalDivider(
+                                                                                  color: Colors.grey.withOpacity(0.5),
+                                                                                  thickness: 1,
+                                                                                ),
+                                                                                GestureDetector(
+                                                                                  onTap: () {
+                                                                                    if (editStockKey.currentState!.validate()) {
+                                                                                      updateStock(quantityController.text, idController.text, sellingPriceController.text, mrpController.text);
+                                                                                      setState(() {
+                                                                                        _futureStockItems = fetchStockItemsGroupedByShop(_selectedDate!);
+                                                                                      });
+                                                                                    } else {
+                                                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                                                        const SnackBar(
+                                                                                          content: Text('Please fill in all fields.'),
+                                                                                        ),
+                                                                                      );
+                                                                                    }
+                                                                                  },
+                                                                                  child: const Padding(
+                                                                                    padding: EdgeInsets.only(
+                                                                                      left: 10,
+                                                                                      right: 10,
+                                                                                    ),
+                                                                                    child: Text(
+                                                                                      "yes",
+                                                                                      style: TextStyle(color: Color.fromRGBO(72, 96, 181, 1), fontWeight: FontWeight.bold, fontSize: 17),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ]),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        });
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.edit,
+                                                    size: 20,
+                                                    color: Color(0xFF4860b5),
+                                                  ),
+                                                )),
+                                                DataCell(GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return DeleteproductDialog(
+                                                            id: item['id'],
+                                                            function:
+                                                                (stockId) {
+                                                              print("its in");
+                                                              deleteStock(
+                                                                  stockId);
+                                                            },
+                                                          );
+                                                        });
+                                                  },
+                                                  child: const Icon(
+                                                    Icons.delete,
+                                                    size: 20,
+                                                    color: Colors.red,
+                                                  ),
+                                                )),
                                               ],
                                             );
                                           }).toList(),
@@ -475,9 +1420,11 @@ class StockItem {
   final String? color_name;
   final String? size_name;
   final String? quantity;
+  final String? selling_price;
   final String? mrp;
   final String? total_price;
   StockItem({
+    this.selling_price,
     this.user,
     this.id,
     this.shop,
@@ -506,6 +1453,7 @@ class StockItem {
       quantity: json['quantity'],
       mrp: json['mrp'],
       total_price: json['total_price'],
+      selling_price: json['selling_price'],
     );
   }
 
@@ -523,6 +1471,7 @@ class StockItem {
       "quantity": quantity,
       "mrp": mrp,
       "total_price": total_price,
+      "selling_price": selling_price,
     };
   }
 }

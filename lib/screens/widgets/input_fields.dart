@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class InputTextFieldWidget extends StatelessWidget {
   final TextEditingController textEditingController;
   final String hintText;
-  const InputTextFieldWidget(this.textEditingController, this.hintText,{super.key});
+  const InputTextFieldWidget(this.textEditingController, this.hintText,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,30 +33,30 @@ class InputTextFieldWidget extends StatelessWidget {
                 bottom: 39,
               ),
               alignLabelWithHint: true,
-              focusedBorder: const OutlineInputBorder(
+              focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color.fromARGB(143, 0, 140, 255),
+                  color: HexColor("#8B5DFF"),
                   width: 2.0,
                 ),
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
               ),
-              enabledBorder: const OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color.fromARGB(143, 0, 140, 255),
+                  color: HexColor("#8B5DFF"),
                   width: 2.0,
                 ),
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
               ),
-              errorBorder: const OutlineInputBorder(
+              errorBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                  color: Color.fromARGB(143, 0, 140, 255),
+                  color: HexColor("#8B5DFF"),
                   width: 2.0,
                 ),
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(10),
                 ),
               ),

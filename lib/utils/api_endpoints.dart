@@ -1,5 +1,5 @@
 class ApiEndPoints {
-  static const String baseUrl = 'http://10.40.32.128:5000';
+  static const String baseUrl = 'http://10.10.86.11:5000';
   static AuthEndPoints authEndpoints = AuthEndPoints();
 }
 
@@ -28,6 +28,17 @@ class AuthEndPoints {
   final String updateBranddrop = '/api/structure/model?brand=';
   final String updateModeldrop = '/api/structure/color?model=';
   final String updateColordrop = '/api/structure/size?color=';
-  // location
+
+  // edit stock
+  final String stocksedit = '/api/stock/stock';
+
+  //delete stock
+  final String stocksDelete = '/api/stock/stock';
+
+  //master apis
+  final String roleFetch = "/api/master/role";
   final String getLocation = '/api/master/shop-location';
+
+  //valuable stock
+  final String valuableStock = "/api/stock/most-valuable";
 }

@@ -9,6 +9,8 @@ class RegisterationController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController phonenumberController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  String? role;
+  String? location;
 
   Future<void> registerWithEmail() async {
     try {
@@ -16,8 +18,11 @@ class RegisterationController extends GetxController {
       var url = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.registerEmail);
       Map body = {
-        'username': nameController.text,
-        'password': passwordController.text
+        'name': nameController.text,
+        'password': passwordController.text,
+        'number': phonenumberController.text,
+        "location": location,
+        "role": role,
       };
 
       var response =
@@ -26,6 +31,7 @@ class RegisterationController extends GetxController {
       if (response.statusCode == 200) {
         nameController.clear();
         passwordController.clear();
+        phonenumberController.clear();
         Get.off(const Home_Page());
       } else {
         throw jsonDecode(response.body)["Message"] ?? "Invalid Input";

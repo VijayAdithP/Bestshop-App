@@ -37,12 +37,22 @@ dependencies:
   slidable_button: ^3.0.0+1
   easy_stepper: ^0.8.3
   google_fonts: ^6.2.1
-  syncfusion_flutter_charts: ^25.1.38
+  syncfusion_flutter_charts: ^25.2.7
   smooth_page_indicator: ^1.2.0+3
   path_provider: ^2.1.4
   permission_handler: ^11.3.1
   flutter_reaction_button: ^3.0.0+3
   dotted_border: ^2.1.0
+  http_parser: ^4.0.2
+  image_picker: ^1.1.2
+  mime: ^1.0.6
+  path: ^1.9.0
+  chips_choice: ^3.0.1
+  filter_list: ^1.0.3
+  open_file: ^3.5.9
+  cached_network_image: ^3.4.1
+  syncfusion_flutter_datepicker: ^25.2.7
+  hexcolor: ^3.0.1
   
 
 

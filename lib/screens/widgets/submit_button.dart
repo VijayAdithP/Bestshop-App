@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class SubmitButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -28,9 +29,9 @@ class SubmitButton extends StatelessWidget {
               side: BorderSide.none,
             ),
           ),
-          backgroundColor: WidgetStateProperty.all<Color>(
-            const Color(0xFF4860b5),
-          ),
+          backgroundColor: WidgetStateProperty.all<Color>(HexColor(
+            "#563A9C",
+          )),
         ),
         onPressed: onPressed,
         child: Text(
