@@ -46,7 +46,7 @@ class _ValuablestockState extends State<Valuablestock> {
         setState(() {
           valuableStock = data;
           if (data.rankedStocks != null && data.rankedStocks!.isNotEmpty) {
-            rank1Value = "\$${data.rankedStocks!.first.stockValue}";
+            rank1Value = "\₹${data.rankedStocks!.first.stockValue}";
             calculatePercentages(data.rankedStocks!);
           } else {
             rank1Value = "No data";
@@ -108,10 +108,10 @@ class _ValuablestockState extends State<Valuablestock> {
     int othersValue = 0;
 
     List<Color> colors = [
-      HexColor("#6A42C2"),
-      HexColor("#8B5DFF"),
-      HexColor("#B08BFF"),
-      HexColor("#D1B9FF")
+      Colors.red,
+      Colors.green,
+      Colors.orange,
+      Colors.grey,
     ];
 
     for (int i = 0; i < stocks.length; i++) {
@@ -143,15 +143,15 @@ class _ValuablestockState extends State<Valuablestock> {
   }
 
   List<Color> colors = [
-    HexColor("#6A42C2"),
-    HexColor("#8B5DFF"),
-    HexColor("#B08BFF"),
-    HexColor("#D1B9FF")
+    Colors.red,
+    Colors.green,
+    Colors.orange,
+    Colors.grey,
   ];
   List<Color> colors1 = [
-    HexColor("#6A42C2"),
-    HexColor("#8B5DFF"),
-    HexColor("#B08BFF"),
+    Colors.red,
+    Colors.green,
+    Colors.orange,
   ];
   @override
   Widget build(BuildContext context) {

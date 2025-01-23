@@ -53,7 +53,8 @@ dependencies:
   cached_network_image: ^3.4.1
   syncfusion_flutter_datepicker: ^25.2.7
   hexcolor: ^3.0.1
-  
+  uuid: ^4.5.1
+   
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:uuid/uuid.dart';
 
 class Expandtile extends StatefulWidget {
   const Expandtile({super.key});
@@ -114,6 +115,7 @@ class _ExpandtileState extends State<Expandtile> {
   }
 
   Future<void> downloadCsvFile(int? locationIndex) async {
+    var uuid = Uuid();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
     String formattedDate =
@@ -124,7 +126,7 @@ class _ExpandtileState extends State<Expandtile> {
         print('Storage permission denied');
         return;
       }
-      if (!await _requestStoragePermission()) {
+      if (true) {
         final Uri uri = Uri.parse(
           ApiEndPoints.baseUrl + ApiEndPoints.authEndpoints.downloadCSV,
         ).replace(
@@ -139,7 +141,7 @@ class _ExpandtileState extends State<Expandtile> {
 
         if (response.statusCode == 200) {
           final directory = await getExternalStorageDirectory();
-          final filePath = '${directory!.path}/exported_stock.csv';
+          final filePath = '${directory!.path}/$formattedDate';
           final file = File(filePath);
 
           await file.writeAsBytes(response.bodyBytes);
@@ -153,8 +155,6 @@ class _ExpandtileState extends State<Expandtile> {
           }
           print('OpenFile result: ${result.type}, message: ${result.message}');
         }
-      } else {
-        print('Permission denied');
       }
     } catch (e) {
       showDialog(
@@ -357,8 +357,7 @@ class _ExpandtileState extends State<Expandtile> {
                                     itemCount: locations.length,
                                     itemBuilder: (context, index) {
                                       return RadioListTile<int>(
-                                        selectedTileColor:
-                                            const Color(0xFF4860b5),
+                                        selectedTileColor: HexColor("#563A9C"),
                                         shape: const RoundedRectangleBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(15))),
@@ -378,7 +377,7 @@ class _ExpandtileState extends State<Expandtile> {
                                         groupValue: selectedIndex,
                                         activeColor: Colors.white,
                                         tileColor: selectedIndex == index
-                                            ? Colors.blue
+                                            ? HexColor("#563A9C")
                                             : Colors.transparent,
                                         selected: selectedIndex == index,
                                         onChanged: (int? value) {
@@ -417,12 +416,14 @@ class _ExpandtileState extends State<Expandtile> {
                                         ),
                                       ),
                                       VerticalDivider(
-                                        color: Colors.grey.withOpacity(0.5),
+                                        color:
+                                            Colors.grey.withValues(alpha: 0.5),
                                         thickness: 1,
                                       ),
                                       GestureDetector(
                                         onTap: () {
                                           downloadCsvFile(selectedIndex! + 1);
+                                          Navigator.of(context).pop();
                                         },
                                         child: const Padding(
                                           padding: EdgeInsets.only(
@@ -840,10 +841,13 @@ class _ExpandtileState extends State<Expandtile> {
                                                                   "Edit Stocks:"),
                                                               titleTextStyle:
                                                                   const TextStyle(
-                                                                      fontSize:
-                                                                          20,
-                                                                      color: Colors
-                                                                          .black),
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 23,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
                                                               children: [
                                                                 Padding(
                                                                   padding:
